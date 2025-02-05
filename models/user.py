@@ -23,5 +23,6 @@ class User(Base):
     def __repr__(self):
         return repr({
             "id": self.id,
+            "name": self.name,
             "role": self.role
         })

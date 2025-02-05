@@ -20,6 +20,7 @@ class Contract(Base):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     customer = relationship("Customer", back_populates="contracts")
+    events = relationship("Event", back_populates="contract")
 
     @property
     def sales_contact_id(self):

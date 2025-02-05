@@ -16,7 +16,7 @@ class Customer(Base):
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
-    contracts = relationship("Contract", back_populates="customers")
+    contracts = relationship("Contract", back_populates="customer")
     sales_contact = relationship("User", back_populates="customers")
 
     def __repr__(self):
