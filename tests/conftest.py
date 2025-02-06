@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy.orm import Session
 from config.database import Base, SessionLocal, engine
 from models import User, Customer, Contract, Event
 
@@ -58,3 +59,9 @@ def setup_test_data(test_db):
     test_db.commit()
 
     return test_db, user_sales, user_support, customer, contract
+
+
+@pytest.fixture
+def mock_session(mocker):
+    """Fixture to mock an SQLAlchemy session."""
+    return mocker.Mock(spec=Session)

@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, String, DateTime, Enum
 from sqlalchemy.orm import relationship
-from config.database import Base
 from datetime import datetime
+from argon2 import PasswordHasher
+
+from config.database import Base
 
 
 class User(Base):
@@ -10,6 +12,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
+    # AJOUTER UN NUMERO D'EMPLOYE
     password_hash = Column(String(255), nullable=False)
     role = Column(
         Enum("Sales", "Management", "Support", name="user_roles"),
@@ -19,6 +22,17 @@ class User(Base):
 
     customers = relationship("Customer", back_populates="sales_contact")
     events = relationship("Event", back_populates="support_contact")
+
+    ph = PasswordHasher()
+
+    def set_password(self, password: str):
+        self.password_hash = self.ph.hash(password)
+
+    def verify_password(self, password: str) -> bool:
+        try:
+            return self.ph.verify(self.password_hash, password)
+        except:
+            return False
 
     def __repr__(self):
         return repr({
