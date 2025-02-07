@@ -22,33 +22,3 @@ def test_get_user_by_id(mock_session):
 
     assert user == user
     mock_session.get.assert_called_once_with(User, 1)
-
-
-def test_authenticate_user_success(mock_session, mocker):
-    """Test a correct connexion."""
-    user = User(name="Alice", email="alice@example.com", role="Sales")
-    user.set_password("mypassword")
-
-    mocker.patch.object(UserManager, "get_user_by_email", return_value=user)
-
-    result = UserManager.authenticate_user(
-        mock_session,
-        "alice@example.com",
-        "mypassword"
-    )
-    assert result == user
-
-
-def test_authenticate_user_wrong_password(mock_session, mocker):
-    """Test an incorrect connexion (invalid password)."""
-    user = User(name="Alice", email="alice@example.com", role="Sales")
-    user.set_password("mypassword")
-
-    mocker.patch.object(UserManager, "get_user_by_email", return_value=user)
-
-    result = UserManager.authenticate_user(
-        mock_session,
-        "alice@example.com",
-        "wrongpassword"
-    )
-    assert result is None

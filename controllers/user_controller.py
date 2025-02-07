@@ -1,11 +1,14 @@
 from sqlalchemy.orm import Session
 from models.user import User
 from models.user_manager import UserManager
+from models.auth import auth_required, Auth
 
 
 class UserController:
     @staticmethod
-    def create_user(session: Session,
+    @auth_required
+    def create_user(user_payload,
+                    session: Session,
                     name: str,
                     email: str,
                     password: str,
@@ -17,7 +20,8 @@ class UserController:
         print(f"User created successfully. ID: {user.id}")
 
     @staticmethod
-    def get_user(session: Session, user_id: int):
+    @auth_required
+    def get_user(user_payload, session: Session, user_id: int):
         """Get user with its ID."""
         user = UserManager.get_user_by_id(session, user_id)
         if user:
@@ -26,9 +30,10 @@ class UserController:
             print(f"No user found with ID {user_id}")
 
     @staticmethod
-    def get_user_by_email(session: Session, user_email: int):
+    @auth_required
+    def get_user_by_email(user_payload, session: Session, user_email: int):
         """Get user with its ID."""
-        user = UserManager.get_by_email(session, user_email)
+        user = UserManager.get_user_by_email(session, user_email)
         if user:
             print(f"User found : {user.name}")
         else:
@@ -37,10 +42,11 @@ class UserController:
     @staticmethod
     def login_user(session: Session, email: str, password: str):
         """Allow a user to connect."""
-        user = UserManager.authenticate_user(session, email, password)
-        if user:
-            print(f"Connected ! Welcome, {user.name} ({user.role}).")
-            return user
+        tokens = Auth.authenticate_user(session, email, password)
+        if tokens:
+            Auth.save_token(tokens["access_token"], tokens["refresh_token"])
+            print(f"Connected! Welcome, {tokens['user'].name}.")
+            return tokens
         else:
             print("Incorrect email or password.")
             return None

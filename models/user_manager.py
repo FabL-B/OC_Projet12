@@ -25,11 +25,3 @@ class UserManager:
     def get_user_by_email(session: Session, user_email: str):
         """Get user with its email."""
         return session.query(User).filter_by(email=user_email).first()
-
-    @staticmethod
-    def authenticate_user(session: Session, email: str, password: str):
-        """Authenticate an user with its email and password."""
-        user = UserManager.get_user_by_email(session, email)
-        if user and user.verify_password(password):
-            return user
-        return None

@@ -10,6 +10,7 @@ python-dotenv = "*"
 flake8 = "*"
 argon2-cffi = "*"
 pytest-cov = "*"
+pyjwt = "*"
 
 [dev-packages]
 pytest = "*"
