@@ -4,12 +4,13 @@ from models.user import User
 from controllers.user_controller import UserController
 from models.user_manager import UserManager
 from models.auth import Auth
+from models.permission import role_required
 
 
 @pytest.fixture
 def mock_authenticated_user(mocker):
     """Fixture to mock an authenticated user."""
-    fake_payload = {"sub": 1, "role": "Sales"}
+    fake_payload = {"sub": 1, "role": "Management"}
     mocker.patch.object(Auth, "is_authenticated", return_value=fake_payload)
     return fake_payload
 
@@ -21,6 +22,8 @@ def test_create_user_success(
     mocker
 ):
     """Check an user has been created and displayed."""
+    mocker.patch("models.permission.role_required",
+                 lambda *roles: lambda f: f)
     mocker.patch.object(UserManager, 'save')
 
     UserController.create_user(

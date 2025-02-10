@@ -2,11 +2,13 @@ from sqlalchemy.orm import Session
 from models.user import User
 from models.user_manager import UserManager
 from models.auth import auth_required, Auth
+from models.permission import role_required
 
 
 class UserController:
     @staticmethod
     @auth_required
+    @role_required("Management")
     def create_user(user_payload,
                     session: Session,
                     name: str,
