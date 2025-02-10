@@ -59,23 +59,6 @@ class Auth:
         )
 
     @staticmethod
-    def verify_token(token: str):
-        """Check JWT token and return payload if valid."""
-        try:
-            payload_data = jwt.decode(
-                token,
-                JWT_SECRET,
-                algorithms=[JWT_ALGORITHM]
-            )
-            return payload_data
-        except jwt.ExpiredSignatureError:
-            print("Erreur : Token expiré.")
-            return "expired"
-        except jwt.InvalidTokenError:
-            print("Erreur : Token invalide.")
-            return "invalid"
-
-    @staticmethod
     def load_token():
         """Load tokens from .auth_token."""
         try:
@@ -95,18 +78,24 @@ class Auth:
         os.chmod(".auth_token", 0o600)
 
     @staticmethod
-    def is_authenticated():
-        """Check if user is authenticated with a valid token."""
-        access_token, refresh_token = Auth.load_token()
-        if not access_token:
-            return None
-
-        payload_data = Auth.verify_token(access_token)
-        # Valid token
-        if payload_data:
+    def verify_token(token: str):
+        """Check JWT token and return payload if valid."""
+        try:
+            payload_data = jwt.decode(
+                token,
+                JWT_SECRET,
+                algorithms=[JWT_ALGORITHM]
+            )
             return payload_data
+        except jwt.ExpiredSignatureError:
+            print("Erreur : Token expiré.")
+            return "expired"
+        except jwt.InvalidTokenError:
+            print("Erreur : Token invalide.")
+            return "invalid"
 
-        # Token expired, use refresh token
+    @staticmethod
+    def refresh_access_token(refresh_token: str):
         payload_data = Auth.verify_token(refresh_token)
         if payload_data:
             new_access_token = Auth.create_access_token(
@@ -115,9 +104,24 @@ class Auth:
             )
             Auth.save_token(new_access_token, refresh_token)
             return Auth.verify_token(new_access_token)
-
-        # Invalid refresh token
         return None
+
+    @staticmethod
+    def is_authenticated():
+        """Check if user is authenticated with a valid token."""
+        access_token, refresh_token = Auth.load_token()
+        if not access_token:
+            return None
+
+        payload_data = Auth.verify_token(access_token)
+        if payload_data == "invalid":
+            return None
+
+        if payload_data == "expired":
+            payload_data = Auth.refresh_access_token(refresh_token)
+            return payload_data
+
+        return payload_data
 
 
 def auth_required(func):

@@ -1,6 +1,7 @@
 import jwt
 import datetime
-from models.auth import Auth
+import pytest
+from models.auth import Auth, auth_required
 from models.user_manager import UserManager
 from models.user import User
 
@@ -99,7 +100,7 @@ def test_save_and_load_token(mocker):
 
 
 def test_is_authenticated_valid(mocker):
-    """Test de la vérification d'une authentification réussie."""
+    """Test valid authentication."""
     mocker.patch.object(
         Auth,
         "load_token",
@@ -116,14 +117,44 @@ def test_is_authenticated_valid(mocker):
     assert payload["role"] == "Sales"
 
 
-def test_is_authenticated_expired_token_refresh_success(mocker):
-    """Test du rafraîchissement d'un token expiré avec succès."""
-    mocker.patch.object(Auth, "load_token", return_value=("expired_token", "valid_refresh_token"))
-    mocker.patch.object(Auth, "verify_token", side_effect=["expired", {"sub": "1", "role": "Sales"}])
-    mocker.patch.object(Auth, "create_access_token", return_value="new_access_token")
-    mocker.patch.object(Auth, "save_token")
+def test_refresh_access_token(mocker):
+    """Test `refresh_access_token()` create new access_token."""
 
-    payload = Auth.is_authenticated()
+    mocker.patch.object(
+        Auth,
+        "verify_token",
+        return_value={"sub": "1", "role": "Sales"}
+    )
+    payload = Auth.refresh_access_token("valid_refresh_token")
+    assert payload == {"sub": "1", "role": "Sales"}
 
-    assert payload["sub"] == "1"
-    assert payload["role"] == "Sales"
+
+def test_auth_required(mocker):
+    """Test `auth_required` wrapper with authenticated user."""
+    mocker.patch.object(
+        Auth,
+        "is_authenticated",
+        return_value={"sub": "1", "role": "Sales"}
+    )
+
+    @auth_required
+    def protected_function(user_payload):
+        return f"Access granted to {user_payload['role']}"
+
+    result = protected_function()
+    assert result == "Access granted to Sales"
+
+
+def test_auth_required_with_invalid_token(mocker):
+    """Test `auth_required` wrapper with unauthenticated user."""
+    mocker.patch.object(Auth, "is_authenticated", return_value=None)
+
+    @auth_required
+    def protected_function(user_payload):
+        return "This should not be reached"
+
+    with pytest.raises(
+        PermissionError,
+        match="Access denied: Authentication required"
+    ):
+        protected_function()
