@@ -2,7 +2,7 @@ import jwt
 import datetime
 import pytest
 from models.auth import Auth, auth_required
-from models.user_manager import UserManager
+from repository.user_repository import UserManager
 from models.user import User
 
 

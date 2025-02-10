@@ -2,7 +2,7 @@ import pytest
 
 from models.user import User
 from controllers.user_controller import UserController
-from models.user_manager import UserManager
+from repository.user_repository import UserManager
 from models.auth import Auth
 from models.permission import role_required
 

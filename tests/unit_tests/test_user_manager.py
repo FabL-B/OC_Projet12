@@ -1,5 +1,5 @@
 from models.user import User
-from models.user_manager import UserManager
+from repository.user_repository import UserManager
 
 
 def test_save_user(mock_session):

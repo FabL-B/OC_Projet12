@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models.user import User
-from models.user_manager import UserManager
+from repository.user_repository import UserManager
 from models.auth import auth_required, Auth
 from models.permission import role_required
 
