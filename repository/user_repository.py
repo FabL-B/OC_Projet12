@@ -3,7 +3,8 @@ from sqlalchemy.exc import IntegrityError
 from models import User
 
 
-class UserManager:
+class UserRepository:
+    """Handles database operations related to the User entity."""
     @staticmethod
     def save(session: Session, user: User):
         """Save user in data base."""
@@ -18,10 +19,10 @@ class UserManager:
 
     @staticmethod
     def get_user_by_id(session: Session, user_id: int):
-        """Get user with its ID."""
+        """Get user from database with its ID."""
         return session.get(User, user_id)
 
     @staticmethod
     def get_user_by_email(session: Session, user_email: str):
-        """Get user with its email."""
+        """Get user from database with its email."""
         return session.query(User).filter_by(email=user_email).first()

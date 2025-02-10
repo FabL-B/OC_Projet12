@@ -1,6 +1,7 @@
 import pytest
 from models.permission import role_required
 
+
 def test_role_required_valid():
     """Test `@role_required` allow access with valid role."""
 
@@ -12,6 +13,7 @@ def test_role_required_valid():
     result = protected_function(user_payload)
 
     assert result == "Access granted"
+
 
 def test_role_required_invalid():
     """Test `@role_required` restrain access with invalid role."""

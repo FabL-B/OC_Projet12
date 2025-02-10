@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from functools import wraps
 from sqlalchemy.orm import Session
 
-from repository.user_repository import UserManager
+from repository.user_repository import UserRepository
 
 load_dotenv()
 
@@ -21,7 +21,7 @@ class Auth:
     @staticmethod
     def authenticate_user(session: Session, email: str, password: str):
         """Authenticate a user with email and password."""
-        user = UserManager.get_user_by_email(session, email)
+        user = UserRepository.get_user_by_email(session, email)
         if user and user.verify_password(password):
             return {
                 "user": user,

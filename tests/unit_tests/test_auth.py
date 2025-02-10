@@ -2,7 +2,7 @@ import jwt
 import datetime
 import pytest
 from models.auth import Auth, auth_required
-from repository.user_repository import UserManager
+from repository.user_repository import UserRepository
 from models.user import User
 
 
@@ -61,7 +61,7 @@ def test_authenticate_user_success(mock_session, mocker):
     user = User(id=1, name="Bob", email="bob@example.com", role="Sales")
     user.verify_password = mocker.Mock(return_value=True)
     mock_session.get.return_value = user
-    mocker.patch.object(UserManager, "get_user_by_email", return_value=user)
+    mocker.patch.object(UserRepository, "get_user_by_email", return_value=user)
     mocker.patch.object(Auth, "create_access_token",
                         return_value="fake_access_token")
     mocker.patch.object(Auth, "create_refresh_token",
