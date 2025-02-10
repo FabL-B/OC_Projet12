@@ -26,3 +26,7 @@ class UserRepository:
     def get_user_by_email(session: Session, user_email: str):
         """Get user from database with its email."""
         return session.query(User).filter_by(email=user_email).first()
+
+    @staticmethod
+    def get_all_users(session: Session):
+        return session.query(User).all()

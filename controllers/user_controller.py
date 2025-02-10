@@ -5,7 +5,7 @@ from services.user_service import UserService
 
 
 class UserController:
-    """Gestion des utilisateurs."""
+    """Controler to handle users."""
 
     @staticmethod
     @auth_required

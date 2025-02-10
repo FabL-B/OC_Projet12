@@ -21,6 +21,20 @@ class UserService:
         return UserRepository.save(session, user)
 
     @staticmethod
+    def list_users(session: Session):
+        users = UserRepository.get_all_users(session)
+        return [
+            {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "employee_number": user.employee_number,
+                "role": user.role
+            }
+            for user in users
+        ]
+
+    @staticmethod
     def get_user_by_id(session: Session, user_id: int):
         """Retrieves a user by ID."""
         return UserRepository.get_user_by_id(session, user_id)
