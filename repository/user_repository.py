@@ -1,21 +1,26 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from models import User
 
 
 class UserRepository:
     """Handles database operations related to the User entity."""
     @staticmethod
-    def save(session: Session, user: User):
-        """Save user in data base."""
-        try:
-            session.add(user)
+    def create_user(session: Session, user: User):
+        """Create a new user in data base."""
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return user
+
+    @staticmethod
+    def update_user(session: Session, user_id: int, data: dict):
+        """Update an existing user in data base."""
+        user = session.get(User, user_id)
+        if user:
+            for key, value in data.items():
+                setattr(user, key, value)
             session.commit()
-            session.refresh(user)
-            return user
-        except IntegrityError:
-            session.rollback()
-            raise ValueError("Email already exists.")
+        return user
 
     @staticmethod
     def get_user_by_id(session: Session, user_id: int):
@@ -29,4 +34,5 @@ class UserRepository:
 
     @staticmethod
     def get_all_users(session: Session):
+        """Get all users database."""
         return session.query(User).all()

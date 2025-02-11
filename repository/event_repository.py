@@ -4,13 +4,30 @@ from models.event import Event
 
 class EventRepository:
     """Handles database operations related to the Event entity."""
+    @staticmethod
+    def create_event(session: Session, event: Event):
+        """Create a new event in database."""
+        session.add(event)
+        session.commit()
+        session.refresh(event)
+        return event
+
+    @staticmethod
+    def update_event(session: Session, event_id: int, data: dict):
+        """Update an existing event in database."""
+        event = session.get(Event, event_id)
+        if event:
+            for key, value in data.items():
+                setattr(event, key, value)
+            session.commit()
+        return event
 
     @staticmethod
     def get_all_events(session: Session):
-        """Get all events."""
+        """Get all from database events."""
         return session.query(Event).all()
 
     @staticmethod
     def get_event_by_id(session: Session, event_id: int):
-        """Get an event with its ID."""
+        """Get an event from database with its ID."""
         return session.get(Event, event_id)

@@ -6,10 +6,14 @@ from models.auth import Auth
 
 class UserService:
     """Handles business logic for users."""
-
     @staticmethod
-    def create_user(session: Session, name: str,
-                    email: str, password: str, role: str):
+    def create_user(
+        session: Session,
+        name: str,
+        email: str,
+        password: str,
+        role: str
+    ):
         """Creates a user while applying business rules."""
         existing_user = UserRepository.get_user_by_email(session, email)
         if existing_user:
@@ -18,7 +22,15 @@ class UserService:
         user = User(name=name, email=email, role=role)
         user.set_password(password)
 
-        return UserRepository.save(session, user)
+        return UserRepository.create_user(session, user)
+
+    @staticmethod
+    def update_user(session: Session, user_id: int, data: dict):
+        """Update an existing user."""
+        user = UserRepository.get_user_by_id(session, user_id)
+        if not user:
+            raise ValueError("User not found.")
+        return UserRepository.update_user(session, user_id, data)
 
     @staticmethod
     def list_users(session: Session):
@@ -28,7 +40,6 @@ class UserService:
                 "id": user.id,
                 "name": user.name,
                 "email": user.email,
-                "employee_number": user.employee_number,
                 "role": user.role
             }
             for user in users

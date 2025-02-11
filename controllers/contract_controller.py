@@ -5,6 +5,46 @@ from services.contract_service import ContractService
 
 class ContractController:
     """Controler to handle contracts."""
+    @staticmethod
+    @auth_required
+    def create_contract(
+        user_payload,
+        session: Session,
+        customer_id: int,
+        amount: float,
+        amount_due: float,
+        status: bool
+    ):
+        """Create a new contract."""
+        contract = ContractService.create_contract(
+            session,
+            customer_id,
+            amount,
+            amount_due,
+            status
+        )
+        print(f"Contract created successfully.")
+        return contract
+
+
+    @staticmethod
+    @auth_required
+    def update_contract(
+        user_payload,
+        session: Session,
+        contract_id: int,
+        data: dict
+    ):
+        """Update an existing contract."""
+
+        contract = ContractService.update_contract(
+            session,
+            contract_id,
+            data
+        )
+        print(f" Contract updated successfully.")
+        return contract
+
 
     @staticmethod
     @auth_required

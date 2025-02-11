@@ -1,21 +1,26 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from models import Customer
 
 
 class CustomerRepository:
     """Handles database operations related to the Customer entity."""
     @staticmethod
-    def save(session: Session, customer: Customer):
-        """Save customer in data base."""
-        try:
-            session.add(customer)
+    def create_customer(session: Session, customer: Customer):
+        """Create a new customer in data base."""
+        session.add(customer)
+        session.commit()
+        session.refresh(customer)
+        return customer
+
+    @staticmethod
+    def update_customer(session: Session, customer_id: int, data: dict):
+        """Update an existing customer in database."""
+        customer = session.get(Customer, customer_id)
+        if customer:
+            for key, value in data.items():
+                setattr(customer, key, value)
             session.commit()
-            session.refresh(customer)
-            return customer
-        except IntegrityError:
-            session.rollback()
-            raise ValueError("Customer already exists.")
+        return customer
 
     @staticmethod
     def get_customer_by_id(session: Session, customer_id: int):

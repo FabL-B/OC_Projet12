@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.orm import Session
 from config.database import Base, SessionLocal, engine
-from models import User, Customer, Contract, Event
+from models import User, Customer, Contract
 
 
 @pytest.fixture(scope="function")

@@ -13,9 +13,18 @@ class UserController:
     def create_user(user_payload, session: Session, name: str,
                     email: str, password: str, role: str):
         """Create user."""
-
         user = UserService.create_user(session, name, email, password, role)
         print(f"User '{user.name}' created successfully.")
+        return user
+
+    @staticmethod
+    @auth_required
+    @role_required("Management")
+    def update_user(user_payload, session: Session, user_id: int, data: dict):
+        """Update an user."""
+        user = UserService.update_user(session, user_id, data)
+        print(f"✅ User '{user.name}' updated successfully.")
+        return user
 
     @staticmethod
     @auth_required

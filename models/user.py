@@ -28,10 +28,7 @@ class User(Base):
         self.password_hash = self.ph.hash(password)
 
     def verify_password(self, password: str) -> bool:
-        try:
-            return self.ph.verify(self.password_hash, password)
-        except:
-            return False
+        return self.ph.verify(self.password_hash, password)
 
     def __repr__(self):
         return repr({

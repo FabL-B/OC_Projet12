@@ -1,10 +1,51 @@
 from sqlalchemy.orm import Session
 from models.auth import auth_required
+from models.permission import role_required
 from services.customer_service import CustomerService
 
 
 class CustomerController:
     """Controler to handle customers."""
+    @staticmethod
+    @auth_required
+    @role_required("Sales", "Management")
+    def create_customer(
+        user_payload,
+        session: Session,
+        name: str,
+        company_name: str,
+        email: str,
+        phone: str,
+        sales_contact_id: int
+    ):
+        """Create a new customer."""
+        customer = CustomerService.create_customer(
+            session,
+            name,
+            company_name,
+            email,
+            phone,
+            sales_contact_id
+        )
+        print(f"Customer '{customer.name}' created successfully.")
+        return customer
+
+    @staticmethod
+    @auth_required
+    @role_required("Sales", "Management")
+    def update_customer(
+        user_payload,
+        session: Session,
+        customer_id: int,
+        data: dict
+    ):
+        """Update an existing customer."""
+        customer = CustomerService.update_customer(
+            session,
+            customer_id, data
+        )
+        print(f"✅ Customer '{customer.name}' updated successfully.")
+        return customer
 
     @staticmethod
     @auth_required

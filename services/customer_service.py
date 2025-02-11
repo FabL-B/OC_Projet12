@@ -7,8 +7,12 @@ class CustomerService:
     """Handles business logic for customers."""
 
     @staticmethod
-    def check_if_customer_exists(session: Session, email: str,
-                                 company_name: str, phone: str) -> bool:
+    def check_if_customer_exists(
+        session: Session,
+        email: str,
+        company_name: str,
+        phone: str
+    ) -> bool:
         """Check if customer already exist."""
         return any(
             [
@@ -19,12 +23,21 @@ class CustomerService:
             ]
         )
 
-    def create_customer(session: Session, name: str, company_name: str,
-                        email: str, phone: str, sales_contact_id: int):
+    def create_customer(
+        session: Session,
+        name: str,
+        company_name: str,
+        email: str,
+        phone: str,
+        sales_contact_id: int
+    ):
         """Creates a new customer."""
 
-        if CustomerService.check_if_customer_exists(session, email,
-                                                    company_name, phone):
+        if CustomerService.check_if_customer_exists(
+            session,
+            email,
+            company_name, phone
+        ):
             raise ValueError(
                 "A customer with this email, "
                 "company name, or phone number already exists."
@@ -39,6 +52,14 @@ class CustomerService:
         )
 
         return CustomerRepository.save(session, customer)
+
+    @staticmethod
+    def update_customer(session: Session, customer_id: int, data: dict):
+        """Update an existing customer."""
+        event = CustomerRepository.get_customer_by_id(session, customer_id)
+        if not event:
+            raise ValueError("Customer not found.")
+        return CustomerRepository.update_customer(session, customer_id, data)
 
     @staticmethod
     def get_customer_by_id(session: Session, customer_id: int):
