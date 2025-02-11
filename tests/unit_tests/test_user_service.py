@@ -47,3 +47,18 @@ def test_create_user_existing_email(mock_session, mocker):
             "securepassword",
             "Sales"
         )
+
+
+def test_delete_user_success(mock_session, mocker):
+    """Test successful delete of a user."""
+    fake_user = User(
+        id=1, name="Alice", email="alice@example.com", role="Sales")
+
+    mocker.patch.object(
+        UserRepository, "get_user_by_id", return_value=fake_user)
+    mocker.patch.object(
+        UserRepository, "delete_user", return_value=fake_user)
+
+    deleted_user = UserService.delete_user(mock_session, 1)
+
+    assert deleted_user == fake_user

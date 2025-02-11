@@ -37,6 +37,15 @@ class EventService:
         return EventRepository.update_event(session, event_id, data)
 
     @staticmethod
+    def delete_event(session: Session, event_id: int):
+        """Delete an event."""
+        event = EventRepository.get_event_by_id(session, event_id)
+        if not event:
+            raise ValueError("Event not found.")
+
+        return EventRepository.delete_event(session, event_id)
+
+    @staticmethod
     def list_all_event(session: Session):
         """Get all event as dictionnaries."""
         events = EventRepository.get_all_events(session)

@@ -23,6 +23,14 @@ class UserRepository:
         return user
 
     @staticmethod
+    def delete_user(session: Session, user_id: int):
+        """Delete a user from database."""
+        user = session.get(User, user_id)
+        session.delete(user)
+        session.commit()
+        return user
+
+    @staticmethod
     def get_user_by_id(session: Session, user_id: int):
         """Get user from database with its ID."""
         return session.get(User, user_id)

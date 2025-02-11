@@ -31,6 +31,15 @@ class ContractService:
         return ContractRepository.update_contract(session, contract_id, data)
 
     @staticmethod
+    def delete_contract(session: Session, contract_id: int):
+        """Delete a contract."""
+        contract = ContractRepository.get_contract_by_id(session, contract_id)
+        if not contract:
+            raise ValueError("Contract not found.")
+
+        return ContractRepository.delete_contract(session, contract_id)
+
+    @staticmethod
     def list_all_contracts(session: Session):
         """Get all clients as dictionnaries."""
         contracts = ContractRepository.get_all_contracts(session)

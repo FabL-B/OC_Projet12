@@ -14,7 +14,7 @@ class UserService:
         password: str,
         role: str
     ):
-        """Creates a user while applying business rules."""
+        """Creates a user."""
         existing_user = UserRepository.get_user_by_email(session, email)
         if existing_user:
             raise ValueError("A user with this email already exists.")
@@ -23,6 +23,15 @@ class UserService:
         user.set_password(password)
 
         return UserRepository.create_user(session, user)
+
+    @staticmethod
+    def delete_user(session: Session, user_id: int):
+        """Delete a user."""
+        user = UserRepository.get_user_by_id(session, user_id)
+        if not user:
+            raise ValueError("User not found.")
+
+        return UserRepository.delete_user(session, user_id)
 
     @staticmethod
     def update_user(session: Session, user_id: int, data: dict):

@@ -44,7 +44,16 @@ class CustomerController:
             session,
             customer_id, data
         )
-        print(f"✅ Customer '{customer.name}' updated successfully.")
+        print(f"Customer '{customer.name}' updated successfully.")
+        return customer
+
+    @staticmethod
+    @auth_required
+    @role_required("Management")
+    def delete_customer(user_payload, session: Session, customer_id: int):
+        """Delete a customer"""
+        customer = CustomerService.delete_customer(session, customer_id)
+        print(f"Customer '{customer.name}' deleted successfully.")
         return customer
 
     @staticmethod

@@ -31,7 +31,7 @@ class EventController:
             attendees,
             notes
         )
-        print(f"Event created successfully.")
+        print("Event created successfully.")
         return event
 
     @staticmethod
@@ -46,6 +46,15 @@ class EventController:
         """Update an event."""
         event = EventService.update_event(session, event_id, data)
         print(f"Event '{event.id}' updated successfully.")
+        return event
+
+    @staticmethod
+    @auth_required
+    @role_required("Support", "Management")
+    def delete_event(user_payload, session: Session, event_id: int):
+        """Delete an event"""
+        event = EventService.delete_event(session, event_id)
+        print("Event deleted successfully.")
         return event
 
     @staticmethod

@@ -13,6 +13,13 @@ class EventRepository:
         return event
 
     @staticmethod
+    def delete_event(session: Session, event_id: int):
+        """Delete an event from database."""
+        event = session.get(Event, event_id)
+        session.delete(event)
+        session.commit()
+        return event
+
     def update_event(session: Session, event_id: int, data: dict):
         """Update an existing event in database."""
         event = session.get(Event, event_id)

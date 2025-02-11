@@ -62,6 +62,15 @@ class CustomerService:
         return CustomerRepository.update_customer(session, customer_id, data)
 
     @staticmethod
+    def delete_customer(session: Session, customer_id: int):
+        """Delete a customer."""
+        customer = CustomerRepository.get_customer_by_id(session, customer_id)
+        if not customer:
+            raise ValueError("Customer not found.")
+
+        return CustomerRepository.delete_customer(session, customer_id)
+
+    @staticmethod
     def get_customer_by_id(session: Session, customer_id: int):
         """Retrieves a customer by ID."""
         return CustomerRepository.get_customer_by_id(session, customer_id)

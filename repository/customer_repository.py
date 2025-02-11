@@ -23,6 +23,14 @@ class CustomerRepository:
         return customer
 
     @staticmethod
+    def delete_customer(session: Session, customer_id: int):
+        """Delete a customer frome database."""
+        customer = session.get(Customer, customer_id)
+        session.delete(customer)
+        session.commit()
+        return customer
+
+    @staticmethod
     def get_customer_by_id(session: Session, customer_id: int):
         """Get customer from database with its ID."""
         return session.get(Customer, customer_id)

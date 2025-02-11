@@ -28,6 +28,15 @@ class UserController:
 
     @staticmethod
     @auth_required
+    @role_required("Management")
+    def delete_user(user_payload, session: Session, user_id: int):
+        """Delete a user."""
+        user = UserService.delete_user(session, user_id)
+        print(f"User '{user.name}' deleted successfully.")
+        return user
+
+    @staticmethod
+    @auth_required
     def get_user(user_payload, session: Session, user_id: int):
         """Get user using ID."""
         user = UserService.get_user_by_id(session, user_id)

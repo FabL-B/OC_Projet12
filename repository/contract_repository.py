@@ -23,6 +23,14 @@ class ContractRepository:
         return contract
 
     @staticmethod
+    def delete_contract(session: Session, contract_id: int):
+        """Delete a contract from database."""
+        contract = session.get(Contract, contract_id)
+        session.delete(contract)
+        session.commit()
+        return contract
+
+    @staticmethod
     def get_all_contracts(session: Session):
         """Get all contracts from database."""
         return session.query(Contract).all()
