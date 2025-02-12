@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models.auth import auth_required
-from models.permission import role_required
+from models.permission import permission_required
 from services.contract_service import ContractService
 
 
@@ -47,7 +47,7 @@ class ContractController:
 
     @staticmethod
     @auth_required
-    @role_required("Management")
+    @permission_required("Management")
     def delete_contract(user_payload, session: Session, contract_id: int):
         """Delete a contract."""
         contract = ContractService.delete_contract(session, contract_id)

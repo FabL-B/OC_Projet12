@@ -46,7 +46,7 @@ class EventService:
         return EventRepository.delete_event(session, event_id)
 
     @staticmethod
-    def list_all_event(session: Session):
+    def list_all_events(session: Session):
         """Get all event as dictionnaries."""
         events = EventRepository.get_all_events(session)
         return [{"id": event.id,

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models.auth import auth_required
-from models.permission import role_required
+from models.permission import permission_required
 from services.customer_service import CustomerService
 
 
@@ -8,7 +8,7 @@ class CustomerController:
     """Controler to handle customers."""
     @staticmethod
     @auth_required
-    @role_required("Sales", "Management")
+    @permission_required("Sales", "Management")
     def create_customer(
         user_payload,
         session: Session,
@@ -32,7 +32,7 @@ class CustomerController:
 
     @staticmethod
     @auth_required
-    @role_required("Sales", "Management")
+    @permission_required("Sales", "Management")
     def update_customer(
         user_payload,
         session: Session,
@@ -49,7 +49,7 @@ class CustomerController:
 
     @staticmethod
     @auth_required
-    @role_required("Management")
+    @permission_required("Management")
     def delete_customer(user_payload, session: Session, customer_id: int):
         """Delete a customer"""
         customer = CustomerService.delete_customer(session, customer_id)

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models.auth import auth_required
-from models.permission import role_required
+from models.permission import permission_required
 from services.event_service import EventService
 
 
@@ -8,7 +8,7 @@ class EventController:
     """Controler to handle events."""
     @staticmethod
     @auth_required
-    @role_required("Management")
+    @permission_required("Management")
     def create_event(
         user_payload,
         session: Session,
@@ -36,7 +36,7 @@ class EventController:
 
     @staticmethod
     @auth_required
-    @role_required("Management")
+    @permission_required("Management")
     def update_event(
         user_payload,
         session: Session,
@@ -50,7 +50,7 @@ class EventController:
 
     @staticmethod
     @auth_required
-    @role_required("Support", "Management")
+    @permission_required("Support", "Management")
     def delete_event(user_payload, session: Session, event_id: int):
         """Delete an event"""
         event = EventService.delete_event(session, event_id)
