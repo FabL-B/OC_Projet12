@@ -14,9 +14,9 @@ class UserPermission(BasePermission):
     """Manages permissions for users."""
 
     def has_permission(self, user_payload, action):
-        if action in ['get_all_users', 'get_user']:
+        if action in ['list_all', 'get']:
             return True
-        if action in ['create_user', 'update_user', 'delete_user']:
+        if action in ['create', 'update', 'delete']:
             return user_payload.get("role") == "management"
         return False
 
@@ -28,14 +28,14 @@ class CustomerPermission(BasePermission):
     """Manages permissions for customers."""
 
     def has_permission(self, user_payload, action):
-        if action in ['get_all_customers', 'get_customer']:
+        if action in ['list_all', 'get']:
             return True
-        if action == 'create_customer':
+        if action == 'create':
             return user_payload.get("role") == "sales"
         return True
 
     def has_object_permission(self, user_payload, customer, action):
-        if action in ['edit_customer', 'delete_customer']:
+        if action in ['update', 'delete']:
             return (user_payload.get("role") == "sales" and
                     customer.sales_user_id == user_payload.get("id"))
         return True
@@ -45,14 +45,14 @@ class ContractPermission(BasePermission):
     """Manages permissions for contracts."""
 
     def has_permission(self, user_payload, action):
-        if action in ['get_all_contracts', 'get_contract']:
+        if action in ['list_all', 'get']:
             return True
-        if action == 'create_contract':
+        if action == 'create':
             return user_payload.get("role") == "management"
         return True
 
     def has_object_permission(self, user_payload, contract, action):
-        if action in ['update_contract', 'delete_contract']:
+        if action in ['update', 'delete']:
             if user_payload.get("role") == "management":
                 return True
             return (user_payload.get("role") == "sales" and
@@ -64,20 +64,20 @@ class EventPermission(BasePermission):
     """Manages permissions for events."""
 
     def has_permission(self, user_payload, action):
-        if action in ['get_all_events', 'get_event']:
+        if action in ['list_all', 'get']:
             return True
-        if action == 'create_event':
+        if action == 'create':
             return user_payload.get("role") == "sales"
         return True
 
     def has_object_permission(self, user_payload, event, action):
-        if action == 'create_event':
+        if action == 'create':
             return (
                 user_payload.get("role") == "sales" and
                 event.contract.is_signed and
                 event.contract.customer.sales_user_id == user_payload.get("id")
             )
-        if action == 'update_event':
+        if action == 'update':
             return (user_payload.get("role") == "support" and
                     event.support_user_id == user_payload.get("id")) or (
                     user_payload.get("role") == "management")

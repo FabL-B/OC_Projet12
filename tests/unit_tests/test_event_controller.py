@@ -22,8 +22,10 @@ def test_list_all_events(mocker, event_controller, mock_session):
         EventService,
         "list_all",
         return_value=[
-            Event(id=1, contract_id=10, location="Paris", support_contact_id=3),
-            Event(id=2, contract_id=11, location="Lyon", support_contact_id=5),
+            Event(
+                id=1, contract_id=10, location="Paris", support_contact_id=3),
+            Event(
+                id=2, contract_id=11, location="Lyon", support_contact_id=5),
         ],
     )
 

@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Enum
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 
 from config.database import Base
 
@@ -28,7 +29,10 @@ class User(Base):
         self.password_hash = self.ph.hash(password)
 
     def verify_password(self, password: str) -> bool:
-        return self.ph.verify(self.password_hash, password)
+        try:
+            return self.ph.verify(self.password_hash, password)
+        except VerifyMismatchError:
+            return False
 
     def __repr__(self):
         return repr({

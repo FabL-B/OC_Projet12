@@ -1,19 +1,19 @@
 from sqlalchemy.orm import Session
 from models.auth import auth_required
 
-# Modèle ne fonctionne pas pour le moment, 
+# Modèle ne fonctionne pas pour le moment,
 # problème de gestion des arguments passés
+
 
 class BaseController:
     """Base Controller to manage CRUD operations."""
 
-    
     def __init__(self, service, permission_class):
         self.service = service
         self.permission_class = permission_class
         self.user_payload = None
         self.session = None
-    
+
     @auth_required
     def list_all(self, user_payload, session: Session):
         """Retrieve all entities."""

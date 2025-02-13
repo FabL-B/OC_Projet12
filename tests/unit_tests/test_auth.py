@@ -137,11 +137,13 @@ def test_auth_required(mocker):
         return_value={"sub": "1", "role": "Sales"}
     )
 
-    @auth_required
-    def protected_function(user_payload):
-        return f"Access granted to {user_payload['role']}"
+    class FakeController:
+        @auth_required
+        def protected_method(self, user_payload):
+            return f"Access granted to {user_payload['role']}"
 
-    result = protected_function()
+    controller = FakeController()
+    result = controller.protected_method()
     assert result == "Access granted to Sales"
 
 
@@ -149,12 +151,15 @@ def test_auth_required_with_invalid_token(mocker):
     """Test `auth_required` wrapper with unauthenticated user."""
     mocker.patch.object(Auth, "is_authenticated", return_value=None)
 
-    @auth_required
-    def protected_function(user_payload):
-        return "This should not be reached"
+    class FakeController:
+        @auth_required
+        def protected_method(self, user_payload):
+            return "This should not be reached"
+
+    controller = FakeController()
 
     with pytest.raises(
         PermissionError,
         match="Access denied: Authentication required"
     ):
-        protected_function()
+        controller.protected_method()

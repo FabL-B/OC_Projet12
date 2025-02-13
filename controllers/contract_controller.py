@@ -3,6 +3,7 @@ from models.auth import auth_required
 from sqlalchemy.orm import Session
 from models.permission import ContractPermission
 
+
 class ContractController:
     """Controller for handling contracts."""
 

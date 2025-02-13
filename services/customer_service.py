@@ -72,7 +72,7 @@ class CustomerService:
             sales_contact_id=sales_contact_id
         )
 
-        return CustomerRepository.save(session, customer)
+        return CustomerRepository.create_customer(session, customer)
 
     @staticmethod
     def update(session: Session, customer_id: int, data: dict):
