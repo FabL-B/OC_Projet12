@@ -2,11 +2,13 @@ from services.user_service import UserService
 from models.auth import auth_required
 from sqlalchemy.orm import Session
 from controllers.base_controller import BaseController
+from models.permission import UserPermission
 
 class UserController(BaseController):
     """Controller for handling users."""
     
     service = UserService
+    permission_class = UserPermission
 
     @staticmethod
     @auth_required

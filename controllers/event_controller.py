@@ -1,7 +1,9 @@
-from services.customer_service import CustomerService
+from services.event_service import EventService
 from controllers.base_controller import BaseController
+from models.permission import EventPermission
 
-class CustomerController(BaseController):
-    """Controller for handling customers."""
+class EventController(BaseController):
+    """Controller for handling events."""
     
-    service = CustomerService
+    service = EventService
+    permission_class = EventPermission

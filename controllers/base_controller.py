@@ -4,7 +4,8 @@ from models.auth import auth_required
 class BaseController:
     """Base Controller to manage CRUD operations."""
 
-    service = None  # À définir dans les sous-classes
+    service = None
+    permission_class = None
 
     @staticmethod
     @auth_required
