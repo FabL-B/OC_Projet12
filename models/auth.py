@@ -127,11 +127,11 @@ class Auth:
 def auth_required(func):
     """Wrapper to ckeck a user is authenticated before executing functions."""
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(self, *args, **kwargs):
         user_payload = Auth.is_authenticated()
         if not user_payload:
             raise PermissionError(
                 "Access denied: Authentication required"
             )
-        return func(user_payload, *args, **kwargs)
+        return func(self, user_payload, *args, **kwargs)
     return wrapper

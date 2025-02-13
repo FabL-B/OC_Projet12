@@ -72,9 +72,11 @@ class EventPermission(BasePermission):
 
     def has_object_permission(self, user_payload, event, action):
         if action == 'create_event':
-            return (user_payload.get("role") == "sales" and
-                    event.contract.is_signed and
-                    event.contract.customer.sales_user_id == user_payload.get("id"))
+            return (
+                user_payload.get("role") == "sales" and
+                event.contract.is_signed and
+                event.contract.customer.sales_user_id == user_payload.get("id")
+            )
         if action == 'update_event':
             return (user_payload.get("role") == "support" and
                     event.support_user_id == user_payload.get("id")) or (

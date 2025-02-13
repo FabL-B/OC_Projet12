@@ -18,7 +18,7 @@ class EventService:
             "end_date": event.end_date,
             "location": event.location
         }
-     
+
     @staticmethod
     def list_all(session: Session):
         """Get all event as dictionnaries."""
@@ -67,4 +67,3 @@ class EventService:
             raise ValueError("Event not found.")
 
         return EventRepository.delete_event(session, event_id)
-
