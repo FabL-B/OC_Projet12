@@ -1,43 +1,82 @@
-from functools import wraps
+class BasePermission:
+    """Base class for permission management."""
 
-def role_required(user_payload, *allowed_roles):
-    """Checks if the user has an authorized role."""
-    user_role = user_payload.get("role")
-    if user_role not in allowed_roles:
-        raise PermissionError(
-            f"Access denied: role '{user_role}' "
-            "is not authorized for this action."
-        )
+    def has_permission(self, user_payload, action):
+        """Returns False by default to block access if not defined."""
+        return False
 
-def affiliation_required(user_payload, entity_id, get_entity, relation_field):
-    """Checks if the user is affiliated with a specific entity."""
-    user_id = user_payload.get("id")
-    entity = get_entity(entity_id)
+    def has_object_permission(self, user_payload, obj, action):
+        """Returns False by default to prevent access if not defined."""
+        return False
 
-    if getattr(entity, relation_field) != user_id:
-        raise PermissionError(
-            "Access denied: You are not authorized to modify this resource."
-        )
 
-def permission_required(*allowed_roles, get_entity=None, relation_field=None):
-    """
-    Check the user role and, if specified, its relation to a specific entity.
-    """
-    def decorator(func):
-        @wraps(func)
-        def wrapper(user_payload, entity_id=None, *args, **kwargs):
-            # Check user role
-            role_required(user_payload, *allowed_roles)
+class UserPermission(BasePermission):
+    """Manages permissions for users."""
 
-            # Check affiliation if applicable
-            if get_entity and relation_field and entity_id is not None:
-                affiliation_required(
-                    user_payload,
-                    entity_id,
-                    get_entity,
-                    relation_field
-                )
+    def has_permission(self, user_payload, action):
+        if action in ['get_all_users', 'get_user']:
+            return True
+        if action in ['create_user', 'update_user', 'delete_user']:
+            return user_payload.get("role") == "management"
+        return False
 
-            return func(user_payload, entity_id, *args, **kwargs)
-        return wrapper
-    return decorator
+    def has_object_permission(self, user_payload, obj, action):
+        return self.has_permission(user_payload, action)
+
+
+class CustomerPermission(BasePermission):
+    """Manages permissions for customers."""
+
+    def has_permission(self, user_payload, action):
+        if action in ['get_all_customers', 'get_customer']:
+            return True
+        if action == 'create_customer':
+            return user_payload.get("role") == "sales"
+        return True
+
+    def has_object_permission(self, user_payload, customer, action):
+        if action in ['edit_customer', 'delete_customer']:
+            return (user_payload.get("role") == "sales" and
+                    customer.sales_user_id == user_payload.get("id"))
+        return True
+
+
+class ContractPermission(BasePermission):
+    """Manages permissions for contracts."""
+
+    def has_permission(self, user_payload, action):
+        if action in ['get_all_contracts', 'get_contract']:
+            return True
+        if action == 'create_contract':
+            return user_payload.get("role") == "management"
+        return True
+
+    def has_object_permission(self, user_payload, contract, action):
+        if action in ['update_contract', 'delete_contract']:
+            if user_payload.get("role") == "management":
+                return True
+            return (user_payload.get("role") == "sales" and
+                    contract.customer.sales_user_id == user_payload.get("id"))
+        return True
+
+
+class EventPermission(BasePermission):
+    """Manages permissions for events."""
+
+    def has_permission(self, user_payload, action):
+        if action in ['get_all_events', 'get_event']:
+            return True
+        if action == 'create_event':
+            return user_payload.get("role") == "sales"
+        return True
+
+    def has_object_permission(self, user_payload, event, action):
+        if action == 'create_event':
+            return (user_payload.get("role") == "sales" and
+                    event.contract.is_signed and
+                    event.contract.customer.sales_user_id == user_payload.get("id"))
+        if action == 'update_event':
+            return (user_payload.get("role") == "support" and
+                    event.support_user_id == user_payload.get("id")) or (
+                    user_payload.get("role") == "management")
+        return True
