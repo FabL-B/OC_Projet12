@@ -6,8 +6,27 @@ from models.auth import Auth
 
 class UserService:
     """Handles business logic for users."""
+
     @staticmethod
-    def create_user(
+    def get_by_id(session: Session, user_id: int):
+        """Retrieves a user by ID."""
+        return UserRepository.get_user_by_id(session, user_id)
+
+    @staticmethod
+    def list_all(session: Session):
+        users = UserRepository.get_all_users(session)
+        return [
+            {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role
+            }
+            for user in users
+        ]
+
+    @staticmethod
+    def create(
         session: Session,
         name: str,
         email: str,
@@ -25,16 +44,7 @@ class UserService:
         return UserRepository.create_user(session, user)
 
     @staticmethod
-    def delete_user(session: Session, user_id: int):
-        """Delete a user."""
-        user = UserRepository.get_user_by_id(session, user_id)
-        if not user:
-            raise ValueError("User not found.")
-
-        return UserRepository.delete_user(session, user_id)
-
-    @staticmethod
-    def update_user(session: Session, user_id: int, data: dict):
+    def update(session: Session, user_id: int, data: dict):
         """Update an existing user."""
         user = UserRepository.get_user_by_id(session, user_id)
         if not user:
@@ -42,22 +52,13 @@ class UserService:
         return UserRepository.update_user(session, user_id, data)
 
     @staticmethod
-    def list_users(session: Session):
-        users = UserRepository.get_all_users(session)
-        return [
-            {
-                "id": user.id,
-                "name": user.name,
-                "email": user.email,
-                "role": user.role
-            }
-            for user in users
-        ]
+    def delete(session: Session, user_id: int):
+        """Delete a user."""
+        user = UserRepository.get_user_by_id(session, user_id)
+        if not user:
+            raise ValueError("User not found.")
 
-    @staticmethod
-    def get_user_by_id(session: Session, user_id: int):
-        """Retrieves a user by ID."""
-        return UserRepository.get_user_by_id(session, user_id)
+        return UserRepository.delete_user(session, user_id)
 
     @staticmethod
     def get_user_by_email(session: Session, user_email: str):

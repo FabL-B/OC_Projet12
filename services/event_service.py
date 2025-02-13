@@ -5,8 +5,31 @@ from models.event import Event
 
 class EventService:
     """Handles business logic for events."""
+
     @staticmethod
-    def create_event(
+    def get_by_id(session: Session, event_id: int):
+        """Get an event with its ID."""
+        event = EventRepository.get_event_by_id(session, event_id)
+        if not event:
+            raise ValueError("Event not found.")
+        return {
+            "id": event.id,
+            "start_date": event.start_date,
+            "end_date": event.end_date,
+            "location": event.location
+        }
+     
+    @staticmethod
+    def list_all(session: Session):
+        """Get all event as dictionnaries."""
+        events = EventRepository.get_all_events(session)
+        return [{"id": event.id,
+                 "start_date": event.start_date,
+                 "location": event.location}
+                for event in events]
+
+    @staticmethod
+    def create(
         session: Session,
         contract_id: int,
         support_contact_id: int,
@@ -29,7 +52,7 @@ class EventService:
         return EventRepository.create_event(session, event)
 
     @staticmethod
-    def update_event(session: Session, event_id: int, data: dict):
+    def update(session: Session, event_id: int, data: dict):
         """Update an existing event."""
         event = EventRepository.get_event_by_id(session, event_id)
         if not event:
@@ -37,7 +60,7 @@ class EventService:
         return EventRepository.update_event(session, event_id, data)
 
     @staticmethod
-    def delete_event(session: Session, event_id: int):
+    def delete(session: Session, event_id: int):
         """Delete an event."""
         event = EventRepository.get_event_by_id(session, event_id)
         if not event:
@@ -45,24 +68,3 @@ class EventService:
 
         return EventRepository.delete_event(session, event_id)
 
-    @staticmethod
-    def list_all_events(session: Session):
-        """Get all event as dictionnaries."""
-        events = EventRepository.get_all_events(session)
-        return [{"id": event.id,
-                 "start_date": event.start_date,
-                 "location": event.location}
-                for event in events]
-
-    @staticmethod
-    def get_by_id(session: Session, event_id: int):
-        """Get an event with its ID."""
-        event = EventRepository.get_event_by_id(session, event_id)
-        if not event:
-            raise ValueError("Event not found.")
-        return {
-            "id": event.id,
-            "start_date": event.start_date,
-            "end_date": event.end_date,
-            "location": event.location
-        }
