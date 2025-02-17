@@ -3,6 +3,7 @@ from models.event import Event
 from controllers.event_controller import EventController
 from services.event_service import EventService
 from models.auth import Auth
+from models.permission import EventPermission
 
 
 @pytest.fixture
@@ -64,6 +65,11 @@ def test_create_event(mocker, event_controller, mock_session):
         Auth,
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
+    )
+    mocker.patch.object(
+        EventPermission,
+        "has_permission",
+        return_value=True,
     )
     mocker.patch.object(
         EventService,

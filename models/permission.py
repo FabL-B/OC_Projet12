@@ -1,3 +1,6 @@
+from functools import wraps
+
+
 class BasePermission:
     """Base class for permission management."""
 
@@ -17,7 +20,7 @@ class UserPermission(BasePermission):
         if action in ['list_all', 'get']:
             return True
         if action in ['create', 'update', 'delete']:
-            return user_payload.get("role") == "management"
+            return user_payload.get("role") == "Management"
         return False
 
     def has_object_permission(self, user_payload, obj, action):
@@ -31,12 +34,12 @@ class CustomerPermission(BasePermission):
         if action in ['list_all', 'get']:
             return True
         if action == 'create':
-            return user_payload.get("role") == "sales"
+            return user_payload.get("role") == "Sales"
         return True
 
     def has_object_permission(self, user_payload, customer, action):
         if action in ['update', 'delete']:
-            return (user_payload.get("role") == "sales" and
+            return (user_payload.get("role") == "Sales" and
                     customer.sales_user_id == user_payload.get("id"))
         return True
 
@@ -48,14 +51,14 @@ class ContractPermission(BasePermission):
         if action in ['list_all', 'get']:
             return True
         if action == 'create':
-            return user_payload.get("role") == "management"
+            return user_payload.get("role") == "Management"
         return True
 
     def has_object_permission(self, user_payload, contract, action):
         if action in ['update', 'delete']:
-            if user_payload.get("role") == "management":
+            if user_payload.get("role") == "Management":
                 return True
-            return (user_payload.get("role") == "sales" and
+            return (user_payload.get("role") == "Sales" and
                     contract.customer.sales_user_id == user_payload.get("id"))
         return True
 
@@ -67,18 +70,41 @@ class EventPermission(BasePermission):
         if action in ['list_all', 'get']:
             return True
         if action == 'create':
-            return user_payload.get("role") == "sales"
+            return user_payload.get("role") == "Sales"
         return True
 
     def has_object_permission(self, user_payload, event, action):
         if action == 'create':
             return (
-                user_payload.get("role") == "sales" and
+                user_payload.get("role") == "Sales" and
                 event.contract.is_signed and
                 event.contract.customer.sales_user_id == user_payload.get("id")
             )
         if action == 'update':
-            return (user_payload.get("role") == "support" and
+            return (user_payload.get("role") == "Support" and
                     event.support_user_id == user_payload.get("id")) or (
-                    user_payload.get("role") == "management")
+                    user_payload.get("role") == "Management")
         return True
+
+
+def permission_required(action, requires_object=False):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, user_payload, *args, **kwargs):
+            if not self.permission_class().has_permission(
+                user_payload, action
+            ):
+                raise PermissionError(
+                    f"Access denied: No permission for {action}"
+                )
+
+            if requires_object:
+                obj = kwargs.get("obj")
+                if not self.permission_class().has_object_permission(
+                    user_payload, obj, action
+                ):
+                    raise PermissionError("Access denied to this")
+
+            return func(self, user_payload, *args, **kwargs)
+        return wrapper
+    return decorator

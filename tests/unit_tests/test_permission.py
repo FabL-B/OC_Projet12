@@ -1,13 +1,15 @@
+import pytest
 from models.permission import (
-    UserPermission, CustomerPermission, ContractPermission, EventPermission
+    UserPermission, CustomerPermission, ContractPermission, EventPermission,
+    permission_required
 )
 
 # Simulate users
-user_management = {"id": 1, "role": "management"}
-user_sales_ok = {"id": 2, "role": "sales"}
-user_sales_nok = {"id": 10, "role": "sales"}
-user_support_ok = {"id": 3, "role": "support"}
-user_support_nok = {"id": 20, "role": "support"}
+user_management = {"id": 1, "role": "Management"}
+user_sales_ok = {"id": 2, "role": "Sales"}
+user_sales_nok = {"id": 10, "role": "Sales"}
+user_support_ok = {"id": 3, "role": "Support"}
+user_support_nok = {"id": 20, "role": "Support"}
 user_random = {"id": 4, "role": "random"}
 
 
@@ -112,3 +114,104 @@ def test_event_permission():
         user_support_nok, event_sales_signed, "update") is False
     assert permission.has_object_permission(
         user_sales_ok, event_sales_signed, "update") is False
+
+
+def test_create_user_permission():
+    """Test if a Management user has the permission to create a user."""
+    permission = UserPermission()
+    assert permission.has_permission({"role": "Management"}, "create") is True
+    assert permission.has_permission({"role": "management"}, "create") is False
+
+    assert permission.has_permission({"role": "SALES"}, "create") is False
+
+
+def test_user_permission_wrapper(mocker):
+    mocker.patch.object(
+        UserPermission,
+        "has_permission",
+        side_effect=lambda user,
+        action: user["role"] == "Management"
+    )
+
+    class FakeUserController:
+        permission_class = UserPermission
+
+        @permission_required("create")
+        def create_user(self, user_payload):
+            return "User created"
+
+    controller = FakeUserController()
+
+    assert controller.create_user(user_management) == "User created"
+
+    with pytest.raises(PermissionError, match="Access denied"):
+        controller.create_user(user_sales_ok)
+
+
+def test_customer_permission_wrapper(mocker):
+    mocker.patch.object(
+        CustomerPermission,
+        "has_permission",
+        side_effect=lambda user,
+        action: user["role"] == "Sales"
+    )
+
+    class FakeCustomerController:
+        permission_class = CustomerPermission
+
+        @permission_required("create")
+        def create_customer(self, user_payload):
+            return "Customer created"
+
+    controller = FakeCustomerController()
+
+    assert controller.create_customer(user_sales_ok) == "Customer created"
+
+    with pytest.raises(PermissionError, match="Access denied"):
+        controller.create_customer(user_management)
+
+
+def test_contract_permission_wrapper(mocker):
+    mocker.patch.object(
+        ContractPermission,
+        "has_permission",
+        side_effect=lambda user,
+        action: user["role"] == "Management"
+    )
+
+    class FakeContractController:
+        permission_class = ContractPermission
+
+        @permission_required("create")
+        def create_contract(self, user_payload):
+            return "Contract created"
+
+    controller = FakeContractController()
+
+    assert controller.create_contract(user_management) == "Contract created"
+
+    with pytest.raises(PermissionError, match="Access denied"):
+        controller.create_contract(user_sales_ok)
+
+
+def test_event_permission_wrapper(mocker):
+    mocker.patch.object(
+        EventPermission,
+        "has_permission",
+        side_effect=lambda user,
+        action: user["role"] == "Sales"
+    )
+
+    class FakeEventController:
+        permission_class = EventPermission
+
+        @permission_required("create")
+        def create_event(self, user_payload):
+            return "Event created"
+
+    controller = FakeEventController()
+
+    assert controller.create_event(user_sales_ok) == "Event created"
+
+    with pytest.raises(PermissionError, match="Access denied"):
+        controller.create_event(user_management)

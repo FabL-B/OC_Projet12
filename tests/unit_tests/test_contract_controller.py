@@ -1,116 +1,128 @@
 import pytest
-from models.customer import Customer
-from controllers.customer_controller import CustomerController
-from services.customer_service import CustomerService
+from models.contract import Contract
+from controllers.contract_controller import ContractController
+from services.contract_service import ContractService
 from models.auth import Auth
+from models.permission import ContractPermission
 
 
 @pytest.fixture
-def customer_controller():
-    """Fixture to instantiate CustomerController."""
-    return CustomerController()
+def contract_controller():
+    """Fixture to instantiate ContractController."""
+    return ContractController()
 
 
-def test_list_all_customers(mocker, customer_controller, mock_session):
-    """Test retrieving all customers."""
+def test_list_all_contracts(mocker, contract_controller, mock_session):
+    """Test retrieving all contracts."""
     mocker.patch.object(
         Auth,
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
     )
     mocker.patch.object(
-        CustomerService,
+        ContractService,
         "list_all",
         return_value=[
-            Customer(id=1, name="Client A"),
-            Customer(id=2, name="Client B"),
+            Contract(id=1, customer_id=101, amount=5000.0, status="signed"),
+            Contract(id=2, customer_id=102, amount=3000.0, status="unsigned"),
         ],
     )
 
-    customers = customer_controller.list_all(mock_session)
+    contracts = contract_controller.list_all(mock_session)
 
-    assert len(customers) == 2
-    assert customers[0].name == "Client A"
-    assert customers[1].name == "Client B"
-    CustomerService.list_all.assert_called_once_with(mock_session)
+    assert len(contracts) == 2
+    assert contracts[0].status == "signed"
+    assert contracts[1].status == "unsigned"
+    ContractService.list_all.assert_called_once_with(mock_session)
 
 
-def test_get_customer(mocker, customer_controller, mock_session):
-    """Test retrieving a specific customer."""
+def test_get_contract(mocker, contract_controller, mock_session):
+    """Test retrieving a specific contract."""
     mocker.patch.object(
         Auth,
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
     )
     mocker.patch.object(
-        CustomerService,
+        ContractService,
         "get_by_id",
-        return_value=Customer(id=1, name="Client A"),
+        return_value=Contract(
+            id=1, customer_id=101, amount=5000.0, status="signed"
+        ),
     )
 
-    customer = customer_controller.get(mock_session, entity_id=1)
+    contract = contract_controller.get(mock_session, entity_id=1)
 
-    assert customer.name == "Client A"
-    CustomerService.get_by_id.assert_called_once_with(mock_session, 1)
+    assert contract.status == "signed"
+    ContractService.get_by_id.assert_called_once_with(mock_session, 1)
 
 
-def test_create_customer(mocker, customer_controller, mock_session):
-    """Test creating a customer."""
+def test_create_contract(mocker, contract_controller, mock_session):
+    """Test creating a contract."""
     mocker.patch.object(
         Auth,
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
     )
     mocker.patch.object(
-        CustomerService,
+        ContractPermission,
+        "has_permission",
+        return_value=True,
+    )
+    mocker.patch.object(
+        ContractService,
         "create",
-        return_value=Customer(id=1, name="Client A"),
+        return_value=Contract(
+            id=1, customer_id=101, amount=5000.0, status="signed"
+        ),
     )
 
-    customer_controller.create(
+    contract_controller.create(
         mock_session,
-        name="Client A",
-        email="clientA@example.com",
-        phone="123456789",
+        customer_id=101,
+        amount=5000.0,
+        amount_due=2000.0,
+        status="signed",
     )
 
-    CustomerService.create.assert_called_once_with(
+    ContractService.create.assert_called_once_with(
         mock_session,
-        name="Client A",
-        email="clientA@example.com",
-        phone="123456789",
+        customer_id=101,
+        amount=5000.0,
+        amount_due=2000.0,
+        status="signed",
     )
 
 
-def test_update_customer(mocker, customer_controller, mock_session):
-    """Test updating a customer."""
+def test_update_contract(mocker, contract_controller, mock_session):
+    """Test updating a contract."""
     mocker.patch.object(
         Auth,
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
     )
-    mocker.patch.object(CustomerService, "update", return_value=True)
+    mocker.patch.object(ContractService, "update", return_value=True)
 
-    success = customer_controller.update(
-        mock_session, entity_id=1, data={"name": "Client A Updated"}
+    success = contract_controller.update(
+        mock_session, entity_id=1, data={"amount_due": 1500.0}
     )
 
     assert success is True
-    CustomerService.update.assert_called_once_with(
-        mock_session, 1, {"name": "Client A Updated"}
+    ContractService.update.assert_called_once_with(
+        mock_session, 1, {"amount_due": 1500.0}
     )
 
 
-def test_delete_customer(mocker, customer_controller, mock_session):
-    """Test deleting a customer."""
+def test_delete_contract(mocker, contract_controller, mock_session):
+    """Test deleting a contract."""
     mocker.patch.object(
         Auth,
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
     )
-    mocker.patch.object(CustomerService, "delete", return_value=True)
+    mocker.patch.object(ContractService, "delete", return_value=True)
 
-    success = customer_controller.delete(mock_session, entity_id=1)
+    success = contract_controller.delete(mock_session, entity_id=1)
 
     assert success is True
-    CustomerService.delete.assert_called_once_with(mock_session, 1)
+    ContractService.delete.assert_called_once_with(mock_session, 1)

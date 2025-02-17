@@ -3,6 +3,7 @@ from models.user import User
 from controllers.user_controller import UserController
 from services.user_service import UserService
 from models.auth import Auth
+from models.permission import UserPermission
 
 
 @pytest.fixture
@@ -67,6 +68,12 @@ def test_create_user(mocker, user_controller, mock_session):
         return_value=User(id=1, name="Bob", email="bob@example.com"),
     )
 
+    mocker.patch.object(
+        UserPermission,
+        "has_permission",
+        return_value=True,
+    )
+
     user_controller.create(
         mock_session,
         name="Bob",
@@ -91,6 +98,11 @@ def test_update_user(mocker, user_controller, mock_session):
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
     )
+    mocker.patch.object(
+        UserPermission,
+        "has_permission",
+        return_value=True,
+    )
     mocker.patch.object(UserService, "update", return_value=True)
 
     success = user_controller.update(
@@ -109,6 +121,11 @@ def test_delete_user(mocker, user_controller, mock_session):
         Auth,
         "is_authenticated",
         return_value={"id": 1, "role": "Management"},
+    )
+    mocker.patch.object(
+        UserPermission,
+        "has_permission",
+        return_value=True,
     )
     mocker.patch.object(UserService, "delete", return_value=True)
 

@@ -3,3 +3,4 @@ Pipfile.lock
 __pycache__/
 /scripts
 .env.test
+.auth_token
