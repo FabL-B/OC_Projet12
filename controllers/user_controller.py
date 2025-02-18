@@ -75,7 +75,7 @@ class UserController:
     def delete_user(self, user_payload, session: Session, user_id: int):
         """Delete a user."""
         confirm = input(
-            f"⚠️ Confirm deletion of user {user_id}? (y/n): "
+            f"Confirm deletion of user {user_id}? (y/n): "
         ).strip().lower()
 
         if confirm == "y":

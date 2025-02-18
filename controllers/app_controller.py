@@ -48,7 +48,7 @@ class AppController:
         exit()
 
     def show_user_panel(self):
-        """Displays the user panel and dynamically manages actions."""
+        """Displays the User panel and dynamically manages actions."""
         while True:
             choice = AppView.show_user_menu()
 
@@ -56,12 +56,26 @@ class AppController:
                 self.user_controller.list_all_users(self.session)
             elif choice == "2":
                 self.user_controller.create_user(self.session)
+            elif choice == "3":
+                break
             else:
                 print("\nInvalid choice, please try again.")
 
     def show_customer_panel(self):
-        """Displays the customer panel (to be implemented)."""
-        pass
+        """Displays the Customer panel and dynamically manages actions."""
+        while True:
+            choice = AppView.show_customer_menu()
+
+            if choice == "1":
+                self.customer_controller.list_all_customers(self.session)
+            elif choice == "2":
+                self.customer_controller.list_my_customers(self.session)
+            elif choice == "3":
+                self.customer_controller.create_customer(self.session)
+            elif choice == "4":
+                break
+            else:
+                print("\nInvalid choice, please try again.")
 
     def show_contract_panel(self):
         """Displays the contract panel (to be implemented)."""

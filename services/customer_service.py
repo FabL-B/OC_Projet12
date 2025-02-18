@@ -28,6 +28,22 @@ class CustomerService:
         ]
 
     @staticmethod
+    def list_by_sales_id(session: Session, sales_contact_id: int):
+        """Get all customers managed by a specific sales."""
+        customers = CustomerRepository.get_customers_by_sales_id(
+            session, sales_contact_id)
+        return [
+            {
+                "id": customer.id,
+                "name": customer.name,
+                "company": customer.company_name,
+                "email": customer.email,
+                "phone": customer.phone
+            }
+            for customer in customers
+        ]
+
+    @staticmethod
     def check_if_customer_exists(
         session: Session,
         email: str,
@@ -44,6 +60,7 @@ class CustomerService:
             ]
         )
 
+    @staticmethod
     def create(
         session: Session,
         name: str,

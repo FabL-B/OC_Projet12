@@ -55,3 +55,9 @@ class CustomerRepository:
     def get_all_customers(session: Session):
         """Get all customers from database in a list."""
         return session.query(Customer).all()
+
+    @staticmethod
+    def get_customers_by_sales_id(session: Session, sales_contact_id: int):
+        """Retrieves all customers managed by a specific sales."""
+        return session.query(Customer).filter_by(
+            sales_contact_id=sales_contact_id).all()
