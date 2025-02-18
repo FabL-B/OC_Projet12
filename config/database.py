@@ -4,10 +4,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 
 
-if "PYTEST_CURRENT_TEST" in os.environ:
-    load_dotenv(".env.test")
-else:
-    load_dotenv()
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
