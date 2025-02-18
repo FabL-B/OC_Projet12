@@ -15,15 +15,37 @@ class ContractService:
         return {
             "id": contract.id,
             "amount": contract.amount,
-            "contract_status": contract.status
+            "amount_due": contract.amount_due,
+            "status": contract.status
         }
 
     @staticmethod
     def list_all(session: Session):
-        """Get all clients as dictionnaries."""
+        """Return all clients as dictionnaries."""
         contracts = ContractRepository.get_all_contracts(session)
         return [{"id": contract.id,
                  "amount": contract.amount,
+                 "amount_due": contract.amount_due,
+                 "status": contract.status}
+                for contract in contracts]
+
+    @staticmethod
+    def list_unsigned(session: Session):
+        """Return unsigned contracts."""
+        contracts = ContractRepository.get_unsigned_contracts(session)
+        return [{"id": contract.id,
+                 "amount": contract.amount,
+                 "amount_due": contract.amount_due,
+                 "status": contract.status}
+                for contract in contracts]
+
+    @staticmethod
+    def list_unpaid(session: Session):
+        """Return `amount_due` ≠ `amount` contract's."""
+        contracts = ContractRepository.get_unpaid_contracts(session)
+        return [{"id": contract.id,
+                 "amount": contract.amount,
+                 "amount_due": contract.amount_due,
                  "status": contract.status}
                 for contract in contracts]
 
@@ -58,5 +80,4 @@ class ContractService:
         contract = ContractRepository.get_contract_by_id(session, contract_id)
         if not contract:
             raise ValueError("Contract not found.")
-
         return ContractRepository.delete_contract(session, contract_id)

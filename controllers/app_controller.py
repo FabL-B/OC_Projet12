@@ -78,8 +78,22 @@ class AppController:
                 print("\nInvalid choice, please try again.")
 
     def show_contract_panel(self):
-        """Displays the contract panel (to be implemented)."""
-        pass
+        """Displays the Contract panel and dynamically manages actions."""
+        while True:
+            choice = AppView.show_contract_menu()
+
+            if choice == "1":
+                self.contract_controller.list_all_contracts(self.session)
+            elif choice == "2":
+                self.contract_controller.list_unsigned_contracts(self.session)
+            elif choice == "3":
+                self.contract_controller.list_unpaid_contracts(self.session)
+            elif choice == "4":
+                self.contract_controller.create_contract(self.session)
+            elif choice == "5":
+                break
+            else:
+                print("\nInvalid choice, please try again.")
 
     def show_event_panel(self):
         """Displays the event panel (to be implemented)."""

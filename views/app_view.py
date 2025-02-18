@@ -36,3 +36,14 @@ class AppView:
         print("4 - Return to main menu")
 
         return input("Make your choice: ").strip()
+
+    @staticmethod
+    def show_contract_menu():
+        """Displays the Contract panel menu."""
+        print("\nContract Panel")
+        print("1 - Show all contracts")
+        print("2 - Filter unsigned contracts")
+        print("3 - Filter unpaid contracts")
+        print("4 - Create a contract")
+        print("5 - Return to main menu")
+        return input("Make your choice: ").strip()
