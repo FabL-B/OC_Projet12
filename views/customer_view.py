@@ -26,7 +26,7 @@ class CustomerView:
             print(
                 f"ID: {customer['id']} | "
                 f"Name: {customer['name']} | "
-                f"Company: {customer['company']} | "
+                f"Company name: {customer['company_name']} | "
                 f"Email: {customer['email']} | "
                 f"Phone: {customer['phone']}"
             )
@@ -42,11 +42,11 @@ class CustomerView:
     def display_customer_details_and_get_choice(customer):
         """Displays customer details and provides action options."""
         print("\nCustomer Details")
-        print(f"ID: {customer['id']}")
-        print(f"Name: {customer['name']}")
-        print(f"Company: {customer['company']}")
-        print(f"Email: {customer['email']}")
-        print(f"Phone: {customer['phone']}")
+        print(f"ID: {customer.id}")
+        print(f"Name: {customer.name}")
+        print(f"Company name: {customer.company_name}")
+        print(f"Email: {customer.email}")
+        print(f"Phone: {customer.phone}")
 
         print("\nActions:")
         print("1 - Edit customer")
@@ -60,14 +60,14 @@ class CustomerView:
         """Retrieves and sanitizes customer data."""
         print("\nCreate a new customer")
         name = input("Name: ").strip().title()
-        company = input("Company: ").strip().title()
+        company_name = input("Company name: ").strip().title()
         email = input("Email: ").strip().lower()
         phone = input("Phone: ").strip()
         sales_contact_id = input("Sales representative ID: ").strip()
 
         return {
             "name": name,
-            "company_name": company,
+            "company_name": company_name,
             "email": email,
             "phone": phone,
             "sales_contact_id": (
@@ -82,8 +82,8 @@ class CustomerView:
         name = input(
             "Updated name (leave blank to keep unchanged): "
         ).strip().title()
-        company = input(
-            "Updated company (leave blank to keep unchanged): "
+        company_name = input(
+            "Updated company name (leave blank to keep unchanged): "
         ).strip().title()
         email = input(
             "Updated email (leave blank to keep unchanged): "
@@ -96,8 +96,8 @@ class CustomerView:
 
         if name:
             customer_data["name"] = name
-        if company:
-            customer_data["company"] = company
+        if company_name:
+            customer_data["company_name"] = company_name
         if email:
             customer_data["email"] = email
         if phone:

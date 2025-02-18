@@ -24,7 +24,7 @@ class CustomerController:
             if customer_id is None:
                 break
 
-            self.show_customer_details(user_payload, session, customer_id)
+            self.show_customer_details(session, customer_id)
 
     @auth_required
     @permission_required("list_my_customers")
@@ -41,7 +41,7 @@ class CustomerController:
             if customer_id is None:
                 break
 
-            self.show_customer_details(user_payload, session, customer_id)
+            self.show_customer_details(session, customer_id)
 
     @auth_required
     @permission_required("get")
@@ -58,9 +58,9 @@ class CustomerController:
             )
 
             if choice == "1":
-                self.update_customer(user_payload, session, customer_id)
+                self.update_customer(session, customer_id)
             elif choice == "2":
-                self.delete_customer(user_payload, session, customer_id)
+                self.delete_customer(session, customer_id)
                 break
             elif choice == "3":
                 break
@@ -76,7 +76,7 @@ class CustomerController:
         print("Customer successfully created.")
 
     @auth_required
-    @permission_required("update")
+    @permission_required("update", requires_object=True)
     def update_customer(self, user_payload, session, customer_id):
         """Updates an existing customer."""
         updated_data = CustomerView.get_customer_update_data()
@@ -85,7 +85,7 @@ class CustomerController:
             print(f"Customer {customer_id} successfully updated.")
 
     @auth_required
-    @permission_required("delete")
+    @permission_required("delete", requires_object=True)
     def delete_customer(self, user_payload, session, customer_id):
         """Deletes a customer after confirmation."""
         confirm = input(

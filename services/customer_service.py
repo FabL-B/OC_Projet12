@@ -19,7 +19,7 @@ class CustomerService:
             {
                 "id": customer.id,
                 "name": customer.name,
-                "company": customer.company_name,
+                "company_name": customer.company_name,
                 "email": customer.email,
                 "phone": customer.phone,
                 "sales_contact_id": customer.sales_contact_id
@@ -36,7 +36,7 @@ class CustomerService:
             {
                 "id": customer.id,
                 "name": customer.name,
-                "company": customer.company_name,
+                "company_name": customer.company_name,
                 "email": customer.email,
                 "phone": customer.phone
             }

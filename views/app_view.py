@@ -25,3 +25,14 @@ class AppView:
         print("3 - Return to main menu")
 
         return input("Make your choice: ").strip()
+
+    @staticmethod
+    def show_customer_menu():
+        """Displays the Customer panel menu and gets the user's choice."""
+        print("\nUser Panel")
+        print("1 - Show all customers")
+        print("2 - Show my customers")
+        print("3 - Create a customer")
+        print("4 - Return to main menu")
+
+        return input("Make your choice: ").strip()
