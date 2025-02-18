@@ -16,7 +16,9 @@ class EventService:
             "id": event.id,
             "start_date": event.start_date,
             "end_date": event.end_date,
-            "location": event.location
+            "location": event.location,
+            "attendees": event.attendees,
+            "notes": event.notes,
         }
 
     @staticmethod
@@ -25,7 +27,20 @@ class EventService:
         events = EventRepository.get_all_events(session)
         return [{"id": event.id,
                  "start_date": event.start_date,
+                 "end_date": event.end_date,
                  "location": event.location}
+                for event in events]
+
+    @staticmethod
+    def list_by_support_contact(session: Session, support_contact_id: int):
+        """Returns events managed by a specific support contact."""
+        events = EventRepository.get_events_by_support_contact(
+            session, support_contact_id
+        )
+        return [{"id": event.id,
+                 "start_date": event.start_date,
+                 "end_date": event.end_date,
+                 "location": event.location,}
                 for event in events]
 
     @staticmethod

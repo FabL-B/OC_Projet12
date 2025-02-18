@@ -47,3 +47,13 @@ class AppView:
         print("4 - Create a contract")
         print("5 - Return to main menu")
         return input("Make your choice: ").strip()
+
+    @staticmethod
+    def show_event_menu():
+        """Displays the Event panel menu."""
+        print("\nEvent Panel")
+        print("1 - Show all events")
+        print("2 - Show my events only")
+        print("3 - Create an event")
+        print("4 - Return to main menu")
+        return input("Make your choice: ").strip()

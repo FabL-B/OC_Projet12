@@ -96,8 +96,20 @@ class AppController:
                 print("\nInvalid choice, please try again.")
 
     def show_event_panel(self):
-        """Displays the event panel (to be implemented)."""
-        pass
+        """Displays the Event panel and dynamically manages actions."""
+        while True:
+            choice = AppView.show_event_menu()
+
+            if choice == "1":
+                self.event_controller.list_all_events(self.session)
+            elif choice == "2":
+                self.event_controller.list_my_events(self.session)
+            elif choice == "3":
+                self.event_controller.create_event(self.session)
+            elif choice == "4":
+                break
+            else:
+                print("\nInvalid choice, please try again.")
 
     def run(self):
         """Displays the main menu and dynamically handles navigation."""

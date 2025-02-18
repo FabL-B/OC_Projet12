@@ -35,6 +35,13 @@ class EventRepository:
         return session.query(Event).all()
 
     @staticmethod
+    def get_events_by_support_contact(session, support_contact_id):
+        """Retrieves all events managed by a specific support contact."""
+        return session.query(Event).filter_by(
+            support_contact_id=support_contact_id
+        ).all()
+
+    @staticmethod
     def get_event_by_id(session: Session, event_id: int):
         """Get an event from database with its ID."""
         return session.get(Event, event_id)
