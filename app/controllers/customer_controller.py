@@ -1,7 +1,7 @@
-from services.customer_service import CustomerService
+from app.services.customer_service import CustomerService
 from app.auth.auth import auth_required
 from app.permissions.permission import CustomerPermission, permission_required
-from views.customer_view import CustomerView
+from app.views.customer_view import CustomerView
 
 
 class CustomerController:

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from repository.event_repository import EventRepository
-from models.event import Event
+from app.repository.event_repository import EventRepository
+from app.models.event import Event
 
 
 class EventService:

@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
-from controllers.user_controller import UserController
-from controllers.customer_controller import CustomerController
-from controllers.contract_controller import ContractController
-from controllers.event_controller import EventController
-from views.app_view import AppView
+from app.controllers.user_controller import UserController
+from app.controllers.customer_controller import CustomerController
+from app.controllers.contract_controller import ContractController
+from app.controllers.event_controller import EventController
+from app.views.app_view import AppView
 
 
 class AppController:

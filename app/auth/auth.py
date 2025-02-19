@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from functools import wraps
 from sqlalchemy.orm import Session
 
-from repository.user_repository import UserRepository
+from app.repository.user_repository import UserRepository
 
 load_dotenv()
 

@@ -1,7 +1,7 @@
-from services.contract_service import ContractService
+from app.services.contract_service import ContractService
 from app.auth.auth import auth_required
 from app.permissions.permission import ContractPermission, permission_required
-from views.contract_view import ContractView
+from app.views.contract_view import ContractView
 
 
 class ContractController:

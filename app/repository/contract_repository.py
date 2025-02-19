@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models.contract import Contract
+from app.models.contract import Contract
 
 
 class ContractRepository:

@@ -1,7 +1,7 @@
-from services.event_service import EventService
+from app.services.event_service import EventService
 from app.auth.auth import auth_required
 from app.permissions.permission import EventPermission, permission_required
-from views.event_view import EventView
+from app.views.event_view import EventView
 
 
 class EventController:

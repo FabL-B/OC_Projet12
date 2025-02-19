@@ -17,7 +17,6 @@ def test_db():
 
 @pytest.fixture(scope="function")
 def setup_test_data(test_db):
-    
     """Fixture that creates common test data."""
 
     # Setup users

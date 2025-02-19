@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from repository.contract_repository import ContractRepository
-from models.contract import Contract
+from app.repository.contract_repository import ContractRepository
+from app.models.contract import Contract
 
 
 class ContractService:
