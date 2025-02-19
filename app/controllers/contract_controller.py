@@ -71,9 +71,9 @@ class ContractController:
             )
 
             if choice == "1":
-                self.update_contract(session, contract_id)
+                self.update_contract(session, obj=contract)
             elif choice == "2":
-                self.delete_contract(session, contract_id)
+                self.delete_contract(session, obj=contract)
                 break
             elif choice == "3":
                 break
@@ -89,22 +89,24 @@ class ContractController:
         print("Contract successfully created.")
 
     @auth_required
-    @permission_required("update")
-    def update_contract(self, user_payload, session, contract_id):
+    @permission_required("update", requires_object=True)
+    def update_contract(self, user_payload, session, **kwargs):
         """Updates an existing contract."""
+        contract = kwargs.get("obj")
         updated_data = ContractView.get_contract_update_data()
         if updated_data:
-            self.service.update(session, contract_id, updated_data)
-            print(f"Contract {contract_id} successfully updated.")
+            self.service.update(session, contract.id, updated_data)
+            print(f"Contract {contract.id} successfully updated.")
 
     @auth_required
-    @permission_required("delete")
-    def delete_contract(self, user_payload, session, contract_id):
+    @permission_required("delete", requires_object=True)
+    def delete_contract(self, user_payload, session, **kwargs):
         """Deletes a contract after confirmation."""
+        contract = kwargs.get("obj")
         confirm = input(
-            f"Confirm deletion of contract {contract_id}? (y/n): "
+            f"Confirm deletion of contract {contract.id}? (y/n): "
         ).strip().lower()
 
         if confirm == "y":
-            self.service.delete(session, contract_id)
-            print(f"Contract {contract_id} successfully deleted.")
+            self.service.delete(session, contract.id)
+            print(f"Contract {contract.id} successfully deleted.")

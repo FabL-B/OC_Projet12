@@ -119,10 +119,15 @@ class AppController:
         while True:
             choice = AppView.show_main_menu(self.main_menu)
 
-            action = self.main_menu.get(choice)
-            if action:
-                action_name, action_func = action
-                print(f"\nOpening: {action_name}...\n")
-                action_func()
-            else:
-                print("\nInvalid choice, please try again.")
+            try:
+                action = self.main_menu.get(choice)
+                if action:
+                    action_name, action_func = action
+                    print(f"\nOpening: {action_name}...\n")
+                    action_func()
+                else:
+                    print("\nInvalid choice, please try again.")
+            except PermissionError as e:
+                print(f"\nAccess Denied: {e}")
+            except Exception as e:
+                print(f"\nUnexpected Error: {e}")

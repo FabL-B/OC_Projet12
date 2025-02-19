@@ -39,12 +39,12 @@ class EventView:
     def display_event_details_and_get_choice(event):
         """Displays event details and provides action options."""
         print("\nEvent Details")
-        print(f"ID: {event['id']}")
-        print(f"Start Date: {event['start_date']}")
-        print(f"End Date: {event['end_date']}")
-        print(f"Location: {event['location']}")
-        print(f"Number of Attendees: {event['attendees']}")
-        print(f"Notes: {event.get('notes', 'None')}")
+        print(f"ID: {event.id}")
+        print(f"Start Date: {event.start_date}")
+        print(f"End Date: {event.end_date}")
+        print(f"Location: {event.location}")
+        print(f"Number of Attendees: {event.attendees}")
+        print(f"Notes: {event.notes}")
 
         print("\nActions:")
         print("1 - Edit event")

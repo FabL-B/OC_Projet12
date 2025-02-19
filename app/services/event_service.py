@@ -12,14 +12,7 @@ class EventService:
         event = EventRepository.get_event_by_id(session, event_id)
         if not event:
             raise ValueError("Event not found.")
-        return {
-            "id": event.id,
-            "start_date": event.start_date,
-            "end_date": event.end_date,
-            "location": event.location,
-            "attendees": event.attendees,
-            "notes": event.notes,
-        }
+        return event
 
     @staticmethod
     def list_all(session: Session):

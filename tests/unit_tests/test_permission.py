@@ -15,8 +15,8 @@ user_random = {"id": 4, "role": "random"}
 
 # Simulate objects
 class MockCustomer:
-    def __init__(self, sales_user_id):
-        self.sales_user_id = sales_user_id
+    def __init__(self, sales_contact_id):
+        self.sales_contact_id = sales_contact_id
 
 
 class MockContract:
@@ -25,15 +25,15 @@ class MockContract:
 
 
 class MockEvent:
-    def __init__(self, contract, support_user_id):
+    def __init__(self, contract, support_contact_id):
         self.contract = contract
-        self.support_user_id = support_user_id
+        self.support_contact_id = support_contact_id
 
 
 # customer related to user_sales_ok
-customer_sales = MockCustomer(sales_user_id=2)
+customer_sales = MockCustomer(sales_contact_id=2)
 contract_sales = MockContract(customer=customer_sales)
-event_sales_signed = MockEvent(contract=contract_sales, support_user_id=3)
+event_sales_signed = MockEvent(contract=contract_sales, support_contact_id=3)
 event_sales_signed.contract.is_signed = True
 
 

@@ -9,7 +9,10 @@ class CustomerService:
     @staticmethod
     def get_by_id(session: Session, customer_id: int):
         """Retrieves a customer by ID."""
-        return CustomerRepository.get_customer_by_id(session, customer_id)
+        customer = CustomerRepository.get_customer_by_id(session, customer_id)
+        if not customer:
+             raise ValueError("Customer not found.")
+        return customer
 
     @staticmethod
     def list_all(session: Session):

@@ -36,7 +36,7 @@ class Auth:
         expire = datetime.datetime.now(
             ) + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         payload_data = {
-            "sub": str(user_id),
+            "id": str(user_id),
             "role": role,
             "exp": expire
         }
@@ -51,7 +51,7 @@ class Auth:
         """Create a JWT refresh token."""
         expire = datetime.datetime.now(
             ) + datetime.timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-        payload_data = {"sub": str(user_id), "exp": expire}
+        payload_data = {"id": str(user_id), "exp": expire}
         return jwt.encode(
             payload=payload_data,
             key=JWT_SECRET,
@@ -99,7 +99,7 @@ class Auth:
         payload_data = Auth.verify_token(refresh_token)
         if payload_data:
             new_access_token = Auth.create_access_token(
-                payload_data["sub"],
+                payload_data["id"],
                 payload_data.get("role", "User")
             )
             Auth.save_token(new_access_token, refresh_token)

@@ -30,7 +30,7 @@ class EventController:
         """Displays events linked to the logged-in user."""
         while True:
             events = self.service.list_by_support_contact(
-                session, user_payload["sub"]
+                session, user_payload["id"]
             )
             event_id = EventView.display_events_and_get_choice(events)
 
@@ -52,9 +52,9 @@ class EventController:
             choice = EventView.display_event_details_and_get_choice(event)
 
             if choice == "1":
-                self.update_event(session, event_id)
+                self.update_event(session, obj=event)
             elif choice == "2":
-                self.delete_event(session, event_id)
+                self.delete_event(session, obj=event)
                 break
             elif choice == "3":
                 break
@@ -70,22 +70,24 @@ class EventController:
         print("Event successfully created.")
 
     @auth_required
-    @permission_required("update")
-    def update_event(self, user_payload, session, event_id):
+    @permission_required("update", requires_object=True)
+    def update_event(self, user_payload, session, **kwargs):
         """Updates an existing event."""
+        event = kwargs.get("obj")
         updated_data = EventView.get_event_update_data()
         if updated_data:
-            self.service.update(session, event_id, updated_data)
-            print(f"Event {event_id} successfully updated.")
+            self.service.update(session, event.id, updated_data)
+            print(f"Event {event.id} successfully updated.")
 
     @auth_required
-    @permission_required("delete")
-    def delete_event(self, user_payload, session, event_id):
+    @permission_required("delete", requires_object=True)
+    def delete_event(self, user_payload, session, **kwargs):
         """Deletes an event after confirmation."""
+        event = kwargs.get("obj")
         confirm = input(
-            f"Confirm deletion of event {event_id}? (y/n): "
+            f"Confirm deletion of event {event.id}? (y/n): "
         ).strip().lower()
 
         if confirm == "y":
-            self.service.delete(session, event_id)
-            print(f"Event {event_id} successfully deleted.")
+            self.service.delete(session, event.id)
+            print(f"Event {event.id} successfully deleted.")

@@ -40,7 +40,7 @@ class CustomerPermission(BasePermission):
     def has_object_permission(self, user_payload, customer, action):
         if action in ['update', 'delete']:
             return (user_payload.get("role") == "Sales" and
-                    customer.sales_user_id == user_payload.get("id"))
+                    customer.sales_contact_id == int(user_payload.get("id")))
         return True
 
 
@@ -58,8 +58,10 @@ class ContractPermission(BasePermission):
         if action in ['update', 'delete']:
             if user_payload.get("role") == "Management":
                 return True
-            return (user_payload.get("role") == "Sales" and
-                    contract.customer.sales_user_id == user_payload.get("id"))
+            return (
+                user_payload.get("role") == "Sales" and
+                contract.customer.sales_contact_id == int(user_payload.get("id"))
+            )
         return True
 
 
@@ -78,11 +80,11 @@ class EventPermission(BasePermission):
             return (
                 user_payload.get("role") == "Sales" and
                 event.contract.is_signed and
-                event.contract.customer.sales_user_id == user_payload.get("id")
+                event.contract.customer.sales_contact_id == int(user_payload.get("id"))
             )
         if action == 'update':
             return (user_payload.get("role") == "Support" and
-                    event.support_user_id == user_payload.get("id")) or (
+                    event.support_contact_id == int(user_payload.get("id"))) or (
                     user_payload.get("role") == "Management")
         return True
 

@@ -63,16 +63,12 @@ class CustomerView:
         company_name = input("Company name: ").strip().title()
         email = input("Email: ").strip().lower()
         phone = input("Phone: ").strip()
-        sales_contact_id = input("Sales representative ID: ").strip()
 
         return {
             "name": name,
             "company_name": company_name,
             "email": email,
             "phone": phone,
-            "sales_contact_id": (
-                int(sales_contact_id) if sales_contact_id.isdigit() else None
-            ),
         }
 
     @staticmethod

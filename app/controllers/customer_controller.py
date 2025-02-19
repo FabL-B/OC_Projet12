@@ -48,6 +48,8 @@ class CustomerController:
     def show_customer_details(self, user_payload, session, customer_id):
         """Displays customer details and offers update/deletion options."""
         customer = self.service.get_by_id(session, customer_id)
+        print(f"Type de customer dans show_customer_details: {type(customer)}")
+
         if not customer:
             print("\n Customer not found.")
             return
@@ -58,9 +60,9 @@ class CustomerController:
             )
 
             if choice == "1":
-                self.update_customer(session, customer_id)
+                self.update_customer(session, obj=customer)
             elif choice == "2":
-                self.delete_customer(session, customer_id)
+                self.delete_customer(session, obj=customer)
                 break
             elif choice == "3":
                 break
@@ -72,26 +74,29 @@ class CustomerController:
     def create_customer(self, user_payload, session):
         """Creates a new customer."""
         customer_data = CustomerView.get_customer_creation_data()
+        customer_data["sales_contact_id"] = user_payload["id"]
         self.service.create(session, **customer_data)
         print("Customer successfully created.")
 
     @auth_required
     @permission_required("update", requires_object=True)
-    def update_customer(self, user_payload, session, customer_id):
+    def update_customer(self, user_payload, session, **kwargs):
         """Updates an existing customer."""
+        customer = kwargs.get("obj")
         updated_data = CustomerView.get_customer_update_data()
         if updated_data:
-            self.service.update(session, customer_id, updated_data)
-            print(f"Customer {customer_id} successfully updated.")
+            self.service.update(session, customer.id, updated_data)
+            print(f"Customer {customer.id} successfully updated.")
 
     @auth_required
     @permission_required("delete", requires_object=True)
-    def delete_customer(self, user_payload, session, customer_id):
+    def delete_customer(self, user_payload, session, **kwargs):
         """Deletes a customer after confirmation."""
+        customer = kwargs.get("obj")
         confirm = input(
-            f"Confirm deletion of customer {customer_id}? (y/n): "
+            f"Confirm deletion of customer {customer.id}? (y/n): "
         ).strip().lower()
 
         if confirm == "y":
-            self.service.delete(session, customer_id)
-            print(f"Customer {customer_id} successfully deleted.")
+            self.service.delete(session, customer.id)
+            print(f"Customer {customer.id} successfully deleted.")

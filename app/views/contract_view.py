@@ -40,10 +40,10 @@ class ContractView:
     def display_contract_details_and_get_choice(contract):
         """Displays contract details and provides action options."""
         print("\nContract Details")
-        print(f"ID: {contract['id']}")
-        print(f"Amount: {contract['amount']}")
-        print(f"Amount Due: {contract['amount_due']}")
-        print(f"Status: {contract['status']}")
+        print(f"ID: {contract.id}")
+        print(f"Amount: {contract.amount}")
+        print(f"Amount Due: {contract.amount_due}")
+        print(f"Status: {contract.status}")
 
         print("\nActions:")
         print("1 - Edit contract")

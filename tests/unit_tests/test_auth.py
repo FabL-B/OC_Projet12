@@ -8,49 +8,49 @@ from app.models.user import User
 
 def test_create_access_token(mocker):
     """Test JWT access token generation."""
-    mocker.patch("models.auth.JWT_SECRET", "fake_secret")
-    mocker.patch("models.auth.JWT_ALGORITHM", "HS256")
+    mocker.patch("app.auth.auth.JWT_SECRET", "fake_secret")
+    mocker.patch("app.auth.auth.JWT_ALGORITHM", "HS256")
 
     token = Auth.create_access_token(1, "Sales")
     payload = jwt.decode(token, "fake_secret", algorithms=["HS256"])
 
-    assert payload["sub"] == "1"
+    assert payload["id"] == "1"
     assert payload["role"] == "Sales"
     assert "exp" in payload
 
 
 def test_create_refresh_token(mocker):
     """Test JWT refresh token generation."""
-    mocker.patch("models.auth.JWT_SECRET", "fake_secret")
-    mocker.patch("models.auth.JWT_ALGORITHM", "HS256")
+    mocker.patch("app.auth.auth.JWT_SECRET", "fake_secret")
+    mocker.patch("app.auth.auth.JWT_ALGORITHM", "HS256")
 
     token = Auth.create_refresh_token(1)
     payload = jwt.decode(token, "fake_secret", algorithms=["HS256"])
 
-    assert payload["sub"] == "1"
+    assert payload["id"] == "1"
     assert "exp" in payload
 
 
 def test_verify_token_valid(mocker):
     """Test if a JWT token is valid."""
-    mocker.patch("models.auth.JWT_SECRET", "fake_secret")
-    mocker.patch("models.auth.JWT_ALGORITHM", "HS256")
+    mocker.patch("app.auth.auth.JWT_SECRET", "fake_secret")
+    mocker.patch("app.auth.auth.JWT_ALGORITHM", "HS256")
 
     token = Auth.create_access_token(1, "Sales")
     payload = Auth.verify_token(token)
 
-    assert payload["sub"] == "1"
+    assert payload["id"] == "1"
     assert payload["role"] == "Sales"
 
 
 def test_verify_token_expired(mocker):
     """Test handling of an expire token."""
-    mocker.patch("models.auth.JWT_SECRET", "fake_secret")
-    mocker.patch("models.auth.JWT_ALGORITHM", "HS256")
+    mocker.patch("app.auth.auth.JWT_SECRET", "fake_secret")
+    mocker.patch("app.auth.auth.JWT_ALGORITHM", "HS256")
 
     expired_time = datetime.datetime.now() - datetime.timedelta(seconds=1)
     expired_token = jwt.encode(
-        {"sub": "1", "role": "Sales", "exp": expired_time.timestamp()},
+        {"id": "1", "role": "Sales", "exp": expired_time.timestamp()},
         "fake_secret", algorithm="HS256"
     )
     assert Auth.verify_token(expired_token) == "expired"
@@ -108,12 +108,12 @@ def test_is_authenticated_valid(mocker):
     )
     mocker.patch.object(
         Auth, "verify_token",
-        return_value={"sub": "1", "role": "Sales"}
+        return_value={"id": "1", "role": "Sales"}
     )
 
     payload = Auth.is_authenticated()
 
-    assert payload["sub"] == "1"
+    assert payload["id"] == "1"
     assert payload["role"] == "Sales"
 
 
@@ -123,10 +123,10 @@ def test_refresh_access_token(mocker):
     mocker.patch.object(
         Auth,
         "verify_token",
-        return_value={"sub": "1", "role": "Sales"}
+        return_value={"id": "1", "role": "Sales"}
     )
     payload = Auth.refresh_access_token("valid_refresh_token")
-    assert payload == {"sub": "1", "role": "Sales"}
+    assert payload == {"id": "1", "role": "Sales"}
 
 
 def test_auth_required(mocker):
@@ -134,7 +134,7 @@ def test_auth_required(mocker):
     mocker.patch.object(
         Auth,
         "is_authenticated",
-        return_value={"sub": "1", "role": "Sales"}
+        return_value={"id": "1", "role": "Sales"}
     )
 
     class FakeController:

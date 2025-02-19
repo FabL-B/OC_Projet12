@@ -12,12 +12,7 @@ class ContractService:
         contract = ContractRepository.get_contract_by_id(session, contract_id)
         if not contract:
             raise ValueError("Contract not found.")
-        return {
-            "id": contract.id,
-            "amount": contract.amount,
-            "amount_due": contract.amount_due,
-            "status": contract.status
-        }
+        return contract
 
     @staticmethod
     def list_all(session: Session):
