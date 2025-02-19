@@ -1,5 +1,5 @@
 from config.database import SessionLocal
-from controllers.app_controller import AppController
+from app.controllers.app_controller import AppController
 
 
 def main():

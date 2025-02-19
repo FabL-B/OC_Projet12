@@ -1,6 +1,6 @@
 from services.contract_service import ContractService
-from models.auth import auth_required
-from models.permission import ContractPermission, permission_required
+from app.auth.auth import auth_required
+from app.permissions.permission import ContractPermission, permission_required
 from views.contract_view import ContractView
 
 

@@ -1,6 +1,6 @@
-from models.event import Event
-from services.event_service import EventService
-from repository.event_repository import EventRepository
+from app.models.event import Event
+from app.services.event_service import EventService
+from app.repository.event_repository import EventRepository
 
 
 def test_create_event_success(mock_session, mocker):

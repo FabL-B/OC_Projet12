@@ -1,5 +1,5 @@
 import pytest
-from models.permission import (
+from app.permissions.permission import (
     UserPermission, CustomerPermission, ContractPermission, EventPermission,
     permission_required
 )

@@ -1,9 +1,9 @@
 import jwt
 import datetime
 import pytest
-from models.auth import Auth, auth_required
-from repository.user_repository import UserRepository
-from models.user import User
+from app.auth.auth import Auth, auth_required
+from app.repository.user_repository import UserRepository
+from app.models.user import User
 
 
 def test_create_access_token(mocker):

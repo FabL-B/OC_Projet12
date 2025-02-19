@@ -1,9 +1,9 @@
 import pytest
-from models.event import Event
-from controllers.event_controller import EventController
-from services.event_service import EventService
-from models.auth import Auth
-from models.permission import EventPermission
+from app.models.event import Event
+from app.controllers.event_controller import EventController
+from app.services.event_service import EventService
+from app.auth.auth import Auth
+from app.permissions.permission import EventPermission
 
 
 @pytest.fixture

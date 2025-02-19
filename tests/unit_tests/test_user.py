@@ -1,5 +1,5 @@
 import pytest
-from models.user import User
+from app.models.user import User
 
 
 @pytest.fixture

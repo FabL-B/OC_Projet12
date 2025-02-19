@@ -1,6 +1,6 @@
-from models.contract import Contract
-from services.contract_service import ContractService
-from repository.contract_repository import ContractRepository
+from app.models.contract import Contract
+from app.services.contract_service import ContractService
+from app.repository.contract_repository import ContractRepository
 
 
 def test_create_contract_success(mock_session, mocker):

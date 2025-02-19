@@ -1,6 +1,6 @@
-from models.customer import Customer
-from services.customer_service import CustomerService
-from repository.customer_repository import CustomerRepository
+from app.models.customer import Customer
+from app.services.customer_service import CustomerService
+from app.repository.customer_repository import CustomerRepository
 
 
 def test_delete_customer_success(mock_session, mocker):

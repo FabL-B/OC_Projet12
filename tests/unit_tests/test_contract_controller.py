@@ -1,9 +1,9 @@
 import pytest
-from models.contract import Contract
-from controllers.contract_controller import ContractController
-from services.contract_service import ContractService
-from models.auth import Auth
-from models.permission import ContractPermission
+from app.models.contract import Contract
+from app.controllers.contract_controller import ContractController
+from app.services.contract_service import ContractService
+from app.auth.auth import Auth
+from app.permissions.permission import ContractPermission
 
 
 @pytest.fixture

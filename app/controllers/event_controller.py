@@ -1,6 +1,6 @@
 from services.event_service import EventService
-from models.auth import auth_required
-from models.permission import EventPermission, permission_required
+from app.auth.auth import auth_required
+from app.permissions.permission import EventPermission, permission_required
 from views.event_view import EventView
 
 

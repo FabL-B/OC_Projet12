@@ -1,5 +1,5 @@
-from models.customer import Customer
-from repository.customer_repository import CustomerRepository
+from app.models.customer import Customer
+from app.repository.customer_repository import CustomerRepository
 
 
 def test_create_customer(mock_session):

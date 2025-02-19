@@ -1,9 +1,9 @@
 import pytest
-from models.customer import Customer
-from controllers.customer_controller import CustomerController
-from services.customer_service import CustomerService
-from models.auth import Auth
-from models.permission import CustomerPermission
+from app.models.customer import Customer
+from app.controllers.customer_controller import CustomerController
+from app.services.customer_service import CustomerService
+from app.auth.auth import Auth
+from app.permissions.permission import CustomerPermission
 
 
 @pytest.fixture

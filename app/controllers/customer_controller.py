@@ -1,6 +1,6 @@
 from services.customer_service import CustomerService
-from models.auth import auth_required
-from models.permission import CustomerPermission, permission_required
+from app.auth.auth import auth_required
+from app.permissions.permission import CustomerPermission, permission_required
 from views.customer_view import CustomerView
 
 

@@ -1,7 +1,7 @@
 import pytest
-from models.user import User
-from services.user_service import UserService
-from repository.user_repository import UserRepository
+from app.models.user import User
+from app.services.user_service import UserService
+from app.repository.user_repository import UserRepository
 
 
 def test_create_user_success(mock_session, mocker):

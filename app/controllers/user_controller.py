@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from services.user_service import UserService
-from models.auth import auth_required, Auth
-from models.permission import UserPermission, permission_required
+from app.auth.auth import auth_required, Auth
+from app.permissions.permission import UserPermission, permission_required
 from views.user_view import UserView
 
 

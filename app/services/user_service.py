@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from repository.user_repository import UserRepository
 from models.user import User
-from models.auth import Auth
+from app.auth.auth import Auth
 
 
 class UserService:

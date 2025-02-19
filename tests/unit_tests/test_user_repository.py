@@ -1,5 +1,5 @@
-from models.user import User
-from repository.user_repository import UserRepository
+from app.models.user import User
+from app.repository.user_repository import UserRepository
 
 
 def test_create_user(mock_session):

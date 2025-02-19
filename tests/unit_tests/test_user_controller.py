@@ -1,9 +1,9 @@
 import pytest
-from models.user import User
-from controllers.user_controller import UserController
-from services.user_service import UserService
-from models.auth import Auth
-from models.permission import UserPermission
+from app.models.user import User
+from app.controllers.user_controller import UserController
+from app.services.user_service import UserService
+from app.auth.auth import Auth
+from app.permissions.permission import UserPermission
 
 
 @pytest.fixture
