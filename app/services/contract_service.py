@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from app.repository.contract_repository import ContractRepository
 from app.models.contract import Contract
 
@@ -45,7 +44,7 @@ class ContractService:
                 for contract in contracts]
 
     @staticmethod
-    def create( session, customer_id, amount, amount_due, status,):
+    def create(session, customer_id, amount, amount_due, status):
         """Creates a new contract."""
         contract = Contract(
             customer_id=customer_id,

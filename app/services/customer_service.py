@@ -10,7 +10,7 @@ class CustomerService:
         """Retrieves a customer by ID."""
         customer = CustomerRepository.get_customer_by_id(session, customer_id)
         if not customer:
-             raise ValueError("Customer not found.")
+            raise ValueError("Customer not found.")
         return customer
 
     @staticmethod

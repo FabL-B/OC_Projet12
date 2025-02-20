@@ -1,64 +1,29 @@
 import pytest
-from sqlalchemy.orm import Session
-from config.database import Base, SessionLocal, engine
-from app.models import User, Customer, Contract
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
+from dotenv import load_dotenv
+from config.database import Base
+
+
+load_dotenv()
+TEST_DATABASE_URL = "postgresql://test_user:test_password@localhost:5432/epicevent_test_db"  # noqa: E501
+
+test_engine = create_engine(TEST_DATABASE_URL)
+TestSessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=test_engine
+)
 
 
 @pytest.fixture(scope="function")
-def test_db():
-    """Fixture that creates a clean database before each test."""
-    Base.metadata.create_all(engine)
-    db = SessionLocal()
-    yield db
-    db.rollback()
-    db.close()
-    Base.metadata.drop_all(engine)
-
-
-@pytest.fixture(scope="function")
-def setup_test_data(test_db):
-    """Fixture that creates common test data."""
-
-    # Setup users
-    user_sales = User(
-        name="Sales Doe",
-        email="sales@example.com",
-        password_hash="hashed_pwd",
-        role="Sales"
-    )
-
-    user_support = User(
-        name="Support Doe",
-        email="support@example.com",
-        password_hash="hashed_pwd",
-        role="Support"
-    )
-
-    test_db.add_all([user_sales, user_support])
-    test_db.commit()
-
-    # Setup customer
-    customer = Customer(
-        name="Customer A",
-        company_name="Company A",
-        email="customerA@test.com",
-        phone="123456789",
-        sales_contact_id=user_sales.id
-    )
-    test_db.add(customer)
-    test_db.commit()
-
-    # Setup Contract
-    contract = Contract(
-        customer_id=customer.id,
-        amount=5000,
-        amount_due=2500,
-        status="unsigned"
-    )
-    test_db.add(contract)
-    test_db.commit()
-
-    return test_db, user_sales, user_support, customer, contract
+def session_test():
+    """Fixture that creates a temporary PostgreSQL database for each test."""
+    Base.metadata.create_all(bind=test_engine)
+    session = TestSessionLocal()
+    yield session
+    session.close()
+    Base.metadata.drop_all(bind=test_engine)
 
 
 @pytest.fixture

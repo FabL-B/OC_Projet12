@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from app.repository.event_repository import EventRepository
 from app.models.event import Event
 
@@ -33,11 +32,12 @@ class EventService:
         return [{"id": event.id,
                  "start_date": event.start_date,
                  "end_date": event.end_date,
-                 "location": event.location,}
+                 "location": event.location}
                 for event in events]
 
     @staticmethod
-    def create(session, contract_id, support_contact_id, start_date, end_date, location, attendees, notes):
+    def create(session, contract_id, support_contact_id,
+               start_date, end_date, location, attendees, notes):
         """Create a new event."""
         event = Event(
             contract_id=contract_id,

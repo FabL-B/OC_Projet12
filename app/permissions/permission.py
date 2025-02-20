@@ -99,12 +99,13 @@ class EventPermission(BasePermission):
 
         return True
 
+
 def permission_required(action, requires_object=False):
     def decorator(func):
         @wraps(func)
         def wrapper(self, user_payload, *args, **kwargs):
             permission = self.permission_class(user_payload)
-            
+
             if not permission.has_permission(action):
                 raise PermissionError(
                     f"Access denied: No permission for {action}"

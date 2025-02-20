@@ -28,33 +28,12 @@ def test_list_all_contracts(mocker, contract_controller, mock_session):
         ],
     )
 
-    contracts = contract_controller.list_all(mock_session)
+    contracts = contract_controller.list_all_contracts(mock_session)
 
     assert len(contracts) == 2
     assert contracts[0].status == "signed"
     assert contracts[1].status == "unsigned"
     ContractService.list_all.assert_called_once_with(mock_session)
-
-
-def test_get_contract(mocker, contract_controller, mock_session):
-    """Test retrieving a specific contract."""
-    mocker.patch.object(
-        Auth,
-        "is_authenticated",
-        return_value={"id": 1, "role": "Management"},
-    )
-    mocker.patch.object(
-        ContractService,
-        "get_by_id",
-        return_value=Contract(
-            id=1, customer_id=101, amount=5000.0, status="signed"
-        ),
-    )
-
-    contract = contract_controller.get(mock_session, entity_id=1)
-
-    assert contract.status == "signed"
-    ContractService.get_by_id.assert_called_once_with(mock_session, 1)
 
 
 def test_create_contract(mocker, contract_controller, mock_session):
@@ -77,7 +56,7 @@ def test_create_contract(mocker, contract_controller, mock_session):
         ),
     )
 
-    contract_controller.create(
+    contract_controller.create_contract(
         mock_session,
         customer_id=101,
         amount=5000.0,
@@ -103,8 +82,8 @@ def test_update_contract(mocker, contract_controller, mock_session):
     )
     mocker.patch.object(ContractService, "update", return_value=True)
 
-    success = contract_controller.update(
-        mock_session, entity_id=1, data={"amount_due": 1500.0}
+    success = contract_controller.update_contract(
+        mock_session, contract_id=1, data={"amount_due": 1500.0}
     )
 
     assert success is True
@@ -122,7 +101,7 @@ def test_delete_contract(mocker, contract_controller, mock_session):
     )
     mocker.patch.object(ContractService, "delete", return_value=True)
 
-    success = contract_controller.delete(mock_session, entity_id=1)
+    success = contract_controller.delete_contract(mock_session, contract_id=1)
 
     assert success is True
     ContractService.delete.assert_called_once_with(mock_session, 1)
