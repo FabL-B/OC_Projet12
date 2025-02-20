@@ -5,7 +5,7 @@ from app.models.event import Event
 class EventRepository:
     """Handles database operations related to the Event entity."""
     @staticmethod
-    def create_event(session: Session, event: Event):
+    def create_event(session, event):
         """Create a new event in database."""
         session.add(event)
         session.commit()
@@ -13,14 +13,14 @@ class EventRepository:
         return event
 
     @staticmethod
-    def delete_event(session: Session, event_id: int):
+    def delete_event(session, event_id):
         """Delete an event from database."""
         event = session.get(Event, event_id)
         session.delete(event)
         session.commit()
         return event
 
-    def update_event(session: Session, event_id: int, data: dict):
+    def update_event(session, event_id, data):
         """Update an existing event in database."""
         event = session.get(Event, event_id)
         if event:
@@ -30,7 +30,7 @@ class EventRepository:
         return event
 
     @staticmethod
-    def get_all_events(session: Session):
+    def get_all_events(session):
         """Get all from database events."""
         return session.query(Event).all()
 
@@ -42,6 +42,6 @@ class EventRepository:
         ).all()
 
     @staticmethod
-    def get_event_by_id(session: Session, event_id: int):
+    def get_event_by_id(session, event_id):
         """Get an event from database with its ID."""
         return session.get(Event, event_id)

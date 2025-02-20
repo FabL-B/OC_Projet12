@@ -7,7 +7,7 @@ class EventService:
     """Handles business logic for events."""
 
     @staticmethod
-    def get_by_id(session: Session, event_id: int):
+    def get_by_id(session, event_id):
         """Get an event with its ID."""
         event = EventRepository.get_event_by_id(session, event_id)
         if not event:
@@ -15,7 +15,7 @@ class EventService:
         return event
 
     @staticmethod
-    def list_all(session: Session):
+    def list_all(session):
         """Get all event as dictionnaries."""
         events = EventRepository.get_all_events(session)
         return [{"id": event.id,
@@ -25,7 +25,7 @@ class EventService:
                 for event in events]
 
     @staticmethod
-    def list_by_support_contact(session: Session, support_contact_id: int):
+    def list_by_support_contact(session, support_contact_id):
         """Returns events managed by a specific support contact."""
         events = EventRepository.get_events_by_support_contact(
             session, support_contact_id
@@ -37,16 +37,7 @@ class EventService:
                 for event in events]
 
     @staticmethod
-    def create(
-        session: Session,
-        contract_id: int,
-        support_contact_id: int,
-        start_date: str,
-        end_date: str,
-        location: str,
-        attendees: int,
-        notes: str = None
-    ):
+    def create(session, contract_id, support_contact_id, start_date, end_date, location, attendees, notes):
         """Create a new event."""
         event = Event(
             contract_id=contract_id,
@@ -60,7 +51,7 @@ class EventService:
         return EventRepository.create_event(session, event)
 
     @staticmethod
-    def update(session: Session, event_id: int, data: dict):
+    def update(session, event_id, data):
         """Update an existing event."""
         event = EventRepository.get_event_by_id(session, event_id)
         if not event:
@@ -68,7 +59,7 @@ class EventService:
         return EventRepository.update_event(session, event_id, data)
 
     @staticmethod
-    def delete(session: Session, event_id: int):
+    def delete(session, event_id):
         """Delete an event."""
         event = EventRepository.get_event_by_id(session, event_id)
         if not event:

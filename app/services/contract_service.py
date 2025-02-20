@@ -7,7 +7,7 @@ class ContractService:
     """Handles business logic for contracts."""
 
     @staticmethod
-    def get_by_id(session: Session, contract_id: int):
+    def get_by_id(session, contract_id):
         """Get a contrat with its ID."""
         contract = ContractRepository.get_contract_by_id(session, contract_id)
         if not contract:
@@ -15,7 +15,7 @@ class ContractService:
         return contract
 
     @staticmethod
-    def list_all(session: Session):
+    def list_all(session):
         """Return all clients as dictionnaries."""
         contracts = ContractRepository.get_all_contracts(session)
         return [{"id": contract.id,
@@ -25,7 +25,7 @@ class ContractService:
                 for contract in contracts]
 
     @staticmethod
-    def list_unsigned(session: Session):
+    def list_unsigned(session):
         """Return unsigned contracts."""
         contracts = ContractRepository.get_unsigned_contracts(session)
         return [{"id": contract.id,
@@ -35,7 +35,7 @@ class ContractService:
                 for contract in contracts]
 
     @staticmethod
-    def list_unpaid(session: Session):
+    def list_unpaid(session):
         """Return `amount_due` ≠ `amount` contract's."""
         contracts = ContractRepository.get_unpaid_contracts(session)
         return [{"id": contract.id,
@@ -45,13 +45,7 @@ class ContractService:
                 for contract in contracts]
 
     @staticmethod
-    def create(
-        session: Session,
-        customer_id: int,
-        amount: float,
-        amount_due: float,
-        status: bool
-    ):
+    def create( session, customer_id, amount, amount_due, status,):
         """Creates a new contract."""
         contract = Contract(
             customer_id=customer_id,
@@ -62,7 +56,7 @@ class ContractService:
         return ContractRepository.create_contract(session, contract)
 
     @staticmethod
-    def update(session: Session, contract_id: int, data: dict):
+    def update(session, contract_id, data):
         """Update an existing contract."""
         contract = ContractRepository.get_contract_by_id(session, contract_id)
         if not contract:
@@ -70,7 +64,7 @@ class ContractService:
         return ContractRepository.update_contract(session, contract_id, data)
 
     @staticmethod
-    def delete(session: Session, contract_id: int):
+    def delete(session, contract_id):
         """Delete a contract."""
         contract = ContractRepository.get_contract_by_id(session, contract_id)
         if not contract:

@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from app.services.user_service import UserService
 from app.auth.auth import auth_required, Auth
 from app.permissions.permission import UserPermission, permission_required
@@ -14,7 +13,7 @@ class UserController:
 
     @auth_required
     @permission_required("list_all")
-    def list_all_users(self, user_payload, session: Session):
+    def list_all_users(self, user_payload, session):
         """Display all users."""
         while True:
             users = self.service.list_all(session)
@@ -27,7 +26,7 @@ class UserController:
 
     @auth_required
     @permission_required("get")
-    def show_user_details(self, user_payload, session: Session, user_id: int):
+    def show_user_details(self, user_payload, session, user_id):
         """Display user details and prompt for update or delete selection."""
         user = self.service.get_by_id(session, user_id)
         if not user:
@@ -49,13 +48,13 @@ class UserController:
 
     @auth_required
     @permission_required("get")
-    def get(self, user_payload, session: Session, user_id: int):
+    def get(self, user_payload, session, user_id):
         """Retrieve a specific user by ID."""
         return self.service.get_by_id(session, user_id)
 
     @auth_required
     @permission_required("create")
-    def create_user(self, user_payload, session: Session):
+    def create_user(self, user_payload, session):
         """Create a new user."""
         user_data = UserView.get_user_creation_data()
         self.service.create(session, **user_data)
@@ -63,7 +62,7 @@ class UserController:
 
     @auth_required
     @permission_required("update")
-    def update_user(self, user_payload, session: Session, user_id: int):
+    def update_user(self, user_payload, session, user_id):
         """Update an existing user."""
         updated_data = UserView.get_user_update_data()
         if updated_data:
@@ -72,7 +71,7 @@ class UserController:
 
     @auth_required
     @permission_required("delete")
-    def delete_user(self, user_payload, session: Session, user_id: int):
+    def delete_user(self, user_payload, session, user_id):
         """Delete a user."""
         confirm = input(
             f"Confirm deletion of user {user_id}? (y/n): "
@@ -82,7 +81,7 @@ class UserController:
             self.service.delete(session, user_id)
             print(f"User {user_id} successfully deleted.")
 
-    def login_user(self, session: Session, email: str, password: str):
+    def login_user(self, session, email, password):
         """Allow a user to log in."""
         tokens = Auth.authenticate_user(session, email, password)
         if tokens:

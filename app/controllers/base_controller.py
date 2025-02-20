@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 from app.auth.auth import auth_required
 
-# Modèle ne fonctionne pas pour le moment,
-# problème de gestion des arguments passés
+# Modèle non utilisé pour le moment
 
 
 class BaseController:

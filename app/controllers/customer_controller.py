@@ -48,7 +48,6 @@ class CustomerController:
     def show_customer_details(self, user_payload, session, customer_id):
         """Displays customer details and offers update/deletion options."""
         customer = self.service.get_by_id(session, customer_id)
-        print(f"Type de customer dans show_customer_details: {type(customer)}")
 
         if not customer:
             print("\n Customer not found.")

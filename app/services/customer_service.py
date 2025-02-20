@@ -1,4 +1,3 @@
-from sqlalchemy.orm import Session
 from app.repository.customer_repository import CustomerRepository
 from app.models.customer import Customer
 
@@ -7,7 +6,7 @@ class CustomerService:
     """Handles business logic for customers."""
 
     @staticmethod
-    def get_by_id(session: Session, customer_id: int):
+    def get_by_id(session, customer_id):
         """Retrieves a customer by ID."""
         customer = CustomerRepository.get_customer_by_id(session, customer_id)
         if not customer:
@@ -15,7 +14,7 @@ class CustomerService:
         return customer
 
     @staticmethod
-    def list_all(session: Session):
+    def list_all(session):
         """Get all clients as dictionnaries."""
         customers = CustomerRepository.get_all_customers(session)
         return [
@@ -31,7 +30,7 @@ class CustomerService:
         ]
 
     @staticmethod
-    def list_by_sales_id(session: Session, sales_contact_id: int):
+    def list_by_sales_id(session, sales_contact_id):
         """Get all customers managed by a specific sales."""
         customers = CustomerRepository.get_customers_by_sales_id(
             session, sales_contact_id)
@@ -47,12 +46,7 @@ class CustomerService:
         ]
 
     @staticmethod
-    def check_if_customer_exists(
-        session: Session,
-        email: str,
-        company_name: str,
-        phone: str
-    ) -> bool:
+    def check_if_customer_exists(session, email, company_name, phone):
         """Check if customer already exist."""
         return any(
             [
@@ -64,14 +58,7 @@ class CustomerService:
         )
 
     @staticmethod
-    def create(
-        session: Session,
-        name: str,
-        company_name: str,
-        email: str,
-        phone: str,
-        sales_contact_id: int
-    ):
+    def create(session, name, company_name, email, phone, sales_contact_id):
         """Creates a new customer."""
 
         if CustomerService.check_if_customer_exists(
@@ -95,7 +82,7 @@ class CustomerService:
         return CustomerRepository.create_customer(session, customer)
 
     @staticmethod
-    def update(session: Session, customer_id: int, data: dict):
+    def update(session, customer_id, data):
         """Update an existing customer."""
         event = CustomerRepository.get_customer_by_id(session, customer_id)
         if not event:
@@ -103,7 +90,7 @@ class CustomerService:
         return CustomerRepository.update_customer(session, customer_id, data)
 
     @staticmethod
-    def delete(session: Session, customer_id: int):
+    def delete(session, customer_id):
         """Delete a customer."""
         customer = CustomerRepository.get_customer_by_id(session, customer_id)
         if not customer:

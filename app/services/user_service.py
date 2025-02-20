@@ -8,7 +8,7 @@ class UserService:
     """Handles business logic for users."""
 
     @staticmethod
-    def get_by_id(session: Session, user_id: int):
+    def get_by_id(session, user_id):
         """Retrieves a user by ID."""
         return UserRepository.get_user_by_id(session, user_id)
 
@@ -26,13 +26,7 @@ class UserService:
         ]
 
     @staticmethod
-    def create(
-        session: Session,
-        name: str,
-        email: str,
-        password: str,
-        role: str
-    ):
+    def create(session, name, email, password, role):
         """Creates a user."""
         existing_user = UserRepository.get_user_by_email(session, email)
         if existing_user:
@@ -44,7 +38,7 @@ class UserService:
         return UserRepository.create_user(session, user)
 
     @staticmethod
-    def update(session: Session, user_id: int, data: dict):
+    def update(session, user_id, data):
         """Update an existing user."""
         user = UserRepository.get_user_by_id(session, user_id)
         if not user:
@@ -52,7 +46,7 @@ class UserService:
         return UserRepository.update_user(session, user_id, data)
 
     @staticmethod
-    def delete(session: Session, user_id: int):
+    def delete(session, user_id):
         """Delete a user."""
         user = UserRepository.get_user_by_id(session, user_id)
         if not user:
@@ -61,12 +55,12 @@ class UserService:
         return UserRepository.delete_user(session, user_id)
 
     @staticmethod
-    def get_user_by_email(session: Session, user_email: str):
+    def get_user_by_email(session, user_email):
         """Retrieves a user by email."""
         return UserRepository.get_user_by_email(session, user_email)
 
     @staticmethod
-    def login_user(session: Session, email: str, password: str):
+    def login_user(session, email, password):
         """Allows a user to log in."""
         tokens = Auth.authenticate_user(session, email, password)
         if tokens:
