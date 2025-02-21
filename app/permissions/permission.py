@@ -9,39 +9,51 @@ class BasePermission:
         self.user_id = int(user_payload.get("id"))
 
     def has_permission(self, action):
-        """Returns False by default to block access if not defined."""
-        return False
+        """Admin has all permissions by default."""
+        if self.user_role == "Admin":
+            return True
+        return self.check_permission(action)
 
     def has_object_permission(self, obj, action):
-        """Returns False by default to prevent access if not defined."""
+        """Admin has all object permissions by default."""
+        if self.user_role == "Admin":
+            return True
+        return self.check_object_permission(obj, action)
+
+    def check_permission(self, action):
+        """Méthode à implémenter dans les sous-classes."""
+        return False
+
+    def check_object_permission(self, obj, action):
+        """Méthode à implémenter dans les sous-classes."""
         return False
 
 
 class UserPermission(BasePermission):
     """Manages permissions for users."""
 
-    def has_permission(self, action):
+    def check_permission(self, action):
         if action in ['list_all', 'get']:
             return True
         if action in ['create', 'update', 'delete']:
             return self.user_role == "Management"
         return False
 
-    def has_object_permission(self, obj, action):
-        return self.has_permission(action)
+    def check_object_permission(self, obj, action):
+        return self.check_permission(action)
 
 
 class CustomerPermission(BasePermission):
     """Manages permissions for customers."""
 
-    def has_permission(self, action):
+    def check_permission(self, action):
         if action in ['list_all', 'get']:
             return True
         if action == 'create':
             return self.user_role == "Sales"
         return True
 
-    def has_object_permission(self, customer, action):
+    def check_object_permission(self, customer, action):
         if action in ['update', 'delete']:
             return (self.user_role == "Sales" and
                     customer.sales_contact_id == self.user_id)
@@ -51,14 +63,14 @@ class CustomerPermission(BasePermission):
 class ContractPermission(BasePermission):
     """Manages permissions for contracts."""
 
-    def has_permission(self, action):
+    def check_permission(self, action):
         if action in ['list_all', 'get']:
             return True
         if action == 'create':
             return self.user_role == "Management"
         return True
 
-    def has_object_permission(self, contract, action):
+    def check_object_permission(self, contract, action):
         if action in ['update', 'delete']:
             if self.user_role == "Management":
                 return True
@@ -72,7 +84,7 @@ class ContractPermission(BasePermission):
 class EventPermission(BasePermission):
     """Manages permissions for events."""
 
-    def has_permission(self, action):
+    def check_permission(self, action):
         """Checks if the user has general permissions for the action."""
         if action in ["list_all", "get"]:
             return True
@@ -80,7 +92,7 @@ class EventPermission(BasePermission):
             return self.user_role == "Sales"
         return True
 
-    def has_object_permission(self, event, action):
+    def check_object_permission(self, event, action):
         """Checks if the user has specific permissions on the event."""
 
         if action == "create":
@@ -105,6 +117,9 @@ def permission_required(action, requires_object=False):
         @wraps(func)
         def wrapper(self, user_payload, *args, **kwargs):
             permission = self.permission_class(user_payload)
+
+            if permission.user_role == "Admin":
+                return func(self, user_payload, *args, **kwargs)
 
             if not permission.has_permission(action):
                 raise PermissionError(

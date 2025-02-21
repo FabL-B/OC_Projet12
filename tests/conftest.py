@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from dotenv import load_dotenv
@@ -30,3 +31,8 @@ def session_test():
 def mock_session(mocker):
     """Fixture to mock an SQLAlchemy session."""
     return mocker.Mock(spec=Session)
+
+@pytest.fixture
+def disable_auth_and_permissions():
+    with patch("app.auth.auth.Auth.is_authenticated", return_value={"id": 1, "role": "Admin"}):
+        yield

@@ -15,7 +15,7 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     role = Column(
-        Enum("Sales", "Management", "Support", name="user_roles"),
+        Enum("Sales", "Management", "Support", "Admin", name="user_roles"),
         nullable=False
     )
     created_at = Column(DateTime, default=datetime.now)
