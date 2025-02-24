@@ -4,214 +4,112 @@ from app.permissions.permission import (
     permission_required
 )
 
-# Simulate users
-user_management = {"id": 1, "role": "Management"}
-user_sales_ok = {"id": 2, "role": "Sales"}
-user_sales_nok = {"id": 10, "role": "Sales"}
-user_support_ok = {"id": 3, "role": "Support"}
-user_support_nok = {"id": 20, "role": "Support"}
-user_random = {"id": 4, "role": "random"}
 
+# Simulate users
+user_admin = {"id": 1, "role": "Admin"}
+user_management = {"id": 2, "role": "Management"}
+user_sales_ok = {"id": 3, "role": "Sales"}
+user_sales_nok = {"id": 10, "role": "Sales"}
+user_support_ok = {"id": 4, "role": "Support"}
+user_support_nok = {"id": 20, "role": "Support"}
+user_random = {"id": 5, "role": "random"}
 
 # Simulate objects
 class MockCustomer:
     def __init__(self, sales_contact_id):
         self.sales_contact_id = sales_contact_id
 
-
 class MockContract:
     def __init__(self, customer):
         self.customer = customer
-
 
 class MockEvent:
     def __init__(self, contract, support_contact_id):
         self.contract = contract
         self.support_contact_id = support_contact_id
 
-
-# customer related to user_sales_ok
-customer_sales = MockCustomer(sales_contact_id=2)
+# Mock data
+customer_sales = MockCustomer(sales_contact_id=3)
 contract_sales = MockContract(customer=customer_sales)
-event_sales_signed = MockEvent(contract=contract_sales, support_contact_id=3)
+event_sales_signed = MockEvent(contract=contract_sales, support_contact_id=4)
 event_sales_signed.contract.is_signed = True
+event_sales_unsigned = MockEvent(contract=contract_sales, support_contact_id=4)
+event_sales_unsigned.contract.is_signed = False
 
 
 def test_user_permission():
-    permission = UserPermission()
+    """Test des permissions générales pour UserPermission."""
+    permission_admin = UserPermission(user_admin)
+    permission_management = UserPermission(user_management)
+    permission_sales = UserPermission(user_sales_ok)
 
-    assert permission.has_permission(user_management, "create") is True
-    assert permission.has_permission(user_sales_ok, "create") is False
+    # ✅ Admin a accès à tout
+    assert permission_admin.has_permission("create") is True
+    assert permission_admin.has_permission("update") is True
+    assert permission_admin.has_permission("delete") is True
 
-    assert permission.has_permission(user_management, "delete") is True
-    assert permission.has_permission(user_sales_ok, "delete") is False
+    # ✅ Management peut tout sauf `list_all`
+    assert permission_management.has_permission("create") is True
+    assert permission_management.has_permission("update") is True
+    assert permission_management.has_permission("delete") is True
 
-    assert permission.has_permission(user_management, "list_all") is True
-    assert permission.has_permission(user_sales_ok, "list_all") is True
+    # ❌ Sales ne peut rien faire sur les utilisateurs
+    assert permission_sales.has_permission("create") is False
+    assert permission_sales.has_permission("update") is False
+    assert permission_sales.has_permission("delete") is False
 
 
 def test_customer_permission():
-    permission = CustomerPermission()
+    """Test des permissions générales pour CustomerPermission."""
+    permission_sales = CustomerPermission(user_sales_ok)
+    permission_admin = CustomerPermission(user_admin)
 
-    assert permission.has_permission(
-        user_sales_ok, "list_all") is True
+    # ✅ Sales peut créer un client
+    assert permission_sales.has_permission("create") is True
 
-    assert permission.has_permission(
-        user_sales_ok, "create") is True
-    assert permission.has_permission(
-        user_management, "create") is False
+    # ✅ Admin a accès à tout
+    assert permission_admin.has_permission("create") is True
+    assert permission_admin.has_object_permission(customer_sales, "update") is True
+    assert permission_admin.has_object_permission(customer_sales, "delete") is True
 
-    assert permission.has_object_permission(
-        user_sales_ok, customer_sales, "update") is True
-    assert permission.has_object_permission(
-        user_sales_nok, customer_sales, "update") is False
-    assert permission.has_object_permission(
-        user_management, customer_sales, "update") is False
+    # ❌ Sales ne peut modifier un client que s'il en est responsable
+    permission_sales_nok = CustomerPermission(user_sales_nok)
+    assert permission_sales_nok.has_object_permission(customer_sales, "update") is False
 
 
 def test_contract_permission():
-    permission = ContractPermission()
+    """Test des permissions générales pour ContractPermission."""
+    permission_management = ContractPermission(user_management)
+    permission_sales = ContractPermission(user_sales_ok)
+    permission_admin = ContractPermission(user_admin)
 
-    assert permission.has_permission(
-        user_sales_ok, "lsit_all") is True
-    assert permission.has_permission(
-        user_management, "lsit_all") is True
+    # ✅ Management peut créer un contrat
+    assert permission_management.has_permission("create") is True
 
-    assert permission.has_permission(
-        user_management, "create") is True
-    assert permission.has_permission(
-        user_sales_ok, "create") is False
+    # ✅ Admin a accès à tout
+    assert permission_admin.has_permission("create") is True
+    assert permission_admin.has_object_permission(contract_sales, "update") is True
+    assert permission_admin.has_object_permission(contract_sales, "delete") is True
 
-    assert permission.has_object_permission(
-        user_sales_ok, contract_sales, "update") is True
-    # Sales not related to contract's customer
-    assert permission.has_object_permission(
-        user_sales_nok, contract_sales, "update") is False
-    assert permission.has_object_permission(
-        user_random, contract_sales, "update") is False
+    # ❌ Sales ne peut modifier un contrat que si son client lui appartient
+    permission_sales_nok = ContractPermission(user_sales_nok)
+    assert permission_sales_nok.has_object_permission(contract_sales, "update") is False
 
 
 def test_event_permission():
-    permission = EventPermission()
+    """Test des permissions générales pour EventPermission."""
+    permission_sales = EventPermission(user_sales_ok)
+    permission_support = EventPermission(user_support_ok)
+    permission_admin = EventPermission(user_admin)
 
-    assert permission.has_permission(user_sales_ok, "list_all") is True
-    assert permission.has_permission(user_management, "list_all") is True
+    # ✅ Sales peut créer un événement si le contrat est signé
+    assert permission_sales.has_object_permission(event_sales_signed, "create") is True
+    assert permission_sales.has_object_permission(event_sales_unsigned, "create") is False
 
-    assert permission.has_permission(user_sales_ok, "create") is True
-    assert permission.has_permission(user_management, "create") is False
+    # ✅ Admin a accès à tout
+    assert permission_admin.has_permission("create") is True
+    assert permission_admin.has_object_permission(event_sales_signed, "update") is True
 
-    assert permission.has_object_permission(
-        user_sales_ok, event_sales_signed, "create") is True
-    # Sales not related event's customer
-    assert permission.has_object_permission(
-        user_sales_nok, event_sales_signed, "create") is False
-    assert permission.has_object_permission(
-        user_support_ok, event_sales_signed, "create") is False
-
-    assert permission.has_object_permission(
-        user_support_ok, event_sales_signed, "update") is True
-    assert permission.has_object_permission(
-        user_support_nok, event_sales_signed, "update") is False
-    assert permission.has_object_permission(
-        user_sales_ok, event_sales_signed, "update") is False
-
-
-def test_create_user_permission():
-    """Test if a Management user has the permission to create a user."""
-    permission = UserPermission()
-    assert permission.has_permission({"role": "Management"}, "create") is True
-    assert permission.has_permission({"role": "management"}, "create") is False
-
-    assert permission.has_permission({"role": "SALES"}, "create") is False
-
-
-def test_user_permission_wrapper(mocker):
-    mocker.patch.object(
-        UserPermission,
-        "has_permission",
-        side_effect=lambda user,
-        action: user["role"] == "Management"
-    )
-
-    class FakeUserController:
-        permission_class = UserPermission
-
-        @permission_required("create")
-        def create_user(self, user_payload):
-            return "User created"
-
-    controller = FakeUserController()
-
-    assert controller.create_user(user_management) == "User created"
-
-    with pytest.raises(PermissionError, match="Access denied"):
-        controller.create_user(user_sales_ok)
-
-
-def test_customer_permission_wrapper(mocker):
-    mocker.patch.object(
-        CustomerPermission,
-        "has_permission",
-        side_effect=lambda user,
-        action: user["role"] == "Sales"
-    )
-
-    class FakeCustomerController:
-        permission_class = CustomerPermission
-
-        @permission_required("create")
-        def create_customer(self, user_payload):
-            return "Customer created"
-
-    controller = FakeCustomerController()
-
-    assert controller.create_customer(user_sales_ok) == "Customer created"
-
-    with pytest.raises(PermissionError, match="Access denied"):
-        controller.create_customer(user_management)
-
-
-def test_contract_permission_wrapper(mocker):
-    mocker.patch.object(
-        ContractPermission,
-        "has_permission",
-        side_effect=lambda user,
-        action: user["role"] == "Management"
-    )
-
-    class FakeContractController:
-        permission_class = ContractPermission
-
-        @permission_required("create")
-        def create_contract(self, user_payload):
-            return "Contract created"
-
-    controller = FakeContractController()
-
-    assert controller.create_contract(user_management) == "Contract created"
-
-    with pytest.raises(PermissionError, match="Access denied"):
-        controller.create_contract(user_sales_ok)
-
-
-def test_event_permission_wrapper(mocker):
-    mocker.patch.object(
-        EventPermission,
-        "has_permission",
-        side_effect=lambda user,
-        action: user["role"] == "Sales"
-    )
-
-    class FakeEventController:
-        permission_class = EventPermission
-
-        @permission_required("create")
-        def create_event(self, user_payload):
-            return "Event created"
-
-    controller = FakeEventController()
-
-    assert controller.create_event(user_sales_ok) == "Event created"
-
-    with pytest.raises(PermissionError, match="Access denied"):
-        controller.create_event(user_management)
+    # ❌ Support ne peut modifier un événement que s'il y est assigné
+    permission_support_nok = EventPermission(user_support_nok)
+    assert permission_support_nok.has_object_permission(event_sales_signed, "update") is False

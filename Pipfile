@@ -11,6 +11,7 @@ flake8 = "*"
 argon2-cffi = "*"
 pytest-cov = "*"
 pyjwt = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 pytest = "*"
