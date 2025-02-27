@@ -20,13 +20,41 @@ class AppController:
         self.event_controller = EventController()
         self.user_payload = None
 
-        # Main menu
-        self.main_menu = {
+        # Main menu options
+        self.main_menu_actions = {
             "1": ("User Panel", self.show_user_panel),
             "2": ("Customer Panel", self.show_customer_panel),
             "3": ("Contract Panel", self.show_contract_panel),
             "4": ("Event Panel", self.show_event_panel),
             "5": ("Logout", self.logout),
+        }
+
+        self.user_menu_actions = {
+            "1": self.user_controller.list_all_users,
+            "2": self.user_controller.create_user,
+            "3": None,  # Return to main menu
+        }
+
+        self.customer_menu_actions = {
+            "1": self.customer_controller.list_all_customers,
+            "2": self.customer_controller.list_my_customers,
+            "3": self.customer_controller.create_customer,
+            "4": None,  # Return to main menu
+        }
+
+        self.contract_menu_actions = {
+            "1": self.contract_controller.list_all_contracts,
+            "2": self.contract_controller.list_unsigned_contracts,
+            "3": self.contract_controller.list_unpaid_contracts,
+            "4": self.contract_controller.create_contract,
+            "5": None,  # Return to main menu
+        }
+
+        self.event_menu_actions = {
+            "1": self.event_controller.list_all_events,
+            "2": self.event_controller.list_my_events,
+            "3": self.event_controller.create_event,
+            "4": None,  # Return to main menu
         }
 
     def authenticate_user(self):
@@ -42,75 +70,34 @@ class AppController:
         print("\nLogin failed. Please check your credentials.")
         return False
 
-    def logout(self, *args):
+    def logout(self):
         """Logs out the user."""
         print("\nLogging out...")
         exit()
 
-    def show_user_panel(self):
-        """Displays the User panel and dynamically manages actions."""
+    def handle_menu(self, menu_view, menu_actions):
+        """Handles dynamic menu navigation."""
         while True:
-            choice = AppView.show_user_menu()
-
-            if choice == "1":
-                self.user_controller.list_all_users(self.session)
-            #Ajouter un list user par role
-            elif choice == "2":
-                self.user_controller.create_user(self.session)
-            elif choice == "3":
-                break
+            choice = menu_view()
+            action = menu_actions.get(choice)
+            if action:
+                action(self.session)
+            elif action is None:
+                return  # Return to the previous menu
             else:
                 print("\nInvalid choice, please try again.")
+
+    def show_user_panel(self):
+        self.handle_menu(AppView.show_user_menu, self.user_menu_actions)
 
     def show_customer_panel(self):
-        """Displays the Customer panel and dynamically manages actions."""
-        while True:
-            choice = AppView.show_customer_menu()
-
-            if choice == "1":
-                self.customer_controller.list_all_customers(self.session)
-            elif choice == "2":
-                self.customer_controller.list_my_customers(self.session)
-            elif choice == "3":
-                self.customer_controller.create_customer(self.session)
-            elif choice == "4":
-                break
-            else:
-                print("\nInvalid choice, please try again.")
+        self.handle_menu(AppView.show_customer_menu, self.customer_menu_actions)
 
     def show_contract_panel(self):
-        """Displays the Contract panel and dynamically manages actions."""
-        while True:
-            choice = AppView.show_contract_menu()
-
-            if choice == "1":
-                self.contract_controller.list_all_contracts(self.session)
-            elif choice == "2":
-                self.contract_controller.list_unsigned_contracts(self.session)
-            elif choice == "3":
-                self.contract_controller.list_unpaid_contracts(self.session)
-            elif choice == "4":
-                self.contract_controller.create_contract(self.session)
-            elif choice == "5":
-                break
-            else:
-                print("\nInvalid choice, please try again.")
+        self.handle_menu(AppView.show_contract_menu, self.contract_menu_actions)
 
     def show_event_panel(self):
-        """Displays the Event panel and dynamically manages actions."""
-        while True:
-            choice = AppView.show_event_menu()
-
-            if choice == "1":
-                self.event_controller.list_all_events(self.session)
-            elif choice == "2":
-                self.event_controller.list_my_events(self.session)
-            elif choice == "3":
-                self.event_controller.create_event(self.session)
-            elif choice == "4":
-                break
-            else:
-                print("\nInvalid choice, please try again.")
+        self.handle_menu(AppView.show_event_menu, self.event_menu_actions)
 
     def run(self):
         """Displays the main menu and dynamically handles navigation."""
@@ -118,13 +105,11 @@ class AppController:
             return
 
         while True:
-            choice = AppView.show_main_menu(self.main_menu)
-
             try:
-                action = self.main_menu.get(choice)
+                choice = AppView.show_main_menu(self.main_menu_actions)
+                action = self.main_menu_actions.get(choice)
                 if action:
-                    action_name, action_func = action
-                    print(f"\nOpening: {action_name}...\n")
+                    _, action_func = action
                     action_func()
                 else:
                     print("\nInvalid choice, please try again.")
