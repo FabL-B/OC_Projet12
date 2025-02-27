@@ -88,16 +88,28 @@ class AppController:
                 print("\nInvalid choice, please try again.")
 
     def show_user_panel(self):
-        self.handle_menu(AppView.show_user_menu, self.user_menu_actions)
+        self.handle_menu(
+            AppView.show_user_menu,
+            self.user_menu_actions
+        )
 
     def show_customer_panel(self):
-        self.handle_menu(AppView.show_customer_menu, self.customer_menu_actions)
+        self.handle_menu(
+            AppView.show_customer_menu,
+            self.customer_menu_actions
+        )
 
     def show_contract_panel(self):
-        self.handle_menu(AppView.show_contract_menu, self.contract_menu_actions)
+        self.handle_menu(
+            AppView.show_contract_menu,
+            self.contract_menu_actions
+        )
 
     def show_event_panel(self):
-        self.handle_menu(AppView.show_event_menu, self.event_menu_actions)
+        self.handle_menu(
+            AppView.show_event_menu,
+            self.event_menu_actions
+        )
 
     def run(self):
         """Displays the main menu and dynamically handles navigation."""

@@ -4,6 +4,7 @@ from rich.prompt import Prompt
 
 console = Console()
 
+
 class UserView:
     """View for user management."""
 
@@ -18,7 +19,7 @@ class UserView:
 
     @staticmethod
     def display_users_and_get_choice(users):
-        """Displays the list of users and allows selecting details or going back."""
+        """Displays the list of users and allows selecting details."""
         if not users:
             console.print("[bold red]\nNo users found.[/bold red]")
             return None
@@ -38,7 +39,10 @@ class UserView:
             )
 
         console.print(table)
-        console.print("[bold]Enter a user ID to view details or press Enter to return.[/bold]")
+        console.print(
+            "[bold]Enter a user ID to view details [/bold]"
+            "[bold]or press Enter to return.[/bold]"
+        )
         user_id = Prompt.ask("User ID", default="")
         return int(user_id) if user_id.isdigit() else None
 

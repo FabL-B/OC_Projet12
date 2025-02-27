@@ -4,6 +4,7 @@ from rich.prompt import Prompt
 
 console = Console()
 
+
 class EventView:
     """View for event management."""
 
@@ -19,7 +20,7 @@ class EventView:
 
     @staticmethod
     def display_events_and_get_choice(events):
-        """Displays the list of events and allows viewing details or going back."""
+        """Displays the list of events and allows viewing details."""
         if not events:
             console.print("[bold red]\nNo events found.[/bold red]")
             return None
@@ -39,7 +40,10 @@ class EventView:
             )
 
         console.print(table)
-        console.print("[bold]Enter an event ID to view details or press Enter to return.[/bold]")
+        console.print(
+            "[bold]Enter an event ID to view details [/bold]"
+            "[bold]or press Enter to return.[/bold]"
+        )
         event_id = Prompt.ask("Event ID", default="")
         return int(event_id) if event_id.isdigit() else None
 

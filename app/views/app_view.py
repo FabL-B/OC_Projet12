@@ -4,6 +4,7 @@ from rich.prompt import Prompt
 
 console = Console()
 
+
 class AppView:
     """View for the main user interface (menu and authentication)."""
 
@@ -22,10 +23,10 @@ class AppView:
         table = Table(show_lines=True)
         table.add_column("Option", justify="center", style="cyan")
         table.add_column("Description", style="bold cyan")
-        
+
         for key, (description, _) in menu_actions.items():
             table.add_row(str(key), description)
-        
+
         console.print(table)
         return Prompt.ask("Make your choice")
 

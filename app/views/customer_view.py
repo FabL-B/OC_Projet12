@@ -4,6 +4,7 @@ from rich.prompt import Prompt
 
 console = Console()
 
+
 class CustomerView:
     """View for customer management."""
 
@@ -19,7 +20,7 @@ class CustomerView:
 
     @staticmethod
     def display_customers_and_get_choice(customers):
-        """Displays the list of customers and allows viewing details or going back."""
+        """Displays the list of customers and allows viewing details"""
         if not customers:
             console.print("[bold red]\nNo customers found.[/bold red]")
             return None
@@ -41,7 +42,10 @@ class CustomerView:
             )
 
         console.print(table)
-        console.print("[bold]Enter a customer ID to view details or press Enter to return.[/bold]")
+        console.print(
+            "[bold]Enter a customer ID to view details [/bold]"
+            "[bold]or press Enter to return.[/bold]"
+        )
         customer_id = Prompt.ask("Customer ID", default="")
         return int(customer_id) if customer_id.isdigit() else None
 
@@ -51,7 +55,9 @@ class CustomerView:
         console.print("[bold cyan]\nCustomer Details[/bold cyan]")
         console.print(f"[magenta]ID:[/magenta] {customer.id}")
         console.print(f"[magenta]Name:[/magenta] {customer.name}")
-        console.print(f"[magenta]Company name:[/magenta] {customer.company_name}")
+        console.print(
+            f"[magenta]Company name:[/magenta] {customer.company_name}"
+        )
         console.print(f"[magenta]Email:[/magenta] {customer.email}")
         console.print(f"[magenta]Phone:[/magenta] {customer.phone}")
 
