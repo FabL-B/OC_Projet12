@@ -1,54 +1,62 @@
+from rich.console import Console
+from rich.table import Table
+from rich.prompt import Prompt
+
+console = Console()
+
 class UserView:
     """View for user management."""
 
     @staticmethod
     def show_user_menu():
         """Displays the User panel menu."""
-        print("\nUser Panel")
-        print("1 - Show all users")
-        print("2 - Create a user")
-        print("3 - Return to main menu")
-        return input("Make your choice: ").strip()
+        console.print("[bold cyan]\nUser Panel[/bold cyan]")
+        console.print("[green]1 - Show all users[/green]")
+        console.print("[green]2 - Create a user[/green]")
+        console.print("[red]3 - Return to main menu[/red]")
+        return Prompt.ask("Make your choice")
 
     @staticmethod
     def display_users_and_get_choice(users):
-        """
-        Displays the list of users and allows selecting details
-        or going back.
-        """
+        """Displays the list of users and allows selecting details or going back."""
         if not users:
-            print("\nNo users found.")
+            console.print("[bold red]\nNo users found.[/bold red]")
             return None
 
-        print("\nUser List:")
+        table = Table(title="User List", show_lines=True)
+        table.add_column("ID", justify="center", style="cyan")
+        table.add_column("Name", style="magenta")
+        table.add_column("Email", style="green")
+        table.add_column("Role", style="yellow")
+
         for user in users:
-            print(
-                f"ID {user['id']} | {user['name']} | "
-                f"{user['email']} | {user['role']}"
+            table.add_row(
+                str(user['id']),
+                user['name'],
+                user['email'],
+                user['role']
             )
 
-        print("\n Actions:")
-        print("Enter a user ID to view details.")
-        print("Press Enter to return to the previous menu.")
-
-        user_id = input("User ID: ").strip()
+        console.print(table)
+        console.print("[bold]Enter a user ID to view details or press Enter to return.[/bold]")
+        user_id = Prompt.ask("User ID", default="")
         return int(user_id) if user_id.isdigit() else None
 
     @staticmethod
     def display_user_details_and_get_choice(user):
         """Displays a user's details and provides action options."""
-        print("\nUser Details")
-        print(f"ID: {user.id}")
-        print(f"Name: {user.name}")
-        print(f"Email: {user.email}")
-        print(f"Role: {user.role}")
+        console.print("[bold cyan]\nUser Details[/bold cyan]")
+        console.print(f"[magenta]ID:[/magenta] {user.id}")
+        console.print(f"[magenta]Name:[/magenta] {user.name}")
+        console.print(f"[magenta]Email:[/magenta] {user.email}")
+        console.print(f"[magenta]Role:[/magenta] {user.role}")
 
-        print("\nActions:")
-        print("1 - Edit user")
-        print("2 - Delete user")
-        print("3 - Return to the user list")
+        console.print("\n[bold]Actions:[/bold]")
+        console.print("[green]1 - Edit user[/green]")
+        console.print("[green]2 - Delete user[/green]")
+        console.print("[red]3 - Return to the user list[/red]")
 
-        return input("Make your choice: ").strip()
+        return Prompt.ask("Make your choice")
 
     @staticmethod
     def get_user_update_data():

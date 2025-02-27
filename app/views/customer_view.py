@@ -1,59 +1,66 @@
+from rich.console import Console
+from rich.table import Table
+from rich.prompt import Prompt
+
+console = Console()
+
 class CustomerView:
     """View for customer management."""
 
     @staticmethod
     def show_customer_menu():
         """Displays the Customer panel menu and gets the user's choice."""
-        print("\nCustomer Panel")
-        print("1 - Show all customers")
-        print("2 - Show my customers only")
-        print("3 - Create a customer")
-        print("4 - Return to main menu")
-        return input("Make your choice: ").strip()
+        console.print("[bold cyan]\nCustomer Panel[/bold cyan]")
+        console.print("[green]1 - Show all customers[/green]")
+        console.print("[green]2 - Show my customers only[/green]")
+        console.print("[yellow]3 - Create a customer[/yellow]")
+        console.print("[red]4 - Return to main menu[/red]")
+        return Prompt.ask("Make your choice")
 
     @staticmethod
     def display_customers_and_get_choice(customers):
-        """
-        Displays the list of customers and allows viewing details
-        or going back.
-        """
+        """Displays the list of customers and allows viewing details or going back."""
         if not customers:
-            print("\nNo customers found.")
+            console.print("[bold red]\nNo customers found.[/bold red]")
             return None
 
-        print("\nCustomer List:")
+        table = Table(title="Customer List", show_lines=True)
+        table.add_column("ID", justify="center", style="cyan")
+        table.add_column("Name", style="magenta")
+        table.add_column("Company Name", style="yellow")
+        table.add_column("Email", style="green")
+        table.add_column("Phone", style="blue")
+
         for customer in customers:
-            print(
-                f"ID: {customer['id']} | "
-                f"Name: {customer['name']} | "
-                f"Company name: {customer['company_name']} | "
-                f"Email: {customer['email']} | "
-                f"Phone: {customer['phone']}"
+            table.add_row(
+                str(customer['id']),
+                customer['name'],
+                customer['company_name'],
+                customer['email'],
+                customer['phone']
             )
 
-        print("\nActions:")
-        print("Enter a customer ID to view details.")
-        print("Press Enter to return to the previous menu.")
-
-        customer_id = input("Customer ID: ").strip()
+        console.print(table)
+        console.print("[bold]Enter a customer ID to view details or press Enter to return.[/bold]")
+        customer_id = Prompt.ask("Customer ID", default="")
         return int(customer_id) if customer_id.isdigit() else None
 
     @staticmethod
     def display_customer_details_and_get_choice(customer):
         """Displays customer details and provides action options."""
-        print("\nCustomer Details")
-        print(f"ID: {customer.id}")
-        print(f"Name: {customer.name}")
-        print(f"Company name: {customer.company_name}")
-        print(f"Email: {customer.email}")
-        print(f"Phone: {customer.phone}")
+        console.print("[bold cyan]\nCustomer Details[/bold cyan]")
+        console.print(f"[magenta]ID:[/magenta] {customer.id}")
+        console.print(f"[magenta]Name:[/magenta] {customer.name}")
+        console.print(f"[magenta]Company name:[/magenta] {customer.company_name}")
+        console.print(f"[magenta]Email:[/magenta] {customer.email}")
+        console.print(f"[magenta]Phone:[/magenta] {customer.phone}")
 
-        print("\nActions:")
-        print("1 - Edit customer")
-        print("2 - Delete customer")
-        print("3 - Return to the customer list")
+        console.print("\n[bold]Actions:[/bold]")
+        console.print("[green]1 - Edit customer[/green]")
+        console.print("[green]2 - Delete customer[/green]")
+        console.print("[red]3 - Return to the customer list[/red]")
 
-        return input("Make your choice: ").strip()
+        return Prompt.ask("Make your choice")
 
     @staticmethod
     def get_customer_creation_data():

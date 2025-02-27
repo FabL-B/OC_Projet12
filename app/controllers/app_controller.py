@@ -54,6 +54,7 @@ class AppController:
 
             if choice == "1":
                 self.user_controller.list_all_users(self.session)
+            #Ajouter un list user par role
             elif choice == "2":
                 self.user_controller.create_user(self.session)
             elif choice == "3":

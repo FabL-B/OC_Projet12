@@ -1,57 +1,65 @@
+from rich.console import Console
+from rich.table import Table
+from rich.prompt import Prompt
+
+console = Console()
+
 class EventView:
     """View for event management."""
 
     @staticmethod
     def show_event_menu():
         """Displays the Event panel menu."""
-        print("\nEvent Panel")
-        print("1 - Show all events")
-        print("2 - Show my events only")
-        print("3 - Create an event")
-        print("4 - Return to main menu")
-        return input("Make your choice: ").strip()
+        console.print("[bold cyan]\nEvent Panel[/bold cyan]")
+        console.print("[green]1 - Show all events[/green]")
+        console.print("[green]2 - Show my events only[/green]")
+        console.print("[green]3 - Create an event[/green]")
+        console.print("[red]4 - Return to main menu[/red]")
+        return Prompt.ask("Make your choice")
 
     @staticmethod
     def display_events_and_get_choice(events):
-        """
-        Displays the list of events and allows viewing details
-        or going back.
-        """
+        """Displays the list of events and allows viewing details or going back."""
         if not events:
-            print("\nNo events found.")
+            console.print("[bold red]\nNo events found.[/bold red]")
             return None
 
-        print("\nEvent List:")
+        table = Table(title="Event List", show_lines=True)
+        table.add_column("ID", justify="center", style="cyan")
+        table.add_column("Start Date", style="magenta")
+        table.add_column("End Date", style="yellow")
+        table.add_column("Location", style="green")
+
         for event in events:
-            print(
-                f"ID: {event['id']} | Date: {event['start_date']} | "
-                f"Location: {event['location']}"
+            table.add_row(
+                str(event['id']),
+                event['start_date'],
+                event['end_date'],
+                event['location']
             )
 
-        print("\nActions:")
-        print("Enter an event ID to view its details.")
-        print("Press Enter to return to the previous menu.")
-
-        event_id = input("Event ID: ").strip()
+        console.print(table)
+        console.print("[bold]Enter an event ID to view details or press Enter to return.[/bold]")
+        event_id = Prompt.ask("Event ID", default="")
         return int(event_id) if event_id.isdigit() else None
 
     @staticmethod
     def display_event_details_and_get_choice(event):
         """Displays event details and provides action options."""
-        print("\nEvent Details")
-        print(f"ID: {event.id}")
-        print(f"Start Date: {event.start_date}")
-        print(f"End Date: {event.end_date}")
-        print(f"Location: {event.location}")
-        print(f"Number of Attendees: {event.attendees}")
-        print(f"Notes: {event.notes}")
+        console.print("[bold cyan]\nEvent Details[/bold cyan]")
+        console.print(f"[magenta]ID:[/magenta] {event.id}")
+        console.print(f"[magenta]Start Date:[/magenta] {event.start_date}")
+        console.print(f"[magenta]End Date:[/magenta] {event.end_date}")
+        console.print(f"[magenta]Location:[/magenta] {event.location}")
+        console.print(f"[magenta]Attendees:[/magenta] {event.attendees}")
+        console.print(f"[magenta]Notes:[/magenta] {event.notes}")
 
-        print("\nActions:")
-        print("1 - Edit event")
-        print("2 - Delete event")
-        print("3 - Return to event list")
+        console.print("\n[bold]Actions:[/bold]")
+        console.print("[green]1 - Edit event[/green]")
+        console.print("[green]2 - Delete event[/green]")
+        console.print("[red]3 - Return to event list[/red]")
 
-        return input("Make your choice: ").strip()
+        return Prompt.ask("Make your choice")
 
     @staticmethod
     def get_event_creation_data():
