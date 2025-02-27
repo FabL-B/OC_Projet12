@@ -7,11 +7,15 @@ class Event(Base):
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True, index=True)
-    contract_id = Column(Integer, ForeignKey("contracts.id"), nullable=False)
+    contract_id = Column(
+        Integer,
+        ForeignKey("contracts.id", ondelete="CASCADE"),
+        nullable=False
+    )
     support_contact_id = Column(
         Integer,
-        ForeignKey("users.id"),
-        nullable=False
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True
     )
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
@@ -19,7 +23,11 @@ class Event(Base):
     attendees = Column(Integer, nullable=False)
     notes = Column(String(1000), nullable=True)
 
-    contract = relationship("Contract", back_populates="events")
+    contract = relationship(
+        "Contract",
+        back_populates="events",
+        cascade="all, delete"
+    )
     support_contact = relationship("User", back_populates="events")
 
     def __repr__(self):

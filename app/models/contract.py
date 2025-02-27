@@ -8,7 +8,11 @@ class Contract(Base):
     __tablename__ = "contracts"
 
     id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
+    customer_id = Column(
+        Integer,
+        ForeignKey("customers.id", ondelete="CASCADE"),
+        nullable=False
+    )
     amount = Column(Float, nullable=False)
     amount_due = Column(Float, nullable=False)
     status = Column(
@@ -20,7 +24,11 @@ class Contract(Base):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     customer = relationship("Customer", back_populates="contracts")
-    events = relationship("Event", back_populates="contract")
+    events = relationship(
+        "Event",
+        back_populates="contract",
+        cascade="all, delete"
+    )
 
     @property
     def sales_contact_id(self):

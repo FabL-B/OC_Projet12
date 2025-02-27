@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from app.repository.user_repository import UserRepository
 from app.models.user import User
+from app.models.customer import Customer
+from app.models.event import Event
 from app.auth.auth import Auth
 from app.utils.transaction import transactional_session
 
@@ -45,6 +47,19 @@ class UserService:
             user = UserRepository.get_user_by_id(s, user_id)
             if not user:
                 raise ValueError("User not found.")
+            # Update related customers or events on role update
+            new_role = data.get("role")
+            if new_role and new_role != user.role:
+                if user.role == "Sales":
+                    s.query(Customer).filter_by(
+                        sales_contact_id=user_id).update(
+                            {"sales_contact_id": None}
+                        )
+                if user.role == "Support":
+                    s.query(Event).filter_by(
+                        support_contact_id=user_id).update(
+                            {"support_contact_id": None}
+                        )
             return UserRepository.update_user(s, user_id, data)
 
     @staticmethod
@@ -54,6 +69,11 @@ class UserService:
             user = UserRepository.get_user_by_id(s, user_id)
             if not user:
                 raise ValueError("User not found.")
+            # Update related customers or events on role update
+            session.query(Customer).filter_by(sales_contact_id=user_id).update(
+                {"sales_contact_id": None})
+            session.query(Event).filter_by(support_contact_id=user_id).update(
+                {"support_contact_id": None})
             return UserRepository.delete_user(s, user_id)
 
     @staticmethod
