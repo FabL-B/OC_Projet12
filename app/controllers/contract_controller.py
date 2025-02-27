@@ -2,6 +2,7 @@ from app.services.contract_service import ContractService
 from app.auth.auth import auth_required
 from app.permissions.permission import ContractPermission, permission_required
 from app.views.contract_view import ContractView
+from app.sentry.logger import sentry_log_exception, sentry_log_event
 
 
 class ContractController:
@@ -23,7 +24,6 @@ class ContractController:
 
             if contract_id is None:
                 break
-
             self.show_contract_details(session, contract_id)
 
     @auth_required
@@ -38,7 +38,6 @@ class ContractController:
 
             if contract_id is None:
                 break
-
             self.show_contract_details(session, contract_id)
 
     @auth_required
@@ -53,7 +52,6 @@ class ContractController:
 
             if contract_id is None:
                 break
-
             self.show_contract_details(session, contract_id)
 
     @auth_required
@@ -84,29 +82,57 @@ class ContractController:
     @permission_required("create")
     def create_contract(self, user_payload, session):
         """Creates a new contract."""
-        contract_data = ContractView.get_contract_creation_data()
-        self.service.create(session, **contract_data)
-        print("Contract successfully created.")
+        try:
+            contract_data = ContractView.get_contract_creation_data()
+            self.service.create(session, **contract_data)
+            print("Contract successfully created.")
+            sentry_log_event("Contract successfully created.", level="info")
+        except Exception as e:
+            sentry_log_exception(e)
+            print("An error occurred during contract creation.")
+            raise
 
     @auth_required
     @permission_required("update", requires_object=True)
     def update_contract(self, user_payload, session, **kwargs):
         """Updates an existing contract."""
-        contract = kwargs.get("obj")
-        updated_data = ContractView.get_contract_update_data()
-        if updated_data:
-            self.service.update(session, contract.id, updated_data)
-            print(f"Contract {contract.id} successfully updated.")
+        try:
+            contract = kwargs.get("obj")
+            updated_data = ContractView.get_contract_update_data()
+            if updated_data:
+                self.service.update(session, contract.id, updated_data)
+                print(f"Contract {contract.id} successfully updated.")
+                if updated_data.get("status") == "signed":
+                    sentry_log_event(
+                        f"Contract {contract.id} signed.", level="info"
+                    )
+                else:
+                    sentry_log_event(
+                        f"Contract {contract.id} updated.", level="info"
+                    )
+        except Exception as e:
+            sentry_log_exception(e)
+            print(f"An error occurred during updating contract {contract.id}.")
+            raise
 
     @auth_required
     @permission_required("delete", requires_object=True)
     def delete_contract(self, user_payload, session, **kwargs):
         """Deletes a contract after confirmation."""
-        contract = kwargs.get("obj")
-        confirm = input(
-            f"Confirm deletion of contract {contract.id}? (y/n): "
-        ).strip().lower()
-
-        if confirm == "y":
-            self.service.delete(session, contract.id)
-            print(f"Contract {contract.id} successfully deleted.")
+        try:
+            contract = kwargs.get("obj")
+            confirm = input(
+                f"Confirm deletion of contract {contract.id}? (y/n): "
+            ).strip().lower()
+            if confirm == "y":
+                self.service.delete(session, contract.id)
+                print(f"Contract {contract.id} successfully deleted.")
+                sentry_log_event(
+                    f"Contract {contract.id} deleted.", level="info"
+                )
+        except Exception as e:
+            sentry_log_exception(e)
+            print(
+                f"An error occurred during deletion of contract {contract.id}."
+            )
+            raise

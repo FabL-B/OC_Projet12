@@ -2,6 +2,7 @@ from app.services.user_service import UserService
 from app.auth.auth import auth_required, Auth
 from app.permissions.permission import UserPermission, permission_required
 from app.views.user_view import UserView
+from app.sentry.logger import sentry_log_exception, sentry_log_event
 
 
 class UserController:
@@ -56,30 +57,50 @@ class UserController:
     @permission_required("create")
     def create_user(self, user_payload, session):
         """Create a new user."""
-        user_data = UserView.get_user_creation_data()
-        self.service.create(session, **user_data)
-        print("User successfully created.")
+        try:
+            user_data = UserView.get_user_creation_data()
+            self.service.create(session, **user_data)
+            print("User successfully created.")
+            sentry_log_event(
+                f"Created user: {user_data.get('name')}", level="info"
+            )
+        except Exception as e:
+            sentry_log_exception(e)
+            print("An error occurred during user creation.")
+            raise
 
     @auth_required
     @permission_required("update")
     def update_user(self, user_payload, session, user_id):
         """Update an existing user."""
-        updated_data = UserView.get_user_update_data()
-        if updated_data:
-            self.service.update(session, user_id, updated_data)
-            print(f"User {user_id} successfully updated.")
+        try:
+            updated_data = UserView.get_user_update_data()
+            if updated_data:
+                self.service.update(session, user_id, updated_data)
+                print(f"User {user_id} successfully updated.")
+                sentry_log_event(f"Updated user {user_id}", level="info")
+        except Exception as e:
+            sentry_log_exception(e)
+            print(f"An error occurred during updating user {user_id}.")
+            raise
 
     @auth_required
     @permission_required("delete")
     def delete_user(self, user_payload, session, user_id):
         """Delete a user."""
-        confirm = input(
-            f"Confirm deletion of user {user_id}? (y/n): "
-        ).strip().lower()
+        try:
+            confirm = input(
+                f"Confirm deletion of user {user_id}? (y/n): "
+            ).strip().lower()
 
-        if confirm == "y":
-            self.service.delete(session, user_id)
-            print(f"User {user_id} successfully deleted.")
+            if confirm == "y":
+                self.service.delete(session, user_id)
+                print(f"User {user_id} successfully deleted.")
+                sentry_log_event(f"Deleted user {user_id}", level="info")
+        except Exception as e:
+            sentry_log_exception(e)
+            print(f"An error occurred during deletion of user {user_id}.")
+            raise
 
     def login_user(self, session, email, password):
         """Allow a user to log in."""

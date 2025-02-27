@@ -4,6 +4,7 @@ from app.controllers.customer_controller import CustomerController
 from app.controllers.contract_controller import ContractController
 from app.controllers.event_controller import EventController
 from app.views.app_view import AppView
+from app.sentry.logger import sentry_log_exception
 
 
 class AppController:
@@ -20,7 +21,6 @@ class AppController:
         self.event_controller = EventController()
         self.user_payload = None
 
-        # Main menu options
         self.main_menu_actions = {
             "1": ("User Panel", self.show_user_panel),
             "2": ("Customer Panel", self.show_customer_panel),
@@ -32,14 +32,14 @@ class AppController:
         self.user_menu_actions = {
             "1": self.user_controller.list_all_users,
             "2": self.user_controller.create_user,
-            "3": None,  # Return to main menu
+            "3": None,
         }
 
         self.customer_menu_actions = {
             "1": self.customer_controller.list_all_customers,
             "2": self.customer_controller.list_my_customers,
             "3": self.customer_controller.create_customer,
-            "4": None,  # Return to main menu
+            "4": None,
         }
 
         self.contract_menu_actions = {
@@ -47,14 +47,14 @@ class AppController:
             "2": self.contract_controller.list_unsigned_contracts,
             "3": self.contract_controller.list_unpaid_contracts,
             "4": self.contract_controller.create_contract,
-            "5": None,  # Return to main menu
+            "5": None,
         }
 
         self.event_menu_actions = {
             "1": self.event_controller.list_all_events,
             "2": self.event_controller.list_my_events,
             "3": self.event_controller.create_event,
-            "4": None,  # Return to main menu
+            "4": None,
         }
 
     def authenticate_user(self):
@@ -83,7 +83,7 @@ class AppController:
             if action:
                 action(self.session)
             elif action is None:
-                return  # Return to the previous menu
+                return
             else:
                 print("\nInvalid choice, please try again.")
 
@@ -128,4 +128,5 @@ class AppController:
             except PermissionError as e:
                 print(f"\nAccess Denied: {e}")
             except Exception as e:
+                sentry_log_exception(e)
                 print(f"\nUnexpected Error: {e}")

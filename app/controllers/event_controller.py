@@ -2,6 +2,7 @@ from app.services.event_service import EventService
 from app.auth.auth import auth_required
 from app.permissions.permission import EventPermission, permission_required
 from app.views.event_view import EventView
+from app.sentry.logger import sentry_log_exception, sentry_log_event
 
 
 class EventController:
@@ -65,29 +66,48 @@ class EventController:
     @permission_required("create")
     def create_event(self, user_payload, session):
         """Creates a new event."""
-        event_data = EventView.get_event_creation_data()
-        self.service.create(session, **event_data)
-        print("Event successfully created.")
+        try:
+            event_data = EventView.get_event_creation_data()
+            self.service.create(session, **event_data)
+            print("Event successfully created.")
+            sentry_log_event(
+                f"Created event: {event_data.get('location')}", level="info"
+            )
+        except Exception as e:
+            sentry_log_exception(e)
+            print("An error occurred during event creation.")
+            raise
 
     @auth_required
     @permission_required("update", requires_object=True)
     def update_event(self, user_payload, session, **kwargs):
         """Updates an existing event."""
-        event = kwargs.get("obj")
-        updated_data = EventView.get_event_update_data()
-        if updated_data:
-            self.service.update(session, event.id, updated_data)
-            print(f"Event {event.id} successfully updated.")
+        try:
+            event = kwargs.get("obj")
+            updated_data = EventView.get_event_update_data()
+            if updated_data:
+                self.service.update(session, event.id, updated_data)
+                print(f"Event {event.id} successfully updated.")
+                sentry_log_event(f"Updated event {event.id}", level="info")
+        except Exception as e:
+            sentry_log_exception(e)
+            print(f"An error occurred during updating event {event.id}.")
+            raise
 
     @auth_required
     @permission_required("delete", requires_object=True)
     def delete_event(self, user_payload, session, **kwargs):
         """Deletes an event after confirmation."""
-        event = kwargs.get("obj")
-        confirm = input(
-            f"Confirm deletion of event {event.id}? (y/n): "
-        ).strip().lower()
-
-        if confirm == "y":
-            self.service.delete(session, event.id)
-            print(f"Event {event.id} successfully deleted.")
+        try:
+            event = kwargs.get("obj")
+            confirm = input(
+                f"Confirm deletion of event {event.id}? (y/n): "
+            ).strip().lower()
+            if confirm == "y":
+                self.service.delete(session, event.id)
+                print(f"Event {event.id} successfully deleted.")
+                sentry_log_event(f"Deleted event {event.id}", level="info")
+        except Exception as e:
+            sentry_log_exception(e)
+            print(f"An error occurred during deletion of event {event.id}.")
+            raise
