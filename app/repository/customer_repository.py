@@ -7,7 +7,6 @@ class CustomerRepository:
     def create_customer(session, customer):
         """Create a new customer in data base."""
         session.add(customer)
-        session.commit()
         session.refresh(customer)
         return customer
 
@@ -18,7 +17,6 @@ class CustomerRepository:
         if customer:
             for key, value in data.items():
                 setattr(customer, key, value)
-            session.commit()
         return customer
 
     @staticmethod
@@ -26,7 +24,6 @@ class CustomerRepository:
         """Delete a customer frome database."""
         customer = session.get(Customer, customer_id)
         session.delete(customer)
-        session.commit()
         return customer
 
     @staticmethod

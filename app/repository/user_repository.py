@@ -7,7 +7,6 @@ class UserRepository:
     def create_user(session, user):
         """Create a new user in data base."""
         session.add(user)
-        session.commit()
         session.refresh(user)
         return user
 
@@ -18,7 +17,6 @@ class UserRepository:
         if user:
             for key, value in data.items():
                 setattr(user, key, value)
-            session.commit()
         return user
 
     @staticmethod
@@ -26,7 +24,6 @@ class UserRepository:
         """Delete a user from database."""
         user = session.get(User, user_id)
         session.delete(user)
-        session.commit()
         return user
 
     @staticmethod

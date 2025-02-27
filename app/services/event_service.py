@@ -1,5 +1,6 @@
 from app.repository.event_repository import EventRepository
 from app.models.event import Event
+from app.utils.transaction import transactional_session
 
 
 class EventService:
@@ -39,30 +40,32 @@ class EventService:
     def create(session, contract_id, support_contact_id,
                start_date, end_date, location, attendees, notes):
         """Create a new event."""
-        event = Event(
-            contract_id=contract_id,
-            support_contact_id=support_contact_id,
-            start_date=start_date,
-            end_date=end_date,
-            location=location,
-            attendees=attendees,
-            notes=notes
-        )
-        return EventRepository.create_event(session, event)
+        with transactional_session(session) as s:
+            event = Event(
+                contract_id=contract_id,
+                support_contact_id=support_contact_id,
+                start_date=start_date,
+                end_date=end_date,
+                location=location,
+                attendees=attendees,
+                notes=notes
+            )
+            return EventRepository.create_event(s, event)
 
     @staticmethod
     def update(session, event_id, data):
         """Update an existing event."""
-        event = EventRepository.get_event_by_id(session, event_id)
-        if not event:
-            raise ValueError("Event not found.")
-        return EventRepository.update_event(session, event_id, data)
+        with transactional_session(session) as s:
+            event = EventRepository.get_event_by_id(s, event_id)
+            if not event:
+                raise ValueError("Event not found.")
+            return EventRepository.update_event(s, event_id, data)
 
     @staticmethod
     def delete(session, event_id):
         """Delete an event."""
-        event = EventRepository.get_event_by_id(session, event_id)
-        if not event:
-            raise ValueError("Event not found.")
-
-        return EventRepository.delete_event(session, event_id)
+        with transactional_session(session) as s:
+            event = EventRepository.get_event_by_id(s, event_id)
+            if not event:
+                raise ValueError("Event not found.")
+            return EventRepository.delete_event(s, event_id)

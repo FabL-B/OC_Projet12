@@ -1,5 +1,6 @@
 from app.repository.customer_repository import CustomerRepository
 from app.models.customer import Customer
+from app.utils.transaction import transactional_session
 
 
 class CustomerService:
@@ -60,40 +61,37 @@ class CustomerService:
     @staticmethod
     def create(session, name, company_name, email, phone, sales_contact_id):
         """Creates a new customer."""
-
-        if CustomerService.check_if_customer_exists(
-            session,
-            email,
-            company_name, phone
-        ):
-            raise ValueError(
-                "A customer with this email, "
-                "company name, or phone number already exists."
+        with transactional_session(session) as s:
+            if CustomerService.check_if_customer_exists(
+                s, email, company_name, phone
+            ):
+                raise ValueError(
+                    "A customer with this email, company name, "
+                    "or phone number already exists."
+                )
+            customer = Customer(
+                name=name,
+                company_name=company_name,
+                email=email,
+                phone=phone,
+                sales_contact_id=sales_contact_id
             )
-
-        customer = Customer(
-            name=name,
-            company_name=company_name,
-            email=email,
-            phone=phone,
-            sales_contact_id=sales_contact_id
-        )
-
-        return CustomerRepository.create_customer(session, customer)
+            return CustomerRepository.create_customer(s, customer)
 
     @staticmethod
     def update(session, customer_id, data):
         """Update an existing customer."""
-        event = CustomerRepository.get_customer_by_id(session, customer_id)
-        if not event:
-            raise ValueError("Customer not found.")
-        return CustomerRepository.update_customer(session, customer_id, data)
+        with transactional_session(session) as s:
+            customer = CustomerRepository.get_customer_by_id(s, customer_id)
+            if not customer:
+                raise ValueError("Customer not found.")
+            return CustomerRepository.update_customer(s, customer_id, data)
 
     @staticmethod
     def delete(session, customer_id):
         """Delete a customer."""
-        customer = CustomerRepository.get_customer_by_id(session, customer_id)
-        if not customer:
-            raise ValueError("Customer not found.")
-
-        return CustomerRepository.delete_customer(session, customer_id)
+        with transactional_session(session) as s:
+            customer = CustomerRepository.get_customer_by_id(s, customer_id)
+            if not customer:
+                raise ValueError("Customer not found.")
+            return CustomerRepository.delete_customer(s, customer_id)

@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from app.repository.user_repository import UserRepository
 from app.models.user import User
 from app.auth.auth import Auth
+from app.utils.transaction import transactional_session
 
 
 class UserService:
@@ -28,31 +29,32 @@ class UserService:
     @staticmethod
     def create(session, name, email, password, role):
         """Creates a user."""
-        existing_user = UserRepository.get_user_by_email(session, email)
-        if existing_user:
-            raise ValueError("A user with this email already exists.")
+        with transactional_session(session) as s:
+            existing_user = UserRepository.get_user_by_email(s, email)
+            if existing_user:
+                raise ValueError("A user with this email already exists.")
 
-        user = User(name=name, email=email, role=role)
-        user.set_password(password)
-
-        return UserRepository.create_user(session, user)
+            user = User(name=name, email=email, role=role)
+            user.set_password(password)
+            return UserRepository.create_user(s, user)
 
     @staticmethod
     def update(session, user_id, data):
         """Update an existing user."""
-        user = UserRepository.get_user_by_id(session, user_id)
-        if not user:
-            raise ValueError("User not found.")
-        return UserRepository.update_user(session, user_id, data)
+        with transactional_session(session) as s:
+            user = UserRepository.get_user_by_id(s, user_id)
+            if not user:
+                raise ValueError("User not found.")
+            return UserRepository.update_user(s, user_id, data)
 
     @staticmethod
     def delete(session, user_id):
         """Delete a user."""
-        user = UserRepository.get_user_by_id(session, user_id)
-        if not user:
-            raise ValueError("User not found.")
-
-        return UserRepository.delete_user(session, user_id)
+        with transactional_session(session) as s:
+            user = UserRepository.get_user_by_id(s, user_id)
+            if not user:
+                raise ValueError("User not found.")
+            return UserRepository.delete_user(s, user_id)
 
     @staticmethod
     def get_user_by_email(session, user_email):

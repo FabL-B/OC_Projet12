@@ -7,7 +7,6 @@ class ContractRepository:
     def create_contract(session, contract):
         """Create a new contract in database."""
         session.add(contract)
-        session.commit()
         session.refresh(contract)
         return contract
 
@@ -18,7 +17,6 @@ class ContractRepository:
         if contract:
             for key, value in data.items():
                 setattr(contract, key, value)
-            session.commit()
         return contract
 
     @staticmethod
@@ -26,7 +24,6 @@ class ContractRepository:
         """Delete a contract from database."""
         contract = session.get(Contract, contract_id)
         session.delete(contract)
-        session.commit()
         return contract
 
     @staticmethod
