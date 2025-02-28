@@ -40,17 +40,16 @@ class EventService:
     def create(session, contract_id, support_contact_id,
                start_date, end_date, location, attendees, notes):
         """Create a new event."""
-        with transactional_session(session) as s:
-            event = Event(
-                contract_id=contract_id,
-                support_contact_id=support_contact_id,
-                start_date=start_date,
-                end_date=end_date,
-                location=location,
-                attendees=attendees,
-                notes=notes
-            )
-            return EventRepository.create_event(s, event)
+        event = Event(
+            contract_id=contract_id,
+            support_contact_id=support_contact_id,
+            start_date=start_date,
+            end_date=end_date,
+            location=location,
+            attendees=attendees,
+            notes=notes
+        )
+        return EventRepository.create_event(session, event)
 
     @staticmethod
     def update(session, event_id, data):

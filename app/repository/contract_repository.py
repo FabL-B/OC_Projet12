@@ -7,6 +7,7 @@ class ContractRepository:
     def create_contract(session, contract):
         """Create a new contract in database."""
         session.add(contract)
+        session.commit()
         session.refresh(contract)
         return contract
 

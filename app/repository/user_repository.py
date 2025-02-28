@@ -7,6 +7,7 @@ class UserRepository:
     def create_user(session, user):
         """Create a new user in data base."""
         session.add(user)
+        session.commit()
         session.refresh(user)
         return user
 
@@ -32,9 +33,9 @@ class UserRepository:
         return session.get(User, user_id)
 
     @staticmethod
-    def get_user_by_email(session, user_email):
+    def get_user_by_email(session, email):
         """Get user from database with its email."""
-        return session.query(User).filter_by(email=user_email).first()
+        return session.query(User).filter_by(email=email).first()
 
     @staticmethod
     def get_all_users(session):

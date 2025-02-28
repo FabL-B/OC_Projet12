@@ -61,22 +61,21 @@ class CustomerService:
     @staticmethod
     def create(session, name, company_name, email, phone, sales_contact_id):
         """Creates a new customer."""
-        with transactional_session(session) as s:
-            if CustomerService.check_if_customer_exists(
-                s, email, company_name, phone
-            ):
-                raise ValueError(
-                    "A customer with this email, company name, "
-                    "or phone number already exists."
-                )
-            customer = Customer(
-                name=name,
-                company_name=company_name,
-                email=email,
-                phone=phone,
-                sales_contact_id=sales_contact_id
+        if CustomerService.check_if_customer_exists(
+                session, email, company_name, phone
+        ):
+            raise ValueError(
+                "A customer with this email, company name, "
+                "or phone number already exists."
             )
-            return CustomerRepository.create_customer(s, customer)
+        customer = Customer(
+            name=name,
+            company_name=company_name,
+            email=email,
+            phone=phone,
+            sales_contact_id=sales_contact_id
+        )
+        return CustomerRepository.create_customer(session, customer)
 
     @staticmethod
     def update(session, customer_id, data):

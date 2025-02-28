@@ -7,6 +7,7 @@ class CustomerRepository:
     def create_customer(session, customer):
         """Create a new customer in data base."""
         session.add(customer)
+        session.commit()
         session.refresh(customer)
         return customer
 

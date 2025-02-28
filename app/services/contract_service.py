@@ -47,14 +47,13 @@ class ContractService:
     @staticmethod
     def create(session, customer_id, amount, amount_due, status):
         """Creates a new contract."""
-        with transactional_session(session) as s:
-            contract = Contract(
-                customer_id=customer_id,
-                amount=amount,
-                amount_due=amount_due,
-                status=status
-            )
-            return ContractRepository.create_contract(s, contract)
+        contract = Contract(
+            customer_id=customer_id,
+            amount=amount,
+            amount_due=amount_due,
+            status=status
+        )
+        return ContractRepository.create_contract(session, contract)
 
     @staticmethod
     def update(session, contract_id, data):
