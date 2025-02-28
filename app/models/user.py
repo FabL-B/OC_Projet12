@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from argon2 import PasswordHasher
@@ -14,16 +14,21 @@ class User(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
-    role = Column(
-        Enum("Sales", "Management", "Support", "Admin", name="user_roles"),
-        nullable=False
-    )
+    role = Column(String(20), nullable=False)
     created_at = Column(DateTime, default=datetime.now)
 
     customers = relationship("Customer", back_populates="sales_contact")
     events = relationship("Event", back_populates="support_contact")
 
     ph = PasswordHasher()
+
+    ALLOWED_ROLES = {"Sales", "Management", "Support", "Admin"}
+
+    def set_role(self, new_role):
+        """Sets the role for the user and validates its value."""
+        if new_role not in self.ALLOWED_ROLES:
+            raise ValueError(f"Invalid role: {new_role}. Allowed roles: {self.ALLOWED_ROLES}")
+        self.role = new_role
 
     def set_password(self, password: str):
         self.password_hash = self.ph.hash(password)

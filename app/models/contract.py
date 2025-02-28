@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Float, Enum, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, Float, String, DateTime
 from sqlalchemy.orm import relationship
 from config.database import Base
 from datetime import datetime
@@ -15,11 +15,7 @@ class Contract(Base):
     )
     amount = Column(Float, nullable=False)
     amount_due = Column(Float, nullable=False)
-    status = Column(
-        Enum("unsigned", "signed", name="contract_status"),
-        nullable=False,
-        default="unsigned"
-    )
+    status = Column(String(20), nullable=False, default="unsigned")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -29,6 +25,14 @@ class Contract(Base):
         back_populates="contract",
         cascade="all, delete"
     )
+
+    ALLOWED_STATUSES = {"unsigned", "signed"}
+
+    def set_status(self, new_status):
+        """Validates and sets the contract status."""
+        if new_status not in self.ALLOWED_STATUSES:
+            raise ValueError(f"Invalid status: {new_status}. Allowed statuses: {self.ALLOWED_STATUSES}")
+        self.status = new_status
 
     @property
     def sales_contact_id(self):

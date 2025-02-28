@@ -36,7 +36,8 @@ class UserService:
             if existing_user:
                 raise ValueError("A user with this email already exists.")
 
-            user = User(name=name, email=email, role=role)
+            user = User(name=name, email=email)
+            user.set_role(role)
             user.set_password(password)
             return UserRepository.create_user(s, user)
 
@@ -50,6 +51,7 @@ class UserService:
             # Update related customers or events on role update
             new_role = data.get("role")
             if new_role and new_role != user.role:
+                user.set_role(new_role)
                 if user.role == "Sales":
                     s.query(Customer).filter_by(
                         sales_contact_id=user_id).update(

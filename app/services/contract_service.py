@@ -52,8 +52,8 @@ class ContractService:
                 customer_id=customer_id,
                 amount=amount,
                 amount_due=amount_due,
-                status=status
             )
+            contract.set_status(status)
             return ContractRepository.create_contract(s, contract)
 
     @staticmethod
@@ -63,6 +63,8 @@ class ContractService:
             contract = ContractRepository.get_contract_by_id(s, contract_id)
             if not contract:
                 raise ValueError("Contract not found.")
+            if "status" in data:
+                contract.set_status(data["status"])
             return ContractRepository.update_contract(s, contract_id, data)
 
     @staticmethod
