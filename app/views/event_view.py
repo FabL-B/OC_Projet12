@@ -27,15 +27,15 @@ class EventView:
 
         table = Table(title="Event List", show_lines=True)
         table.add_column("ID", justify="center", style="cyan")
-        table.add_column("Start Date", style="magenta")
-        table.add_column("End Date", style="yellow")
-        table.add_column("Location", style="green")
+        table.add_column("Start Date", style="green")
+        table.add_column("End Date", style="green")
+        table.add_column("Location", style="yellow")
 
         for event in events:
             table.add_row(
                 str(event['id']),
-                event['start_date'],
-                event['end_date'],
+                event['start_date'].strftime('%Y-%m-%d'),
+                event['end_date'].strftime('%Y-%m-%d'),
                 event['location']
             )
 
@@ -49,14 +49,42 @@ class EventView:
 
     @staticmethod
     def display_event_details_and_get_choice(event):
-        """Displays event details and provides action options."""
-        console.print("[bold cyan]\nEvent Details[/bold cyan]")
-        console.print(f"[magenta]ID:[/magenta] {event.id}")
-        console.print(f"[magenta]Start Date:[/magenta] {event.start_date}")
-        console.print(f"[magenta]End Date:[/magenta] {event.end_date}")
-        console.print(f"[magenta]Location:[/magenta] {event.location}")
-        console.print(f"[magenta]Attendees:[/magenta] {event.attendees}")
-        console.print(f"[magenta]Notes:[/magenta] {event.notes}")
+        """Displays event details in a table and provides action options."""
+        table = Table(title="Event Details", show_lines=True)
+
+        table.add_column("ID", style="cyan", justify="center")
+        table.add_column("Start Date", style="magenta", justify="center")
+        table.add_column("End Date", style="magenta", justify="center")
+        table.add_column("Location", style="yellow", justify="center")
+        table.add_column("Attendees", style="green", justify="center")
+        table.add_column("Notes", style="blue", justify="center")
+        table.add_column("Support Contact", style="red", justify="center")
+        table.add_column("Contract ID", style="cyan", justify="center")
+        table.add_column("Client", style="magenta", justify="center")
+
+        support_contact = (
+            f"Name: {event.support_contact.name}"
+            if event.support_contact
+            else "N/A"
+        )
+
+        client_info = (
+            f"Comapany name: {event.contract.customer.company_name}"
+        )
+
+        table.add_row(
+            str(event.id),
+            event.start_date.strftime("%Y-%m-%d"),
+            event.end_date.strftime("%Y-%m-%d"),
+            event.location,
+            str(event.attendees),
+            event.notes if event.notes else "N/A",
+            support_contact,
+            str(event.contract.id),
+            client_info,
+        )
+
+        console.print(table)
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit event[/green]")

@@ -60,6 +60,14 @@ class CustomerView:
         )
         console.print(f"[magenta]Email:[/magenta] {customer.email}")
         console.print(f"[magenta]Phone:[/magenta] {customer.phone}")
+        console.print(
+            "[magenta]Created at:[/magenta] "
+            f"[green]{customer.created_at.strftime('%Y-%m-%d %H:%M')}[/green]"
+        )
+        console.print(
+            "[magenta]Updated at:[/magenta] "
+            f"[green]{customer.updated_at.strftime('%Y-%m-%d %H:%M')}[/green]"
+        )
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit customer[/green]")

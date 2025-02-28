@@ -54,6 +54,10 @@ class UserView:
         console.print(f"[magenta]Name:[/magenta] {user.name}")
         console.print(f"[magenta]Email:[/magenta] {user.email}")
         console.print(f"[magenta]Role:[/magenta] {user.role}")
+        console.print(
+            "[magenta]Created at:[/magenta]"
+            f"[green]{user.created_at.strftime('%Y-%m-%d %H:%M')}[/green]"
+        )
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit user[/green]")

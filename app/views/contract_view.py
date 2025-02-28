@@ -58,6 +58,14 @@ class ContractView:
         console.print(f"[magenta]Amount:[/magenta] {contract.amount}")
         console.print(f"[magenta]Amount Due:[/magenta] {contract.amount_due}")
         console.print(f"[magenta]Status:[/magenta] {contract.status}")
+        console.print(
+            "[magenta]Created at:[/magenta] "
+            f"[green]{contract.created_at.strftime('%Y-%m-%d %H:%M')}[/green]"
+        )
+        console.print(
+            "[magenta]Updated at:[/magenta] "
+            f"[green]{contract.updated_at.strftime('%Y-%m-%d %H:%M')}[/green]"
+        )
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit contract[/green]")
