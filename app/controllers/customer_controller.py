@@ -1,8 +1,8 @@
+import logging
 from app.services.customer_service import CustomerService
 from app.auth.auth import auth_required
 from app.permissions.permission import CustomerPermission, permission_required
 from app.views.customer_view import CustomerView
-from app.sentry.logger import sentry_log_exception, sentry_log_event
 
 
 class CustomerController:
@@ -75,12 +75,9 @@ class CustomerController:
             customer_data["sales_contact_id"] = user_payload["id"]
             self.service.create(session, **customer_data)
             print("Customer successfully created.")
-            sentry_log_event(
-                f"Created customer: {customer_data.get('name')}",
-                level="info"
-            )
+            logging.info(f"Created customer: {customer_data.get('name')}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print("An error occurred during customer creation.")
             raise
 
@@ -94,11 +91,9 @@ class CustomerController:
             if updated_data:
                 self.service.update(session, customer.id, updated_data)
                 print(f"Customer {customer.id} successfully updated.")
-                sentry_log_event(
-                    f"Updated customer {customer.id}", level="info"
-                )
+                logging.info(f"Updated customer {customer.id}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(f"An error occurred during updating customer {customer.id}.")
             raise
 
@@ -114,11 +109,9 @@ class CustomerController:
             if confirm == "y":
                 self.service.delete(session, customer.id)
                 print(f"Customer {customer.id} successfully deleted.")
-                sentry_log_event(
-                    f"Deleted customer {customer.id}", level="info"
-                )
+                logging.info(f"Deleted customer {customer.id}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(
                 f"An error occurred during deletion of customer {customer.id}."
             )

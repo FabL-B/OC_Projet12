@@ -31,12 +31,13 @@ class UserService:
     @staticmethod
     def create(session, name, email, password, role):
         """Creates a user."""
-        existing_user = UserRepository.get_user_by_email(session, email)
-        if existing_user:
-            raise ValueError("A user with this email already exists.")
-        user = User(name=name, email=email, role=role)
-        user.set_password(password)
-        return UserRepository.create_user(session, user)
+        with transactional_session(session) as s:
+            existing_user = UserRepository.get_user_by_email(s, email)
+            if existing_user:
+                raise ValueError("A user with this email already exists.")
+            user = User(name=name, email=email, role=role)
+            user.set_password(password)
+            return UserRepository.create_user(s, user)
 
     @staticmethod
     def update(session, user_id, data):

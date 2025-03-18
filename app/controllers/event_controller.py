@@ -1,8 +1,8 @@
+import logging
 from app.services.event_service import EventService
 from app.auth.auth import auth_required
 from app.permissions.permission import EventPermission, permission_required
 from app.views.event_view import EventView
-from app.sentry.logger import sentry_log_exception, sentry_log_event
 
 
 class EventController:
@@ -70,11 +70,9 @@ class EventController:
             event_data = EventView.get_event_creation_data()
             self.service.create(session, **event_data)
             print("Event successfully created.")
-            sentry_log_event(
-                f"Created event: {event_data.get('location')}", level="info"
-            )
+            logging.info(f"Created event: {event_data.get('location')}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print("An error occurred during event creation.")
             raise
 
@@ -88,9 +86,9 @@ class EventController:
             if updated_data:
                 self.service.update(session, event.id, updated_data)
                 print(f"Event {event.id} successfully updated.")
-                sentry_log_event(f"Updated event {event.id}", level="info")
+                logging.info(f"Updated event {event.id}", level="info")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(f"An error occurred during updating event {event.id}.")
             raise
 
@@ -106,8 +104,8 @@ class EventController:
             if confirm == "y":
                 self.service.delete(session, event.id)
                 print(f"Event {event.id} successfully deleted.")
-                sentry_log_event(f"Deleted event {event.id}", level="info")
+                logging.info(f"Deleted event {event.id}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(f"An error occurred during deletion of event {event.id}.")
             raise

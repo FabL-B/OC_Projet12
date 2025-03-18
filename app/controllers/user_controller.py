@@ -1,8 +1,8 @@
+import logging
 from app.services.user_service import UserService
 from app.auth.auth import auth_required, Auth
 from app.permissions.permission import UserPermission, permission_required
 from app.views.user_view import UserView
-from app.sentry.logger import sentry_log_exception, sentry_log_event
 
 
 class UserController:
@@ -61,11 +61,10 @@ class UserController:
             user_data = UserView.get_user_creation_data()
             self.service.create(session, **user_data)
             print("User successfully created.")
-            sentry_log_event(
-                f"Created user: {user_data.get('name')}", level="info"
-            )
+            logging.info(
+                f"Created user: {user_data.get('name')}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print("An error occurred during user creation.")
             raise
 
@@ -78,9 +77,9 @@ class UserController:
             if updated_data:
                 self.service.update(session, user_id, updated_data)
                 print(f"User {user_id} successfully updated.")
-                sentry_log_event(f"Updated user {user_id}", level="info")
+                logging.info(f"Updated user {user_id}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(f"An error occurred during updating user {user_id}.")
             raise
 
@@ -96,9 +95,9 @@ class UserController:
             if confirm == "y":
                 self.service.delete(session, user_id)
                 print(f"User {user_id} successfully deleted.")
-                sentry_log_event(f"Deleted user {user_id}", level="info")
+                logging.info(f"Deleted user {user_id}")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(f"An error occurred during deletion of user {user_id}.")
             raise
 

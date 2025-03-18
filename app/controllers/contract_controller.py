@@ -1,8 +1,8 @@
+import logging
 from app.services.contract_service import ContractService
 from app.auth.auth import auth_required
 from app.permissions.permission import ContractPermission, permission_required
 from app.views.contract_view import ContractView
-from app.sentry.logger import sentry_log_exception, sentry_log_event
 
 
 class ContractController:
@@ -86,9 +86,9 @@ class ContractController:
             contract_data = ContractView.get_contract_creation_data()
             self.service.create(session, **contract_data)
             print("Contract successfully created.")
-            sentry_log_event("Contract successfully created.", level="info")
+            logging.info("Contract successfully created.")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print("An error occurred during contract creation.")
             raise
 
@@ -103,15 +103,11 @@ class ContractController:
                 self.service.update(session, contract.id, updated_data)
                 print(f"Contract {contract.id} successfully updated.")
                 if updated_data.get("status") == "signed":
-                    sentry_log_event(
-                        f"Contract {contract.id} signed.", level="info"
-                    )
+                    logging.info(f"Contract {contract.id} signed.")
                 else:
-                    sentry_log_event(
-                        f"Contract {contract.id} updated.", level="info"
-                    )
+                    logging.info(f"Contract {contract.id} updated.")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(f"An error occurred during updating contract {contract.id}.")
             raise
 
@@ -127,11 +123,9 @@ class ContractController:
             if confirm == "y":
                 self.service.delete(session, contract.id)
                 print(f"Contract {contract.id} successfully deleted.")
-                sentry_log_event(
-                    f"Contract {contract.id} deleted.", level="info"
-                )
+                logging.info(f"Contract {contract.id} deleted.")
         except Exception as e:
-            sentry_log_exception(e)
+            logging.error(e)
             print(
                 f"An error occurred during deletion of contract {contract.id}."
             )
