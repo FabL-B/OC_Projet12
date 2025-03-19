@@ -9,16 +9,6 @@ class EventView:
     """View for event management."""
 
     @staticmethod
-    def show_event_menu():
-        """Displays the Event panel menu."""
-        console.print("[bold cyan]\nEvent Panel[/bold cyan]")
-        console.print("[green]1 - Show all events[/green]")
-        console.print("[green]2 - Show my events only[/green]")
-        console.print("[green]3 - Create an event[/green]")
-        console.print("[red]4 - Return to main menu[/red]")
-        return Prompt.ask("Make your choice")
-
-    @staticmethod
     def display_events_and_get_choice(events):
         """Displays the list of events and allows viewing details."""
         if not events:

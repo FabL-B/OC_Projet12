@@ -38,8 +38,9 @@ class AppController:
         self.customer_menu_actions = {
             "1": self.customer_controller.list_all_customers,
             "2": self.customer_controller.list_my_customers,
-            "3": self.customer_controller.create_customer,
-            "4": None,
+            "3": self.customer_controller.list_customers_without_sales_contact,
+            "4": self.customer_controller.create_customer,
+            "5": None,
         }
 
         self.contract_menu_actions = {
@@ -53,8 +54,9 @@ class AppController:
         self.event_menu_actions = {
             "1": self.event_controller.list_all_events,
             "2": self.event_controller.list_my_events,
-            "3": self.event_controller.create_event,
-            "4": None,
+            "3": self.event_controller.list_events_without_support_contact,
+            "4": self.event_controller.create_event,
+            "5": None,
         }
 
     def authenticate_user(self):

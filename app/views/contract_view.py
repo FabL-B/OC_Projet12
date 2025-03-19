@@ -9,18 +9,6 @@ class ContractView:
     """View for contract management."""
 
     @staticmethod
-    def show_contract_menu():
-        """Displays the Contract panel menu."""
-        console.print("\n[bold cyan]Contract Panel[/bold cyan]")
-        console.print("[green]1 - Show all contracts[/green]")
-        console.print("[green]2 - Filter unsigned contracts[/green]")
-        console.print("[green]3 - Filter unpaid contracts[/green]")
-        console.print("[green]4 - Create a contract[/green]")
-        console.print("[red]5 - Return to main menu[/red]")
-
-        return Prompt.ask("Make your choice")
-
-    @staticmethod
     def display_contracts_and_get_choice(contracts):
         """Displays the list of contracts and allows viewing details"""
         if not contracts:

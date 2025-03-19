@@ -94,3 +94,8 @@ class CustomerService:
             if not customer:
                 raise ValueError("Customer not found.")
             return CustomerRepository.delete_customer(s, customer_id)
+
+    @staticmethod
+    def list_customers_without_sales_contact(session):
+        """Returns all customers without an assigned sales contact."""
+        return CustomerRepository.get_customers_without_sales_contact(session)

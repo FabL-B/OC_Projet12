@@ -44,3 +44,9 @@ class EventRepository:
     def get_event_by_id(session, event_id):
         """Get an event from database with its ID."""
         return session.get(Event, event_id)
+
+    @staticmethod
+    def get_events_without_support_contact(session):
+        """Get all events that have no support contact assigned."""
+        return session.query(Event).filter(
+            Event.support_contact_id.is_(None)).all()

@@ -116,3 +116,10 @@ class CustomerController:
                 f"An error occurred during deletion of customer {customer.id}."
             )
             raise
+
+    @auth_required
+    @permission_required("list_all")
+    def list_customers_without_sales_contact(self, user_payload, session):
+        """Displays all customers that have no sales contact assigned."""
+        customers = self.service.list_customers_without_sales_contact(session)
+        CustomerView.display_customers_and_get_choice(customers)

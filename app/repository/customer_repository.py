@@ -58,3 +58,9 @@ class CustomerRepository:
         """Retrieves all customers managed by a specific sales."""
         return session.query(Customer).filter_by(
             sales_contact_id=sales_contact_id).all()
+
+    @staticmethod
+    def get_customers_without_sales_contact(session):
+        """Get all customers that have no sales contact assigned."""
+        return session.query(Customer).filter(
+            Customer.sales_contact_id.is_(None)).all()

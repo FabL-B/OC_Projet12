@@ -9,15 +9,6 @@ class UserView:
     """View for user management."""
 
     @staticmethod
-    def show_user_menu():
-        """Displays the User panel menu."""
-        console.print("[bold cyan]\nUser Panel[/bold cyan]")
-        console.print("[green]1 - Show all users[/green]")
-        console.print("[green]2 - Create a user[/green]")
-        console.print("[red]3 - Return to main menu[/red]")
-        return Prompt.ask("Make your choice")
-
-    @staticmethod
     def display_users_and_get_choice(users):
         """Displays the list of users and allows selecting details."""
         if not users:

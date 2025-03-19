@@ -9,16 +9,6 @@ class CustomerView:
     """View for customer management."""
 
     @staticmethod
-    def show_customer_menu():
-        """Displays the Customer panel menu and gets the user's choice."""
-        console.print("[bold cyan]\nCustomer Panel[/bold cyan]")
-        console.print("[green]1 - Show all customers[/green]")
-        console.print("[green]2 - Show my customers only[/green]")
-        console.print("[yellow]3 - Create a customer[/yellow]")
-        console.print("[red]4 - Return to main menu[/red]")
-        return Prompt.ask("Make your choice")
-
-    @staticmethod
     def display_customers_and_get_choice(customers):
         """Displays the list of customers and allows viewing details"""
         if not customers:

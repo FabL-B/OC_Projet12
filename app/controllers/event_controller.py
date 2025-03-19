@@ -109,3 +109,10 @@ class EventController:
             logging.error(e)
             print(f"An error occurred during deletion of event {event.id}.")
             raise
+
+    @auth_required
+    @permission_required("list_all")
+    def list_events_without_support_contact(self, user_payload, session):
+        """Displays all events that have no support contact assigned."""
+        events = self.service.list_events_without_support_contact(session)
+        EventView.display_events_and_get_choice(events)

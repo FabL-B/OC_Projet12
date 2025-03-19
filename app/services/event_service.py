@@ -68,3 +68,8 @@ class EventService:
             if not event:
                 raise ValueError("Event not found.")
             return EventRepository.delete_event(s, event_id)
+
+    @staticmethod
+    def list_events_without_support_contact(session):
+        """Returns all events without an assigned support contact."""
+        return EventRepository.get_events_without_support_contact(session)

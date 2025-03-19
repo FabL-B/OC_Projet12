@@ -36,7 +36,7 @@ class AppView:
         console.print("[bold cyan]\nUser Panel[/bold cyan]")
         console.print("[green]1 - Show all users[/green]")
         console.print("[green]2 - Create a user[/green]")
-        console.print("[red]3 - Return to main menu[/red]")
+        console.print("[yellow]3 - Return to main menu[/yellow]")
         return Prompt.ask("Make your choice")
 
     @staticmethod
@@ -44,9 +44,10 @@ class AppView:
         """Displays the Customer panel menu and gets the user's choice."""
         console.print("[bold cyan]\nCustomer Panel[/bold cyan]")
         console.print("[green]1 - Show all customers[/green]")
-        console.print("[green]2 - Show my customers[/green]")
-        console.print("[green]3 - Create a customer[/green]")
-        console.print("[red]4 - Return to main menu[/red]")
+        console.print("[green]2 - Show my customers only[/green]")
+        console.print("[green]3 - Show customers without sales[/green]")
+        console.print("[yellow]4 - Create a customer[/yellow]")
+        console.print("[yellow]5 - Return to main menu[/yellow]")
         return Prompt.ask("Make your choice")
 
     @staticmethod
@@ -57,7 +58,7 @@ class AppView:
         console.print("[green]2 - Filter unsigned contracts[/green]")
         console.print("[green]3 - Filter unpaid contracts[/green]")
         console.print("[green]4 - Create a contract[/green]")
-        console.print("[red]5 - Return to main menu[/red]")
+        console.print("[yellow]5 - Return to main menu[/yellow]")
         return Prompt.ask("Make your choice")
 
     @staticmethod
@@ -66,6 +67,7 @@ class AppView:
         console.print("[bold cyan]\nEvent Panel[/bold cyan]")
         console.print("[green]1 - Show all events[/green]")
         console.print("[green]2 - Show my events only[/green]")
-        console.print("[green]3 - Create an event[/green]")
-        console.print("[red]4 - Return to main menu[/red]")
+        console.print("[green]3 - Show events without support[/green]")
+        console.print("[yellow]4 - Create an event[/yellow]")
+        console.print("[yellow]5 - Return to main menu[/yellow]")
         return Prompt.ask("Make your choice")
