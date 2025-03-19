@@ -17,17 +17,13 @@ class Event(Base):
         ForeignKey("users.id", ondelete="SET NULL"),
         nullable=True
     )
-    start_date = Column(DateTime, nullable=False)
-    end_date = Column(DateTime, nullable=False)
-    location = Column(String(100), nullable=False)
-    attendees = Column(Integer, nullable=False)
+    start_date = Column(DateTime, nullable=True)
+    end_date = Column(DateTime, nullable=True)
+    location = Column(String(100), nullable=True)
+    attendees = Column(Integer, nullable=True)
     notes = Column(String(1000), nullable=True)
 
-    contract = relationship(
-        "Contract",
-        back_populates="events",
-        cascade="all, delete"
-    )
+    contract = relationship("Contract",back_populates="events")
     support_contact = relationship("User", back_populates="events")
 
     def __repr__(self):
