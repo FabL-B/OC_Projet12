@@ -63,6 +63,8 @@ class UserController:
             print("User successfully created.")
             logging.info(
                 f"Created user: {user_data.get('name')}")
+        except ValueError as e:
+            logging.error(e)
         except Exception as e:
             logging.error(e)
             print("An error occurred during user creation.")
@@ -78,6 +80,8 @@ class UserController:
                 self.service.update(session, user_id, updated_data)
                 print(f"User {user_id} successfully updated.")
                 logging.info(f"Updated user {user_id}")
+        except ValueError as e:
+            logging.error(e)
         except Exception as e:
             logging.error(e)
             print(f"An error occurred during updating user {user_id}.")

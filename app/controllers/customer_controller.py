@@ -76,6 +76,8 @@ class CustomerController:
             self.service.create(session, **customer_data)
             print("Customer successfully created.")
             logging.info(f"Created customer: {customer_data.get('name')}")
+        except ValueError as e:
+            logging.error(e)
         except Exception as e:
             logging.error(e)
             print("An error occurred during customer creation.")
@@ -92,6 +94,8 @@ class CustomerController:
                 self.service.update(session, customer.id, updated_data)
                 print(f"Customer {customer.id} successfully updated.")
                 logging.info(f"Updated customer {customer.id}")
+        except ValueError as e:
+            logging.error(e)
         except Exception as e:
             logging.error(e)
             print(f"An error occurred during updating customer {customer.id}.")

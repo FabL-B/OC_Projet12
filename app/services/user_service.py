@@ -1,3 +1,4 @@
+import re
 from sqlalchemy.orm import Session
 from app.repository.user_repository import UserRepository
 from app.models.user import User
@@ -9,6 +10,16 @@ from app.utils.transaction import transactional_session
 
 class UserService:
     """Handles business logic for users."""
+
+    @staticmethod
+    def validate_email(email):
+        """Validates that the email format is correct."""
+        email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+
+        if not re.match(email_regex, email):
+            raise ValueError("Invalid email format.")
+
+        return email
 
     @staticmethod
     def get_by_id(session, user_id):
@@ -32,6 +43,7 @@ class UserService:
     def create(session, name, email, password, role):
         """Creates a user."""
         with transactional_session(session) as s:
+            UserService.validate_email(email)
             existing_user = UserRepository.get_user_by_email(s, email)
             if existing_user:
                 raise ValueError("A user with this email already exists.")
@@ -44,8 +56,13 @@ class UserService:
         """Update an existing user."""
         with transactional_session(session) as s:
             user = UserRepository.get_user_by_id(s, user_id)
+
             if not user:
                 raise ValueError("User not found.")
+
+            if "email" in data:
+                UserService.validate_email(data["email"])
+
             # Update related customers or events on role update
             new_role = data.get("role")
             if new_role and new_role != user.role:

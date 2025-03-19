@@ -1,3 +1,4 @@
+import re
 from app.repository.customer_repository import CustomerRepository
 from app.models.customer import Customer
 from app.utils.transaction import transactional_session
@@ -5,6 +6,31 @@ from app.utils.transaction import transactional_session
 
 class CustomerService:
     """Handles business logic for customers."""
+
+    @staticmethod
+    def validate_email(email):
+        """Validates that the email format is correct."""
+        email_regex = (
+            r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        )
+        if not re.match(email_regex, email):
+            raise ValueError(
+                "Invalid email format. Please use a valid email address."
+            )
+        return email
+
+    @staticmethod
+    def validate_phone(phone):
+        """Validates that the phone format is correct. (10-15 numbers)."""
+        phone_regex = r"^\+?\d{10,15}$"
+
+        if not re.match(phone_regex, phone):
+            raise ValueError(
+                "Invalid phone format."
+                "Please use a valid number (e.g., +33123456789)."
+            )
+
+        return phone
 
     @staticmethod
     def get_by_id(session, customer_id):
@@ -61,21 +87,24 @@ class CustomerService:
     @staticmethod
     def create(session, name, company_name, email, phone, sales_contact_id):
         """Creates a new customer."""
-        if CustomerService.check_if_customer_exists(
-                session, email, company_name, phone
-        ):
-            raise ValueError(
-                "A customer with this email, company name, "
-                "or phone number already exists."
+        with transactional_session(session) as s:
+            CustomerService.validate_email(email)
+            CustomerService.validate_phone(phone)
+            if CustomerService.check_if_customer_exists(
+                    session, email, company_name, phone
+            ):
+                raise ValueError(
+                    "A customer with this email, company name, "
+                    "or phone number already exists."
+                )
+            customer = Customer(
+                name=name,
+                company_name=company_name,
+                email=email,
+                phone=phone,
+                sales_contact_id=sales_contact_id
             )
-        customer = Customer(
-            name=name,
-            company_name=company_name,
-            email=email,
-            phone=phone,
-            sales_contact_id=sales_contact_id
-        )
-        return CustomerRepository.create_customer(session, customer)
+            return CustomerRepository.create_customer(session, customer)
 
     @staticmethod
     def update(session, customer_id, data):
@@ -84,6 +113,10 @@ class CustomerService:
             customer = CustomerRepository.get_customer_by_id(s, customer_id)
             if not customer:
                 raise ValueError("Customer not found.")
+            if "email" in data:
+                CustomerService.validate_email(data["email"])
+            if "phone" in data:
+                CustomerService.validate_phone(data["phone"])
             return CustomerRepository.update_customer(s, customer_id, data)
 
     @staticmethod
