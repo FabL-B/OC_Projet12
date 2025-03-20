@@ -38,62 +38,32 @@ def mock_session(mocker):
 
 
 @pytest.fixture
-def disable_auth_and_permissions():
-    with patch(
-        "app.auth.auth.Auth.is_authenticated",
-        return_value={"id": 1, "role": "Admin"}
-    ):
-        yield
-
-
-@pytest.fixture
 def admin_user():
-    """Fixture pour un utilisateur admin avec tous les droits."""
-    return User(
-        id=1, name="Admin User",
-        email="admin@example.com",
-        role="Admin",
-        password_hash="fake_hash"
-    )
+    """Fixture pour simuler un utilisateur Admin connecté."""
+    return {"id": 1, "role": "Admin"}
 
 
 @pytest.fixture
 def sales_user():
-    """Fixture pour un utilisateur Sales."""
-    return User(
-        id=2,
-        name="Sales User",
-        email="sales@example.com",
-        role="Sales",
-        password_hash="fake_hash"
-    )
-
-
-@pytest.fixture
-def support_user():
-    """Fixture pour un utilisateur Support."""
-    return User(
-        id=3,
-        name="Support User",
-        email="support@example.com",
-        role="Support",
-        password_hash="fake_hash"
-    )
+    """Fixture pour simuler un utilisateur Sales connecté."""
+    return {"id": 2, "role": "Sales"}
 
 
 @pytest.fixture
 def management_user():
-    """Fixture pour un utilisateur Management."""
-    return User(
-        id=4,
-        name="Management User",
-        email="management@example.com",
-        role="Management",
-        password_hash="fake_hash"
-    )
+    """Fixture pour simuler un utilisateur Management connecté."""
+    return {"id": 3, "role": "Management"}
 
 
 @pytest.fixture
-def mock_user_repository():
-    """Mock de UserRepository."""
-    return MagicMock(spec=UserRepository)
+def support_user():
+    """Fixture pour simuler un utilisateur Support connecté."""
+    return {"id": 4, "role": "Support"}
+
+
+@pytest.fixture(autouse=True)
+def disable_auth():
+    """Mock global pour désactiver l'authentification et les permissions dans les tests d'intégration"""
+    with patch("app.auth.auth.auth_required", lambda x: x), \
+         patch("app.permissions.permission.permission_required", lambda *args, **kwargs: lambda x: x):
+        yield
