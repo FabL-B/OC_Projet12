@@ -13,7 +13,7 @@ class ContractController:
         self.permission_class = ContractPermission
 
     @auth_required
-    @permission_required("list_all")
+    @permission_required("list")
     def list_all_contracts(self, user_payload, session):
         """Displays all contracts and offers an action."""
         while True:
@@ -27,7 +27,7 @@ class ContractController:
             self.show_contract_details(session, contract_id)
 
     @auth_required
-    @permission_required("list_unsigned")
+    @permission_required("list")
     def list_unsigned_contracts(self, user_payload, session):
         """Displays unsigned contracts."""
         while True:
@@ -41,7 +41,7 @@ class ContractController:
             self.show_contract_details(session, contract_id)
 
     @auth_required
-    @permission_required("list_unpaid")
+    @permission_required("list")
     def list_unpaid_contracts(self, user_payload, session):
         """Displays contracts where `amount_due` is different from `amount`."""
         while True:

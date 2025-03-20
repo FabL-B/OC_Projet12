@@ -33,7 +33,7 @@ class UserPermission(BasePermission):
     """Manages permissions for users."""
 
     def check_permission(self, action):
-        if action in ['list_all', 'get']:
+        if action in ['list', 'get']:
             return True
         if action in ['create', 'update', 'delete']:
             return self.user_role == "Management"
@@ -47,7 +47,7 @@ class CustomerPermission(BasePermission):
     """Manages permissions for customers."""
 
     def check_permission(self, action):
-        if action in ['list_all', 'get']:
+        if action in ['list', 'get']:
             return True
         if action == 'create':
             return self.user_role == "Sales"
@@ -64,7 +64,7 @@ class ContractPermission(BasePermission):
     """Manages permissions for contracts."""
 
     def check_permission(self, action):
-        if action in ['list_all', 'get']:
+        if action in ['list', 'get']:
             return True
         if action == 'create':
             return self.user_role == "Management"
@@ -86,7 +86,7 @@ class EventPermission(BasePermission):
 
     def check_permission(self, action):
         """Checks if the user has general permissions for the action."""
-        if action in ["list_all", "get"]:
+        if action in ["list", "get"]:
             return True
         if action == "create":
             return self.user_role == "Sales"

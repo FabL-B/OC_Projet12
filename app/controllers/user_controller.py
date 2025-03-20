@@ -13,7 +13,7 @@ class UserController:
         self.permission_class = UserPermission
 
     @auth_required
-    @permission_required("list_all")
+    @permission_required("list")
     def list_all_users(self, user_payload, session):
         """Display all users."""
         while True:

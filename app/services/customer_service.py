@@ -91,7 +91,7 @@ class CustomerService:
             CustomerService.validate_email(email)
             CustomerService.validate_phone(phone)
             if CustomerService.check_if_customer_exists(
-                    session, email, company_name, phone
+                    s, email, company_name, phone
             ):
                 raise ValueError(
                     "A customer with this email, company name, "

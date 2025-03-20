@@ -4,9 +4,9 @@ from contextlib import contextmanager
 @contextmanager
 def transactional_session(session):
     """
-    Contexte qui gère une transaction.
-    Il commit automatiquement en cas de succès,
-    ou effectue un rollback en cas d'exception.
+    Context manager that handles a transaction.
+    It automatically commits on success,
+    or performs a rollback in case of an exception.
     """
     try:
         yield session

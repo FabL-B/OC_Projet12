@@ -1,7 +1,7 @@
 from app.models import User, Customer
 
 
-def test_create_customer(session_test):
+def test_create_customer(session):
     user = User(
         id=10,
         name="Sales Person",
@@ -9,8 +9,8 @@ def test_create_customer(session_test):
         role="Sales"
     )
     user.set_password("salespass")
-    session_test.add(user)
-    session_test.commit()
+    session.add(user)
+    session.commit()
     customer = Customer(
         id=1,
         name="Client A",
@@ -19,12 +19,12 @@ def test_create_customer(session_test):
         phone="1234567890",
         sales_contact_id=user.id
     )
-    session_test.add(customer)
-    session_test.commit()
-    assert session_test.get(Customer, 1) is not None
+    session.add(customer)
+    session.commit()
+    assert session.get(Customer, 1) is not None
 
 
-def test_get_customer_by_id(session_test):
+def test_get_customer_by_id(session):
     user = User(
         id=20,
         name="Sales P2",
@@ -32,8 +32,8 @@ def test_get_customer_by_id(session_test):
         role="Sales"
     )
     user.set_password("salespass")
-    session_test.add(user)
-    session_test.commit()
+    session.add(user)
+    session.commit()
 
     customer = Customer(
         id=1,
@@ -43,9 +43,9 @@ def test_get_customer_by_id(session_test):
         phone="9876543210",
         sales_contact_id=user.id
     )
-    session_test.add(customer)
-    session_test.commit()
+    session.add(customer)
+    session.commit()
 
-    retrieved_customer = session_test.get(Customer, 1)
+    retrieved_customer = session.get(Customer, 1)
     assert retrieved_customer is not None
     assert retrieved_customer.company_name == "Company B"

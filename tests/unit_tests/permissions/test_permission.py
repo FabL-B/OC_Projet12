@@ -15,24 +15,25 @@ user_support_ok = {"id": 4, "role": "Support"}
 user_support_nok = {"id": 20, "role": "Support"}
 user_random = {"id": 5, "role": "random"}
 
+
 # Simulated objects
 class MockCustomer:
     """Mock class representing a Customer."""
-    
+
     def __init__(self, sales_contact_id):
         self.sales_contact_id = sales_contact_id
 
 
 class MockContract:
     """Mock class representing a Contract."""
-    
+
     def __init__(self, customer):
         self.customer = customer
 
 
 class MockEvent:
     """Mock class representing an Event."""
-    
+
     def __init__(self, contract, support_contact_id):
         self.contract = contract
         self.support_contact_id = support_contact_id
@@ -66,7 +67,6 @@ event_sales_signed = MockEvent(
 event_sales_unsigned = MockEvent(
     contract=contract_sales_unsigned, support_contact_id=4
 )
-
 
 
 def test_user_permission():
@@ -119,6 +119,7 @@ def test_contract_permission():
     """Tests general permissions for ContractPermission."""
     permission_management = ContractPermission(user_management)
     permission_sales = ContractPermission(user_sales_ok)
+    permission_sales_nok = ContractPermission(user_sales_nok)
     permission_admin = ContractPermission(user_admin)
 
     # Management can create a contract
@@ -134,7 +135,9 @@ def test_contract_permission():
     ) is True
 
     # Sales can only modify a contract if their client belongs to them
-    permission_sales_nok = ContractPermission(user_sales_nok)
+    assert permission_sales.has_object_permission(
+        contract_sales_signed, "update"
+    ) is True
     assert permission_sales_nok.has_object_permission(
         contract_sales_signed, "update"
     ) is False

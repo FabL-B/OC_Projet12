@@ -1,4 +1,3 @@
-import re
 from app.repository.event_repository import EventRepository
 from app.models.event import Event
 from app.utils.transaction import transactional_session

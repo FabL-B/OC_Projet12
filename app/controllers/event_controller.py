@@ -13,7 +13,7 @@ class EventController:
         self.permission_class = EventPermission
 
     @auth_required
-    @permission_required("list_all")
+    @permission_required("list")
     def list_all_events(self, user_payload, session):
         """Displays all events and offers modification/deletion options."""
         while True:
@@ -26,7 +26,7 @@ class EventController:
             self.show_event_details(session, event_id)
 
     @auth_required
-    @permission_required("list_my_events")
+    @permission_required("list")
     def list_my_events(self, user_payload, session):
         """Displays events linked to the logged-in user."""
         while True:
@@ -111,7 +111,7 @@ class EventController:
             raise
 
     @auth_required
-    @permission_required("list_all")
+    @permission_required("list")
     def list_events_without_support_contact(self, user_payload, session):
         """Displays all events that have no support contact assigned."""
         events = self.service.list_events_without_support_contact(session)

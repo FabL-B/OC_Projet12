@@ -1,6 +1,6 @@
 from config.database import SessionLocal
 from app.controllers.app_controller import AppController
-import app.logger_config 
+
 
 def main():
     """Application entry point."""

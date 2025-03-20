@@ -13,7 +13,7 @@ class CustomerController:
         self.permission_class = CustomerPermission
 
     @auth_required
-    @permission_required("list_all")
+    @permission_required("list")
     def list_all_customers(self, user_payload, session):
         """Displays all customers and offers an action."""
         while True:
@@ -27,7 +27,7 @@ class CustomerController:
             self.show_customer_details(session, customer_id)
 
     @auth_required
-    @permission_required("list_my_customers")
+    @permission_required("list")
     def list_my_customers(self, user_payload, session):
         """Displays customers assigned to the logged-in user."""
         while True:
@@ -122,7 +122,7 @@ class CustomerController:
             raise
 
     @auth_required
-    @permission_required("list_all")
+    @permission_required("list")
     def list_customers_without_sales_contact(self, user_payload, session):
         """Displays all customers that have no sales contact assigned."""
         customers = self.service.list_customers_without_sales_contact(session)

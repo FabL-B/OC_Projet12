@@ -1,7 +1,7 @@
 from app.models import Customer, Contract, User
 
 
-def test_create_contract(session_test):
+def test_create_contract(session):
     user = User(
         id=10,
         name="Sales Person",
@@ -9,8 +9,8 @@ def test_create_contract(session_test):
         role="Sales"
     )
     user.set_password("salespass")
-    session_test.add(user)
-    session_test.commit()
+    session.add(user)
+    session.commit()
 
     customer = Customer(
         id=1,
@@ -20,8 +20,8 @@ def test_create_contract(session_test):
         phone="1234567890",
         sales_contact_id=user.id
     )
-    session_test.add(customer)
-    session_test.commit()
+    session.add(customer)
+    session.commit()
 
     contract = Contract(
         id=1,
@@ -30,7 +30,7 @@ def test_create_contract(session_test):
         amount_due=2000,
         status="unsigned"
     )
-    session_test.add(contract)
-    session_test.commit()
+    session.add(contract)
+    session.commit()
 
-    assert session_test.get(Contract, 1) is not None
+    assert session.get(Contract, 1) is not None

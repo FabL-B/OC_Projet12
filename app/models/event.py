@@ -23,7 +23,7 @@ class Event(Base):
     attendees = Column(Integer, nullable=True)
     notes = Column(String(1000), nullable=True)
 
-    contract = relationship("Contract",back_populates="events")
+    contract = relationship("Contract", back_populates="events")
     support_contact = relationship("User", back_populates="events")
 
     def __repr__(self):

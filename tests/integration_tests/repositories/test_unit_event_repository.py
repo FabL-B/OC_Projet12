@@ -1,7 +1,7 @@
 from app.models import User, Contract, Event, Customer
 
 
-def test_create_event(session_test):
+def test_create_event(session):
     user = User(
         id=30,
         name="Support P",
@@ -9,8 +9,8 @@ def test_create_event(session_test):
         role="Support"
     )
     user.set_password("supportpass")
-    session_test.add(user)
-    session_test.commit()
+    session.add(user)
+    session.commit()
 
     sales_user = User(
         id=40,
@@ -19,8 +19,8 @@ def test_create_event(session_test):
         role="Sales"
     )
     sales_user.set_password("salespass")
-    session_test.add(sales_user)
-    session_test.commit()
+    session.add(sales_user)
+    session.commit()
 
     customer = Customer(
         id=2, name="Client D",
@@ -29,8 +29,8 @@ def test_create_event(session_test):
         phone="2223334444",
         sales_contact_id=sales_user.id
     )
-    session_test.add(customer)
-    session_test.commit()
+    session.add(customer)
+    session.commit()
 
     contract = Contract(
         id=1,
@@ -39,8 +39,8 @@ def test_create_event(session_test):
         amount_due=5000,
         status="signed"
     )
-    session_test.add(contract)
-    session_test.commit()
+    session.add(contract)
+    session.commit()
 
     event = Event(
         id=1,
@@ -52,7 +52,7 @@ def test_create_event(session_test):
         attendees=50,
         notes="Annual Event"
     )
-    session_test.add(event)
-    session_test.commit()
+    session.add(event)
+    session.commit()
 
-    assert session_test.get(Event, 1) is not None
+    assert session.get(Event, 1) is not None
