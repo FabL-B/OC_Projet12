@@ -96,7 +96,7 @@ def authenticated_users(session_test):
 def mock_auth(authenticated_users):
     """Mocks Auth.is_authenticated() to return expected user payloads."""
     def fake_is_authenticated():
-        token, _ = Auth.load_token()
+        token = Auth._access_token
         for role, access_token in authenticated_users.items():
             if token == access_token:
                 return {"id": "1", "name": f"{role} User", "role": role}
