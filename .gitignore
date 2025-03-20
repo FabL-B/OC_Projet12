@@ -4,5 +4,6 @@ __pycache__/
 /scripts
 .env.test
 .auth_token
-
+.coverage
+htmlcov/
 .pytest_cache
