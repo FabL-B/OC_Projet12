@@ -40,10 +40,26 @@ pip install -r requirements.txt
 
 ### 4. Database configuration
 
-Modify `.env` with your database settings:
+This application requires a **PostgreSQL** database as **SQLite is not supported** due to the use of **Enum fields** in the models.
+
+#### Install PostgreSQL
+
+If you don't have PostgreSQL installed, follow the official installation guide:
+
+- [PostgreSQL Installation Guide](https://www.postgresql.org/download/)
+
+#### Create a PostgreSQL Database
+
+Once PostgreSQL is installed, create a new database with the following command:
+
+```sh
+psql -U your_user -d postgres -c "CREATE DATABASE database_name;"
+```
+
+Modify `.env` with your PostgreSQL database settings:
 
 ```env
-DATABASE_URL=sqlite:///db.sqlite3
+DATABASE_URL=postgresql://
 JWT_SECRET=your_secret_key
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
@@ -53,10 +69,43 @@ REFRESH_TOKEN_EXPIRE_DAYS=7
 Initialize the database:
 
 ```sh
-python setup_database.py
+python scripts/create_tables.py
+```
+
+### Database Management Scripts
+
+To manage the database, use the following scripts:
+
+| Script                  | Description |
+|-------------------------|-------------|
+| `test_connection.py`    | Tests the connection to the database. |
+| `delete_db.py`         | Deletes all database tables. |
+| `reset_db.py`          | Resets the database by deleting and recreating tables. |
+| `create_admin.py`      | Creates an admin user if it does not exist. |
+| `populate_database.py` | Populates the database with test data. |
+
+### Running Database Scripts
+
+#### Test the Database Connection
+```sh
+python scripts/test_connection.py
 ```
 
 ## Usage
+
+### Sentry Configuration
+
+This application uses **Sentry** for error tracking and performance monitoring.
+
+#### Configure Sentry
+
+Modify `.env` with your Sentry DSN:
+
+```env
+SENTRY_DSN=https://your_sentry_dsn@sentry.io/project_id
+```
+
+For more details on Sentry, visit [Sentry Documentation](https://docs.sentry.io/).
 
 ### Launch the application
 
@@ -69,19 +118,6 @@ The application starts with a main menu allowing navigation between different se
 ### Authentication
 
 On startup, the user must authenticate using their email and password.
-
-## Main Features
-
-| Feature                  | Required Role       | CLI Command |
-|--------------------------|--------------------|--------------|
-| List users               | Management        | `1 -> 1`     |
-| Create user              | Management        | `1 -> 2`     |
-| List clients             | Sales, Management | `2 -> 1`     |
-| Create client            | Sales             | `2 -> 3`     |
-| List contracts           | Management        | `3 -> 1`     |
-| Create contract          | Management        | `3 -> 4`     |
-| List events              | Support, Management | `4 -> 1` |
-| Create event             | Sales             | `4 -> 3`     |
 
 ## Testing
 
