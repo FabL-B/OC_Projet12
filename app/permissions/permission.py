@@ -21,11 +21,11 @@ class BasePermission:
         return self.check_object_permission(obj, action)
 
     def check_permission(self, action):
-        """Méthode à implémenter dans les sous-classes."""
+        """Method to be implemented in subclasses."""
         return False
 
     def check_object_permission(self, obj, action):
-        """Méthode à implémenter dans les sous-classes."""
+        """Method to be implemented in subclasses."""
         return False
 
 
@@ -130,7 +130,8 @@ def permission_required(action, requires_object=False):
                 obj = kwargs.get("obj")
                 if not permission.has_object_permission(obj, action):
                     raise PermissionError(
-                        f"Access denied to this {obj.id}, {action}"
+                        f"Access denied to perform '{action}' "
+                        f"on object with ID {obj.id}."
                     )
 
             return func(self, user_payload, *args, **kwargs)

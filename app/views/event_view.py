@@ -78,15 +78,15 @@ class EventView:
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit event[/green]")
-        console.print("[green]2 - Delete event[/green]")
-        console.print("[red]3 - Return to event list[/red]")
+        console.print("[red]2 - Delete event[/red]")
+        console.print("[yellow]3 - Return to event list[/yellow]")
 
         return Prompt.ask("Make your choice")
 
     @staticmethod
     def get_event_creation_data():
         """Retrieves data to create an event."""
-        print("\nCreate a new event")
+        console.print("\n[bold cyan]Create a new event[/bold cyan]")
         contract_id = input("Associated Contract ID: ").strip()
         support_contact_id = input("Support Contact ID: ").strip()
         start_date = input("Start Date (YYYY-MM-DD): ").strip()

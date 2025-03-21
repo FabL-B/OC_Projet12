@@ -16,7 +16,7 @@ class EventService:
 
     @staticmethod
     def list_all(session):
-        """Get all event as dictionnaries."""
+        """Get all events as dictionnaries."""
         events = EventRepository.get_all_events(session)
         return [{"id": event.id,
                  "start_date": event.start_date,

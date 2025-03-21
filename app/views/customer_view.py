@@ -61,15 +61,15 @@ class CustomerView:
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit customer[/green]")
-        console.print("[green]2 - Delete customer[/green]")
-        console.print("[red]3 - Return to the customer list[/red]")
+        console.print("[red]2 - Delete customer[/red]")
+        console.print("[yellow]3 - Return to the customer list[/yellow]")
 
         return Prompt.ask("Make your choice")
 
     @staticmethod
     def get_customer_creation_data():
         """Retrieves and sanitizes customer data."""
-        print("\nCreate a new customer")
+        console.print("\n[bold cyan]Create a new customer[/bold cyan]")
         name = input("Name: ").strip().title()
         company_name = input("Company name: ").strip().title()
         email = input("Email: ").strip().lower()

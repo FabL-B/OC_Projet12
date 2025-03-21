@@ -46,7 +46,7 @@ class AppView:
         console.print("[green]1 - Show all customers[/green]")
         console.print("[green]2 - Show my customers only[/green]")
         console.print("[green]3 - Show customers without sales[/green]")
-        console.print("[yellow]4 - Create a customer[/yellow]")
+        console.print("[green]4 - Create a customer[/green]")
         console.print("[yellow]5 - Return to main menu[/yellow]")
         return Prompt.ask("Make your choice")
 
@@ -68,6 +68,14 @@ class AppView:
         console.print("[green]1 - Show all events[/green]")
         console.print("[green]2 - Show my events only[/green]")
         console.print("[green]3 - Show events without support[/green]")
-        console.print("[yellow]4 - Create an event[/yellow]")
+        console.print("[green]4 - Create an event[/green]")
         console.print("[yellow]5 - Return to main menu[/yellow]")
         return Prompt.ask("Make your choice")
+
+    @staticmethod
+    def display_logout_message():
+        print("\nLogging out...")
+
+    @staticmethod
+    def display_invalid_choice():
+        print("\nInvalid choice, please try again.")

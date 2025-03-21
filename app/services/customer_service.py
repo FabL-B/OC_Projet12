@@ -42,7 +42,7 @@ class CustomerService:
 
     @staticmethod
     def list_all(session):
-        """Get all clients as dictionnaries."""
+        """Get all customers as dictionaries."""
         customers = CustomerRepository.get_all_customers(session)
         return [
             {
@@ -74,7 +74,7 @@ class CustomerService:
 
     @staticmethod
     def check_if_customer_exists(session, email, company_name, phone):
-        """Check if customer already exist."""
+        """Check if customer exists."""
         return any(
             [
                 CustomerRepository.get_customer_by_email(session, email),

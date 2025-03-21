@@ -11,12 +11,14 @@ sentry_logging = LoggingIntegration(
     event_level=logging.ERROR
 )
 
-sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN"),
-    integrations=[sentry_logging],
-    send_default_pii=True,
-    traces_sample_rate=1.0,
-)
+dsn = os.getenv("SENTRY_DSN")
+if dsn:
+    sentry_sdk.init(
+        dsn=dsn,
+        integrations=[sentry_logging],
+        send_default_pii=True,
+        traces_sample_rate=1.0,
+    )
 
 logging.basicConfig(
     level=logging.INFO,

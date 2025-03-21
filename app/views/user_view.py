@@ -52,8 +52,8 @@ class UserView:
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit user[/green]")
-        console.print("[green]2 - Delete user[/green]")
-        console.print("[red]3 - Return to the user list[/red]")
+        console.print("[red]2 - Delete user[/red]")
+        console.print("[yellow]3 - Return to the user list[/yellow]")
 
         return Prompt.ask("Make your choice")
 
@@ -79,7 +79,7 @@ class UserView:
     @staticmethod
     def get_user_creation_data():
         """Prompts for information to create a new user."""
-        print("\nCreate a New User")
+        console.print("\n[bold cyan]Create a new user[/bold cyan]")
         name = input("Name: ").strip().title()
         email = input("Email: ").strip().lower()
         password = input("Password: ").strip()

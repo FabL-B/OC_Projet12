@@ -5,7 +5,7 @@ class UserRepository:
     """Handles database operations related to the User entity."""
     @staticmethod
     def create_user(session, user):
-        """Create a new user in data base."""
+        """Create a new user in the database."""
         session.add(user)
         session.commit()
         session.refresh(user)
@@ -13,7 +13,7 @@ class UserRepository:
 
     @staticmethod
     def update_user(session, user_id, data):
-        """Update an existing user in data base."""
+        """Update an existing user in the database."""
         user = session.get(User, user_id)
         if user:
             for key, value in data.items():
@@ -22,7 +22,7 @@ class UserRepository:
 
     @staticmethod
     def delete_user(session, user_id):
-        """Delete a user from database."""
+        """Delete a user from the database."""
         user = session.get(User, user_id)
         session.delete(user)
         return user
@@ -39,5 +39,5 @@ class UserRepository:
 
     @staticmethod
     def get_all_users(session):
-        """Get all users database."""
+        """Retrieve all users from the database."""
         return session.query(User).all()

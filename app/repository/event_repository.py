@@ -5,7 +5,7 @@ class EventRepository:
     """Handles database operations related to the Event entity."""
     @staticmethod
     def create_event(session, event):
-        """Create a new event in database."""
+        """Create a new event in the database."""
         session.add(event)
         session.commit()
         session.refresh(event)
@@ -13,14 +13,15 @@ class EventRepository:
 
     @staticmethod
     def delete_event(session, event_id):
-        """Delete an event from database."""
+        """Delete an event from the database."""
         event = session.get(Event, event_id)
         session.delete(event)
         session.commit()
         return event
 
+    @staticmethod
     def update_event(session, event_id, data):
-        """Update an existing event in database."""
+        """Update an existing event in the database."""
         event = session.get(Event, event_id)
         if event:
             for key, value in data.items():
@@ -30,7 +31,7 @@ class EventRepository:
 
     @staticmethod
     def get_all_events(session):
-        """Get all from database events."""
+        """Retrieve all events from the database."""
         return session.query(Event).all()
 
     @staticmethod

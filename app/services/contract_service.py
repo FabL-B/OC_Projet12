@@ -8,7 +8,7 @@ class ContractService:
 
     @staticmethod
     def get_by_id(session, contract_id):
-        """Get a contrat with its ID."""
+        """Get a contract with its ID."""
         contract = ContractRepository.get_contract_by_id(session, contract_id)
         if not contract:
             raise ValueError("Contract not found.")
@@ -16,7 +16,7 @@ class ContractService:
 
     @staticmethod
     def list_all(session):
-        """Return all clients as dictionnaries."""
+        """Return all contracts as dictionnaries."""
         contracts = ContractRepository.get_all_contracts(session)
         return [{"id": contract.id,
                  "amount": contract.amount,
@@ -36,7 +36,7 @@ class ContractService:
 
     @staticmethod
     def list_unpaid(session):
-        """Return `amount_due` ≠ `amount` contract's."""
+        """Return contracts where amount_due ≠ amount."""
         contracts = ContractRepository.get_unpaid_contracts(session)
         return [{"id": contract.id,
                  "amount": contract.amount,

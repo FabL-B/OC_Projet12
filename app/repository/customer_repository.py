@@ -5,7 +5,7 @@ class CustomerRepository:
     """Handles database operations related to the Customer entity."""
     @staticmethod
     def create_customer(session, customer):
-        """Create a new customer in data base."""
+        """Create a new customer in the database."""
         session.add(customer)
         session.commit()
         session.refresh(customer)
@@ -13,7 +13,7 @@ class CustomerRepository:
 
     @staticmethod
     def update_customer(session, customer_id, data):
-        """Update an existing customer in database."""
+        """Update an existing customer in the database."""
         customer = session.get(Customer, customer_id)
         if customer:
             for key, value in data.items():
@@ -22,14 +22,14 @@ class CustomerRepository:
 
     @staticmethod
     def delete_customer(session, customer_id):
-        """Delete a customer frome database."""
+        """Delete a customer from the database."""
         customer = session.get(Customer, customer_id)
         session.delete(customer)
         return customer
 
     @staticmethod
     def get_customer_by_id(session, customer_id):
-        """Get customer from database with its ID."""
+        """Retrieve a customer by ID from the database."""
         return session.get(Customer, customer_id)
 
     @staticmethod

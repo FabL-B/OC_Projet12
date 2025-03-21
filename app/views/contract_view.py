@@ -57,8 +57,8 @@ class ContractView:
 
         console.print("\n[bold]Actions:[/bold]")
         console.print("[green]1 - Edit contract[/green]")
-        console.print("[green]2 - Delete contract[/green]")
-        console.print("[red]3 - Return to contract list[/red]")
+        console.print("[red]2 - Delete contract[/red]")
+        console.print("[yellow]3 - Return to contract list[/yellow]")
 
         return Prompt.ask("Make your choice")
 

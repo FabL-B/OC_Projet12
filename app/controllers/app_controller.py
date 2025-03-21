@@ -4,7 +4,7 @@ from app.controllers.customer_controller import CustomerController
 from app.controllers.contract_controller import ContractController
 from app.controllers.event_controller import EventController
 from app.views.app_view import AppView
-from app.sentry.logger import sentry_log_exception
+from app.logger_config import logger
 
 
 class AppController:
@@ -71,7 +71,7 @@ class AppController:
 
     def logout(self):
         """Logs out the user."""
-        print("\nLogging out...")
+        AppView.display_logout_message()
         exit()
 
     def handle_menu(self, menu_view, menu_actions):
@@ -84,7 +84,7 @@ class AppController:
             elif action is None:
                 return
             else:
-                print("\nInvalid choice, please try again.")
+                AppView.display_invalid_choice()
 
     def show_user_panel(self):
         self.handle_menu(
@@ -123,9 +123,8 @@ class AppController:
                     _, action_func = action
                     action_func()
                 else:
-                    print("\nInvalid choice, please try again.")
+                    AppView.display_invalid_choice()
             except PermissionError as e:
-                print(f"\nAccess Denied: {e}")
+                logger.error(e)
             except Exception as e:
-                sentry_log_exception(e)
-                print(f"\nUnexpected Error: {e}")
+                logger.exception(e)
