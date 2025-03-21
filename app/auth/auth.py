@@ -38,7 +38,9 @@ class Auth:
     @staticmethod
     def create_access_token(user_id: int, role: str):
         """Create a JWT access token."""
-        expire = datetime.datetime.now() + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.datetime.now() + datetime.timedelta(
+            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        )
         payload_data = {
             "id": str(user_id),
             "role": role,
@@ -53,7 +55,9 @@ class Auth:
     @staticmethod
     def create_refresh_token(user_id: int):
         """Create a JWT refresh token."""
-        expire = datetime.datetime.now() + datetime.timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        expire = datetime.datetime.now() + datetime.timedelta(
+            days=REFRESH_TOKEN_EXPIRE_DAYS
+        )
         payload_data = {"id": str(user_id), "exp": expire}
         return jwt.encode(
             payload=payload_data,
@@ -89,7 +93,7 @@ class Auth:
         if not Auth._refresh_token:
             return None
         payload_data = Auth.verify_token(Auth._refresh_token)
-        if payload_data and payload_data != "expired" and payload_data != "invalid":
+        if payload_data and payload_data not in ["expired", "invalid"]:
             new_access_token = Auth.create_access_token(
                 payload_data["id"],
                 payload_data.get("role", "User")
@@ -103,7 +107,7 @@ class Auth:
         """Check if user is authenticated with a valid token."""
         if not Auth._access_token:
             return None
-        
+
         payload_data = Auth.verify_token(Auth._access_token)
         if payload_data == "invalid":
             return None
