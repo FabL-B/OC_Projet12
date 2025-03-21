@@ -115,3 +115,11 @@ class ContractView:
             contract_data["status"] = status
 
         return contract_data
+
+    @staticmethod
+    def display_not_found():
+        print("\nContract not found.")
+
+    @staticmethod
+    def display_invalid_choice():
+        print("\nInvalid choice, please try again.")

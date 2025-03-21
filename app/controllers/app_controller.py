@@ -66,10 +66,7 @@ class AppController:
 
         if tokens:
             self.user_payload = tokens["user"]
-            print("\nLogin successful!")
             return True
-
-        print("\nLogin failed. Please check your credentials.")
         return False
 
     def logout(self):

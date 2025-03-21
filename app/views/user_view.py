@@ -91,3 +91,25 @@ class UserView:
             "password": password,
             "role": role,
         }
+
+    @staticmethod
+    def display_not_found():
+        print("\nUser not found.")
+
+    @staticmethod
+    def display_invalid_choice():
+        print("\nInvalid choice, please try again.")
+
+    @staticmethod
+    def confirm_deletion(user_id):
+        response = input(
+            f"Confirm deletion of user {user_id}? (y/n): ").strip().lower()
+        return response == "y"
+
+    @staticmethod
+    def display_login_success(name):
+        print(f"Connected! Welcome, {name}.")
+
+    @staticmethod
+    def display_login_failure():
+        print("Incorrect email or password.")

@@ -1,4 +1,4 @@
-import logging
+from app.logger_config import logger
 from app.services.customer_service import CustomerService
 from app.auth.auth import auth_required
 from app.permissions.permission import CustomerPermission, permission_required
@@ -48,7 +48,7 @@ class CustomerController:
         """Displays customer details and offers update/deletion options."""
         customer = self.service.get_by_id(session, customer_id)
         if not customer:
-            print("\nCustomer not found.")
+            CustomerView.display_not_found()
             return
 
         while True:
@@ -64,7 +64,7 @@ class CustomerController:
             elif choice == "3":
                 break
             else:
-                print("\nInvalid choice, please try again.")
+                CustomerView.display_invalid_choice()
 
     @auth_required
     @permission_required("create")
@@ -74,13 +74,11 @@ class CustomerController:
             customer_data = CustomerView.get_customer_creation_data()
             customer_data["sales_contact_id"] = user_payload["id"]
             self.service.create(session, **customer_data)
-            print("Customer successfully created.")
-            logging.info(f"Created customer: {customer_data.get('name')}")
+            logger.info(f"Created customer: {customer_data.get('name')}")
         except ValueError as e:
-            logging.error(e)
+            logger.error(e)
         except Exception as e:
-            logging.error(e)
-            print("An error occurred during customer creation.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -92,13 +90,11 @@ class CustomerController:
             updated_data = CustomerView.get_customer_update_data()
             if updated_data:
                 self.service.update(session, customer.id, updated_data)
-                print(f"Customer {customer.id} successfully updated.")
-                logging.info(f"Updated customer {customer.id}")
+                logger.info(f"Updated customer {customer.id}")
         except ValueError as e:
-            logging.error(e)
+            logger.error(e)
         except Exception as e:
-            logging.error(e)
-            print(f"An error occurred during updating customer {customer.id}.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -112,13 +108,9 @@ class CustomerController:
             ).strip().lower()
             if confirm == "y":
                 self.service.delete(session, customer.id)
-                print(f"Customer {customer.id} successfully deleted.")
-                logging.info(f"Deleted customer {customer.id}")
+                logger.info(f"Deleted customer {customer.id}")
         except Exception as e:
-            logging.error(e)
-            print(
-                f"An error occurred during deletion of customer {customer.id}."
-            )
+            logger.error(e)
             raise
 
     @auth_required

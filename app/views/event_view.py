@@ -146,3 +146,11 @@ class EventView:
             event_data["notes"] = notes
 
         return event_data
+
+    @staticmethod
+    def display_not_found():
+        print("\nEvent not found.")
+
+    @staticmethod
+    def display_invalid_choice():
+        print("\nInvalid choice, please try again.")

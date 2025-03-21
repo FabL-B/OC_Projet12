@@ -1,4 +1,4 @@
-import logging
+from app.logger_config import logger
 from app.services.contract_service import ContractService
 from app.auth.auth import auth_required
 from app.permissions.permission import ContractPermission, permission_required
@@ -60,7 +60,7 @@ class ContractController:
         """Displays contract details and ask for update/delete options."""
         contract = self.service.get_by_id(session, contract_id)
         if not contract:
-            print("\nContract not found.")
+            ContractView.display_not_found()
             return
 
         while True:
@@ -76,7 +76,7 @@ class ContractController:
             elif choice == "3":
                 break
             else:
-                print("\nInvalid choice, please try again.")
+                ContractView.display_invalid_choice()
 
     @auth_required
     @permission_required("create")
@@ -85,11 +85,9 @@ class ContractController:
         try:
             contract_data = ContractView.get_contract_creation_data()
             self.service.create(session, **contract_data)
-            print("Contract successfully created.")
-            logging.info("Contract successfully created.")
+            logger.info("Contract successfully created.")
         except Exception as e:
-            logging.error(e)
-            print("An error occurred during contract creation.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -101,14 +99,13 @@ class ContractController:
             updated_data = ContractView.get_contract_update_data()
             if updated_data:
                 self.service.update(session, contract.id, updated_data)
-                print(f"Contract {contract.id} successfully updated.")
+                logger.info(f"Contract {contract.id} successfully updated.")
                 if updated_data.get("status") == "signed":
-                    logging.info(f"Contract {contract.id} signed.")
+                    logger.info(f"Contract {contract.id} signed.")
                 else:
-                    logging.info(f"Contract {contract.id} updated.")
+                    logger.info(f"Contract {contract.id} updated.")
         except Exception as e:
-            logging.error(e)
-            print(f"An error occurred during updating contract {contract.id}.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -122,11 +119,7 @@ class ContractController:
             ).strip().lower()
             if confirm == "y":
                 self.service.delete(session, contract.id)
-                print(f"Contract {contract.id} successfully deleted.")
-                logging.info(f"Contract {contract.id} deleted.")
+                logger.info(f"Contract {contract.id} successfully deleted.")
         except Exception as e:
-            logging.error(e)
-            print(
-                f"An error occurred during deletion of contract {contract.id}."
-            )
+            logger.error(e)
             raise

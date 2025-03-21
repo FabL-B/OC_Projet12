@@ -1,4 +1,4 @@
-import logging
+from app.logger_config import logger
 from app.services.user_service import UserService
 from app.auth.auth import auth_required, Auth
 from app.permissions.permission import UserPermission, permission_required
@@ -31,7 +31,7 @@ class UserController:
         """Display user details and prompt for update or delete selection."""
         user = self.service.get_by_id(session, user_id)
         if not user:
-            print("\nUser not found.")
+            UserView.display_not_found()
             return
 
         while True:
@@ -45,7 +45,7 @@ class UserController:
             elif choice == "3":
                 break
             else:
-                print("\nInvalid choice, please try again.")
+                UserView.display_invalid_choice()
 
     @auth_required
     @permission_required("get")
@@ -60,14 +60,11 @@ class UserController:
         try:
             user_data = UserView.get_user_creation_data()
             self.service.create(session, **user_data)
-            print("User successfully created.")
-            logging.info(
-                f"Created user: {user_data.get('name')}")
+            logger.info(f"Created user: {user_data.get('name')}")
         except ValueError as e:
-            logging.error(e)
+            logger.error(e)
         except Exception as e:
-            logging.error(e)
-            print("An error occurred during user creation.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -78,13 +75,11 @@ class UserController:
             updated_data = UserView.get_user_update_data()
             if updated_data:
                 self.service.update(session, user_id, updated_data)
-                print(f"User {user_id} successfully updated.")
-                logging.info(f"Updated user {user_id}")
+                logger.info(f"Updated user {user_id}")
         except ValueError as e:
-            logging.error(e)
+            logger.error(e)
         except Exception as e:
-            logging.error(e)
-            print(f"An error occurred during updating user {user_id}.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -92,17 +87,12 @@ class UserController:
     def delete_user(self, user_payload, session, user_id):
         """Delete a user."""
         try:
-            confirm = input(
-                f"Confirm deletion of user {user_id}? (y/n): "
-            ).strip().lower()
-
-            if confirm == "y":
+            confirm = UserView.confirm_deletion(user_id)
+            if confirm:
                 self.service.delete(session, user_id)
-                print(f"User {user_id} successfully deleted.")
-                logging.info(f"Deleted user {user_id}")
+                logger.info(f"Deleted user {user_id}")
         except Exception as e:
-            logging.error(e)
-            print(f"An error occurred during deletion of user {user_id}.")
+            logger.error(e)
             raise
 
     def login_user(self, session, email, password):
@@ -110,8 +100,8 @@ class UserController:
         tokens = Auth.authenticate_user(session, email, password)
         if tokens:
             Auth.save_token(tokens["access_token"], tokens["refresh_token"])
-            print(f"Connected! Welcome, {tokens['user'].name}.")
+            UserView.display_login_success(tokens['user'].name)
             return tokens
 
-        print("Incorrect email or password.")
+        UserView.display_login_failure()
         return None

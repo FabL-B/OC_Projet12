@@ -1,4 +1,4 @@
-import logging
+from app.logger_config import logger
 from app.services.event_service import EventService
 from app.auth.auth import auth_required
 from app.permissions.permission import EventPermission, permission_required
@@ -46,7 +46,7 @@ class EventController:
         """Displays event details and offers modification/deletion options."""
         event = self.service.get_by_id(session, event_id)
         if not event:
-            print("\nEvent not found.")
+            EventView.display_not_found()
             return
 
         while True:
@@ -60,7 +60,7 @@ class EventController:
             elif choice == "3":
                 break
             else:
-                print("\nInvalid choice, please try again.")
+                EventView.display_invalid_choice()
 
     @auth_required
     @permission_required("create")
@@ -69,11 +69,9 @@ class EventController:
         try:
             event_data = EventView.get_event_creation_data()
             self.service.create(session, **event_data)
-            print("Event successfully created.")
-            logging.info(f"Created event: {event_data.get('location')}")
+            logger.info(f"Created event: {event_data.get('location')}")
         except Exception as e:
-            logging.error(e)
-            print("An error occurred during event creation.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -85,11 +83,9 @@ class EventController:
             updated_data = EventView.get_event_update_data()
             if updated_data:
                 self.service.update(session, event.id, updated_data)
-                print(f"Event {event.id} successfully updated.")
-                logging.info(f"Updated event {event.id}", level="info")
+                logger.info(f"Updated event {event.id}")
         except Exception as e:
-            logging.error(e)
-            print(f"An error occurred during updating event {event.id}.")
+            logger.error(e)
             raise
 
     @auth_required
@@ -103,11 +99,9 @@ class EventController:
             ).strip().lower()
             if confirm == "y":
                 self.service.delete(session, event.id)
-                print(f"Event {event.id} successfully deleted.")
-                logging.info(f"Deleted event {event.id}")
+                logger.info(f"Event {event.id} successfully deleted.")
         except Exception as e:
-            logging.error(e)
-            print(f"An error occurred during deletion of event {event.id}.")
+            logger.error(e)
             raise
 
     @auth_required
