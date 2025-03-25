@@ -1,13 +1,13 @@
 import pytest
-from unittest.mock import patch
-from unittest.mock import MagicMock
-from app.repository.user_repository import UserRepository
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
-from app.models.user import User
 from config.database import Base
+from app.models.user import User
+from app.models.customer import Customer
+from app.models.contract import Contract
+from app.models.event import Event
 
 
 load_dotenv()
@@ -21,6 +21,9 @@ TestSessionLocal = sessionmaker(
 )
 
 
+# ------------------------- DB session -------------------------
+
+
 @pytest.fixture(scope="function")
 def session():
     """Fixture that creates a temporary PostgreSQL database for each test."""
@@ -31,39 +34,62 @@ def session():
     Base.metadata.drop_all(bind=test_engine)
 
 
-@pytest.fixture
-def mock_session(mocker):
-    """Fixture to mock an SQLAlchemy session."""
-    return mocker.Mock(spec=Session)
+# ------------------------- Data creation -------------------------
 
 
 @pytest.fixture
-def admin_user():
-    """Fixture pour simuler un utilisateur Admin connecté."""
-    return {"id": 1, "role": "Admin"}
+def create_users(session):
+    sales_user = User(
+        role="Sales",
+        name="Sales User",
+        email="sales@test.com",
+        password_hash="hashed"
+    )
+    support_user = User(
+        role="Support",
+        name="Support User",
+        email="support@test.com",
+        password_hash="hashed"
+    )
+    session.add_all([sales_user, support_user])
+    session.commit()
+    return sales_user, support_user
 
 
 @pytest.fixture
-def sales_user():
-    """Fixture pour simuler un utilisateur Sales connecté."""
-    return {"id": 2, "role": "Sales"}
+def create_customer_contract(session, create_users):
+    sales_user, _ = create_users
+    customer = Customer(
+        name="Client A",
+        company_name="Company A",
+        email="client@example.com",
+        phone="1234567890",
+        sales_contact_id=sales_user.id
+    )
+    contract = Contract(
+        customer=customer,
+        amount=5000,
+        amount_due=2000,
+        status="signed"
+    )
+    session.add_all([customer, contract])
+    session.commit()
+    return customer, contract
 
 
 @pytest.fixture
-def management_user():
-    """Fixture pour simuler un utilisateur Management connecté."""
-    return {"id": 3, "role": "Management"}
-
-
-@pytest.fixture
-def support_user():
-    """Fixture pour simuler un utilisateur Support connecté."""
-    return {"id": 4, "role": "Support"}
-
-
-@pytest.fixture(autouse=True)
-def disable_auth():
-    """Mock global pour désactiver l'authentification et les permissions dans les tests d'intégration"""
-    with patch("app.auth.auth.auth_required", lambda x: x), \
-         patch("app.permissions.permission.permission_required", lambda *args, **kwargs: lambda x: x):
-        yield
+def create_event(session, create_users, create_customer_contract):
+    _, support_user = create_users
+    _, contract = create_customer_contract
+    event = Event(
+        contract=contract,
+        support_contact_id=support_user.id,
+        location="Paris",
+        start_date="2025-04-01",
+        end_date="2025-04-01",
+        attendees=10,
+        notes="Initial notes"
+    )
+    session.add(event)
+    session.commit()
+    return event
