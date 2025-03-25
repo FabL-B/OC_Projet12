@@ -5,6 +5,7 @@ from app.auth.auth import Auth, auth_required
 from app.repository.user_repository import UserRepository
 from app.models.user import User
 
+
 def test_create_access_token(mocker):
     """Test JWT access token generation."""
     mocker.patch("app.auth.auth.JWT_SECRET", "fake_secret")
@@ -17,6 +18,7 @@ def test_create_access_token(mocker):
     assert payload["role"] == "Sales"
     assert "exp" in payload
 
+
 def test_create_refresh_token(mocker):
     """Test JWT refresh token generation."""
     mocker.patch("app.auth.auth.JWT_SECRET", "fake_secret")
@@ -28,6 +30,7 @@ def test_create_refresh_token(mocker):
     assert payload["id"] == "1"
     assert "exp" in payload
 
+
 def test_verify_token_valid(mocker):
     """Test if a JWT token is valid."""
     mocker.patch("app.auth.auth.JWT_SECRET", "fake_secret")
@@ -38,6 +41,7 @@ def test_verify_token_valid(mocker):
 
     assert payload["id"] == "1"
     assert payload["role"] == "Sales"
+
 
 def test_verify_token_expired(mocker):
     """Test handling of an expired token."""
@@ -51,26 +55,25 @@ def test_verify_token_expired(mocker):
     )
     assert Auth.verify_token(expired_token) == "expired"
 
-def test_authenticate_user_success(mock_session, mocker):
+
+def test_authenticate_user_success(session, mocker):
     """Test successful authentication."""
     user = User(id=1, name="Bob", email="bob@example.com", role="Sales")
     user.verify_password = mocker.Mock(return_value=True)
-    mock_session.get.return_value = user
-    mocker.patch.object(UserRepository, "get_user_by_email", return_value=user)
-    mocker.patch.object(
-        Auth, "create_access_token", return_value="fake_access_token"
-    )
-    mocker.patch.object(
-        Auth, "create_refresh_token", return_value="fake_refresh_token"
-    )
 
-    result = Auth.authenticate_user(
-        mock_session, "alice@example.com", "mypassword")
+    mocker.patch.object(UserRepository, "get_user_by_email", return_value=user)
+    mocker.patch.object(Auth, "create_access_token",
+                        return_value="fake_access_token")
+    mocker.patch.object(Auth, "create_refresh_token",
+                        return_value="fake_refresh_token")
+
+    result = Auth.authenticate_user(session, "alice@example.com", "mypassword")
 
     assert result is not None
     assert result["user"] == user
     assert result["access_token"] == "fake_access_token"
     assert result["refresh_token"] == "fake_refresh_token"
+
 
 def test_is_authenticated_valid(mocker):
     """Test valid authentication."""
@@ -84,6 +87,7 @@ def test_is_authenticated_valid(mocker):
     assert payload["id"] == "1"
     assert payload["role"] == "Sales"
 
+
 def test_refresh_access_token(mocker):
     """Test `refresh_access_token()` creates new access_token."""
     Auth._refresh_token = "valid_refresh_token"
@@ -93,6 +97,7 @@ def test_refresh_access_token(mocker):
 
     payload = Auth.refresh_access_token()
     assert payload == {"id": "1", "role": "Sales"}
+
 
 def test_auth_required(mocker):
     """Test `auth_required` wrapper with authenticated user."""
@@ -108,6 +113,7 @@ def test_auth_required(mocker):
     controller = FakeController()
     result = controller.protected_method()
     assert result == "Access granted to Sales"
+
 
 def test_auth_required_with_invalid_token(mocker):
     """Test `auth_required` wrapper with unauthenticated user."""
