@@ -37,6 +37,12 @@ env\Scripts\activate     # For Windows
 ```sh
 pip install -r requirements.txt
 ```
+Alternatively, if you are using Pipenv (recommended for environment isolation):
+
+```sh
+pipenv install
+pipenv shell
+```
 
 ### 4. Database configuration
 
@@ -70,6 +76,43 @@ Initialize the database:
 
 ```sh
 python scripts/create_tables.py
+```
+
+## Environment Variables
+
+All environment-specific settings are stored in the `.env` file, which must be placed in the `config/` directory:
+
+```
+📂 config/
+└── .env
+```
+
+Example of a complete `.env` file:
+
+```env
+# Database
+DATABASE_URL=postgresql://epicevent_user:secret_password@[::1]:5432/epicevent_crm
+DB_USER=epicevent_user
+DB_PASSWORD=secret_password
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=epicevent_crm
+
+# JWT
+JWT_SECRET=supersecretkey
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+
+# Sentry
+SENTRY_DSN=https://abc123efg.ingest.de.sentry.io/12345
+```
+
+Make sure this file is loaded in your application using `python-dotenv`:
+
+```python
+from dotenv import load_dotenv
+load_dotenv(dotenv_path="config/.env")
 ```
 
 ### Database Management Scripts
@@ -144,18 +187,33 @@ The report is available in the `htmlcov/` directory.
 ## Project Structure
 
 ```
-📂 app/
- ├─📂 controllers/        # Handles user interactions
- ├─📂 models/             # Defines SQLAlchemy models
- ├─📂 repository/         # Manages data access
- ├─📂 services/           # Business logic
- ├─📂 views/              # Command-line interfaces
- ├─📂 auth/               # Authentication and permission handling
- ├─📂 permissions/        # Role and permission management
- ├─ config/                # Application configuration
- ├─ main.py                # Application entry point
- ├─ setup_database.py      # Database initialization
- ├─ requirements.txt       # Python dependencies
+📂 OC_PROJET_12/
+├─ 📂 app/
+│  ├─ 📂 auth/               # JWT authentication management
+│  ├─ 📂 controllers/        # Control logic (menu / user interaction)
+│  ├─ 📂 models/             # SQLAlchemy models
+│  ├─ 📂 permissions/        # Role and permission management
+│  ├─ 📂 repository/         # Data access (DAO)
+│  ├─ 📂 services/           # Business logic (use cases)
+│  ├─ 📂 utils/              # Utility functions
+│  ├─ 📂 views/              # Command-line interfaces
+│  └─ logger_config.py       # Logger configuration
+├─ 📂 config/                
+│   ├─ database.py.          # Database configuration
+│   └─ .env                  # Environment variables
+├─ 📂 scripts/               # Scripts for database management
+├─ 📂 tests/
+│  ├─ 📂 functional_tests/   # Functional tests
+│  ├─ 📂 integration_tests/  # Integration tests
+│  ├─ 📂 unit_tests/         # Unit tests
+│  ├─ __init__.py
+│  └─ conftest.py            # Test fixtures
+├─ main.py                   # Application entry point
+├─ requirements.txt          # Python dependencies
+├─ Pipfile / Pipfile.lock    # Environment manager (Pipenv)
+├─ DiagrammeERD.pdf          # Entity-relationship diagram
+├─ README.md
+
 ```
 
 Developed with Python, SQLAlchemy, and JWT Authentication.
