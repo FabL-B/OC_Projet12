@@ -98,6 +98,9 @@ class CustomerView:
         phone = input(
             "Updated phone (leave blank to keep unchanged): "
         ).strip()
+        sales_contact_id = input(
+            "Updated sales contact ID (leave blank to keep unchanged): "
+        ).strip()
 
         customer_data = {}
 
@@ -109,6 +112,8 @@ class CustomerView:
             customer_data["email"] = email
         if phone:
             customer_data["phone"] = phone
+        if sales_contact_id:
+            customer_data["sales_contact_id"] = int(sales_contact_id)
 
         return customer_data
 

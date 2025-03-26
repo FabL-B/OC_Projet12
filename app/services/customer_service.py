@@ -2,6 +2,7 @@ import re
 from app.repository.customer_repository import CustomerRepository
 from app.models.customer import Customer
 from app.utils.transaction import transactional_session
+from app.repository.user_repository import UserRepository
 
 
 class CustomerService:
@@ -117,6 +118,13 @@ class CustomerService:
                 CustomerService.validate_email(data["email"])
             if "phone" in data:
                 CustomerService.validate_phone(data["phone"])
+            if "sales_contact_id" in data:
+                sales_contact = UserRepository.get_user_by_id(
+                    s,
+                    data["sales_contact_id"]
+                )
+                if not sales_contact:
+                    raise ValueError("Sales contact ID not found.")
             return CustomerRepository.update_customer(s, customer_id, data)
 
     @staticmethod
@@ -131,4 +139,16 @@ class CustomerService:
     @staticmethod
     def list_customers_without_sales_contact(session):
         """Returns all customers without an assigned sales contact."""
-        return CustomerRepository.get_customers_without_sales_contact(session)
+        customers = CustomerRepository.get_customers_without_sales_contact(
+            session
+        )
+        return [
+            {
+                "id": customer.id,
+                "name": customer.name,
+                "company_name": customer.company_name,
+                "email": customer.email,
+                "phone": customer.phone
+            }
+            for customer in customers
+        ]

@@ -117,5 +117,14 @@ class CustomerController:
     @permission_required("list")
     def list_customers_without_sales_contact(self, user_payload, session):
         """Displays all customers that have no sales contact assigned."""
-        customers = self.service.list_customers_without_sales_contact(session)
-        CustomerView.display_customers_and_get_choice(customers)
+        while True:
+            customers = self.service.list_customers_without_sales_contact(
+                session
+            )
+            customer_id = CustomerView.display_customers_and_get_choice(
+                customers
+            )
+
+            if customer_id is None:
+                break
+            self.show_customer_details(session, customer_id)

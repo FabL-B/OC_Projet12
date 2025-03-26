@@ -107,7 +107,7 @@ def test_functional_create_update_delete_customer(monkeypatch, session):
         "test@example.com", "test",
         "2", "1", str(customer.id),
         "1",
-        "Johnny", "Corpx", "johnny@example.com", "+33600000002",
+        "Johnny", "Corpx", "johnny@example.com", "+33600000002", "",
         "3", "", "5", "5"
     ])
     monkeypatch.setattr("builtins.input", lambda _: next(inputs_update))
