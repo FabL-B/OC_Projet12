@@ -58,21 +58,48 @@ If you don't have PostgreSQL installed, follow the official installation guide:
 
 Once PostgreSQL is installed, create a new database with the following command:
 
+1. **Create the database from the terminal:**
 ```sh
 psql -U your_user -d postgres -c "CREATE DATABASE database_name;"
 ```
 
-Modify `.env` with your PostgreSQL database settings:
+2. **Connect to PostgreSQL in interactive mode:**
+```sh
+psql -U postgres -d postgres
+```
+
+3. **Inside the psql prompt, create a user and grant access to your project database:**
+```sql
+CREATE USER <database_user> WITH PASSWORD '<secret_password>';
+GRANT ALL PRIVILEGES ON DATABASE <database_name> TO <database_user>;
+\q
+```
+
+4. **Connect to your project database to grant schema permissions:**
+
+```sh
+psql -U postgres -d p<database_name>
+```
+
+5. **Inside the psql prompt, update schema permissions for ENUM and table creation:**
+```sql
+ALTER SCHEMA public OWNER TO <database_user>;
+GRANT USAGE ON SCHEMA public TO <database_user>;
+GRANT CREATE ON SCHEMA public TO <database_user>;
+\q
+```
+
+6. **Modify `.env` with your PostgreSQL database settings:**
 
 ```env
-DATABASE_URL=postgresql://
+DATABASE_URL=postgresql://<database_user>:<secret_password>@localhost:5432/<database_name>
 JWT_SECRET=your_secret_key
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7
 ```
 
-Initialize the database:
+7. **Initialize the database tables:**
 
 ```sh
 python scripts/create_tables.py
