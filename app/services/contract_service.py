@@ -35,6 +35,16 @@ class ContractService:
                 for contract in contracts]
 
     @staticmethod
+    def list_signed(session):
+        """Return signed contracts."""
+        contracts = ContractRepository.get_signed_contracts(session)
+        return [{"id": contract.id,
+                 "amount": contract.amount,
+                 "amount_due": contract.amount_due,
+                 "status": contract.status}
+                for contract in contracts]
+
+    @staticmethod
     def list_unpaid(session):
         """Return contracts where amount_due ≠ amount."""
         contracts = ContractRepository.get_unpaid_contracts(session)

@@ -87,7 +87,6 @@ class EventView:
     def get_event_creation_data():
         """Retrieves data to create an event."""
         console.print("\n[bold cyan]Create a new event[/bold cyan]")
-        contract_id = input("Associated Contract ID: ").strip()
         support_contact_id = input("Support Contact ID: ").strip()
         start_date = input("Start Date (YYYY-MM-DD): ").strip()
         end_date = input("End Date (YYYY-MM-DD): ").strip()
@@ -96,9 +95,6 @@ class EventView:
         notes = input("Notes (optional): ").strip()
 
         return {
-            "contract_id": (
-                int(contract_id) if contract_id.isdigit() else None
-            ),
             "support_contact_id": (
                 int(support_contact_id) if support_contact_id.isdigit()
                 else None

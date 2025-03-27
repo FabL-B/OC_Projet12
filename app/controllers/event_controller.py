@@ -3,6 +3,9 @@ from app.services.event_service import EventService
 from app.auth.auth import auth_required
 from app.permissions.permission import EventPermission, permission_required
 from app.views.event_view import EventView
+from app.services.contract_service import ContractService
+from app.views.contract_view import ContractView
+from app.repository.contract_repository import ContractRepository
 
 
 class EventController:
@@ -63,11 +66,30 @@ class EventController:
                 EventView.display_invalid_choice()
 
     @auth_required
-    @permission_required("create")
-    def create_event(self, user_payload, session):
+    @permission_required("list")
+    def select_signed_contract_and_create_event(self, user_payload, session):
+        """Displays signed contracts and proceeds with event creation."""
+        contracts = ContractService.list_signed(session)
+        contract_id = ContractView.display_contracts_and_get_choice(contracts)
+
+        if not contract_id:
+            return
+
+        contract = ContractRepository.get_contract_by_id(session, contract_id)
+        if not contract:
+            print("Contrat introuvable.")
+            return
+
+        self.create_event(session, obj=contract)
+
+    @auth_required
+    @permission_required("create", requires_object=True)
+    def create_event(self, user_payload, session, **kwargs):
         """Creates a new event."""
         try:
+            contract = kwargs.get("obj")
             event_data = EventView.get_event_creation_data()
+            event_data["contract_id"] = contract.id
             self.service.create(session, **event_data)
             logger.info(f"Created event: {event_data.get('location')}")
         except Exception as e:

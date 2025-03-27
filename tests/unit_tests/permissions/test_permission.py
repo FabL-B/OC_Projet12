@@ -56,10 +56,10 @@ class MockController:
 customer_sales = MockCustomer(sales_contact_id=user_sales_ok["id"])
 
 contract_sales_signed = MockContract(customer=customer_sales)
-contract_sales_signed.is_signed = True  # Signed contract
+contract_sales_signed.status = "signed"  # Signed contract
 
 contract_sales_unsigned = MockContract(customer=customer_sales)
-contract_sales_unsigned.is_signed = False
+contract_sales_unsigned.status = "unsigned"
 
 event_sales_signed = MockEvent(
     contract=contract_sales_signed, support_contact_id=4
@@ -152,10 +152,10 @@ def test_event_permission():
 
     # Sales can create an event if the contract is signed
     assert permission_sales.has_object_permission(
-        event_sales_signed, "create"
+        contract_sales_signed, "create"
     ) is True
     assert permission_sales.has_object_permission(
-        event_sales_unsigned, "create"
+        contract_sales_unsigned, "create"
     ) is False
 
     # Admin has full access
