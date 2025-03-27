@@ -29,7 +29,7 @@ def test_create_event_success(session, mocker, create_users,
     )
 
     controller = EventController()
-    controller.create_event(session=session)
+    controller.create_event(session=session, obj=contract)
 
     created_event = session.query(Event).filter_by(location="Paris").first()
     assert created_event is not None

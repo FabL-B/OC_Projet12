@@ -92,17 +92,19 @@ class EventPermission(BasePermission):
             return self.user_role == "Sales"
         return True
 
-    def check_object_permission(self, event, action):
+    def check_object_permission(self, obj, action):
         """Checks if the user has specific permissions on the event."""
 
         if action == "create":
+            contract = obj
             return (
                 self.user_role == "Sales"
-                and event.contract.is_signed
-                and event.contract.customer.sales_contact_id == self.user_id
+                and contract.status == "signed"
+                and contract.customer.sales_contact_id == self.user_id
             )
 
         if action == "update":
+            event = obj
             return (
                 (self.user_role == "Support" and
                  event.support_contact_id == self.user_id)

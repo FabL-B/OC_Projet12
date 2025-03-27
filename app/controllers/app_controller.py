@@ -55,7 +55,7 @@ class AppController:
             "1": self.event_controller.list_all_events,
             "2": self.event_controller.list_my_events,
             "3": self.event_controller.list_events_without_support_contact,
-            "4": self.event_controller.create_event,
+            "4": self.event_controller.select_signed_contract_and_create_event,
             "5": None,
         }
 

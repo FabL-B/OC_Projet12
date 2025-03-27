@@ -40,6 +40,11 @@ class ContractRepository:
         return session.query(Contract).filter_by(status="unsigned").all()
 
     @staticmethod
+    def get_signed_contracts(session):
+        """Retrieves all contracts that are signed."""
+        return session.query(Contract).filter_by(status="signed").all()
+
+    @staticmethod
     def get_unpaid_contracts(session):
         """Retrieves contracts where `amount_due` different from `amount`."""
         return (
